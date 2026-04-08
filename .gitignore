@@ -1,5 +1,16 @@
 oldsite.html
 
+# Build output
+dist/
+.astro/
+
+# Dependencies
+node_modules/
+
+# Playwright
+.playwright-cli/
+.playwright/
+
 # Python
 __pycache__/
 *.pyc
