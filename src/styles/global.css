@@ -1,0 +1,97 @@
+/* Fontsource variable fonts */
+@import '@fontsource-variable/fraunces';
+@import '@fontsource-variable/inter';
+
+@import "tailwindcss";
+
+@theme {
+  /* Palette — Field & Data */
+  --color-paper:  #F7F6F1;
+  --color-ink:    #0B0F14;
+  --color-soil:   #3A2E1F;
+  --color-data:   #1E5FBF;
+  --color-wheat:  #C9A24B;
+  --color-leaf:   #3E6B4A;
+
+  /* Typography */
+  --font-display: 'Fraunces Variable', Georgia, serif;
+  --font-body:    'Inter Variable', system-ui, sans-serif;
+  --font-mono:    ui-monospace, 'Cascadia Code', 'Fira Mono', monospace;
+
+  /* Fluid type scale */
+  --text-display: clamp(3rem, 6vw, 5.5rem);
+  --text-h1:      clamp(2rem, 4vw, 3.25rem);
+  --text-h2:      1.75rem;
+  --text-body:    1.0625rem;
+  --text-caption: 0.8125rem;
+
+  /* Spacing */
+  --spacing-section: clamp(4rem, 8vw, 8rem);
+}
+
+/* Base reset + typography */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  background-color: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  line-height: 1.15;
+  color: var(--color-ink);
+}
+
+h1 { font-size: var(--text-h1); font-weight: 600; font-variation-settings: 'opsz' 72; }
+h2 { font-size: var(--text-h2); font-weight: 600; font-variation-settings: 'opsz' 36; }
+
+a {
+  color: var(--color-data);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+a:hover { opacity: 0.8; }
+
+/* Section entry animation */
+.section-enter {
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 400ms ease-out, transform 400ms ease-out;
+}
+.section-enter.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .section-enter {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* Caption utility */
+.caption {
+  font-family: var(--font-body);
+  font-size: var(--text-caption);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-soil);
+}
+
+/* Max-width container */
+.container {
+  width: 100%;
+  max-width: 1240px;
+  margin-inline: auto;
+  padding-inline: clamp(1rem, 4vw, 2rem);
+}

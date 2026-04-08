@@ -1,0 +1,33 @@
+---
+import Base from '../../layouts/Base.astro';
+import NewsCard from '../../components/NewsCard.astro';
+import { getCollection } from 'astro:content';
+
+const allNews = await getCollection('news');
+const sorted = allNews.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+---
+
+<Base title="News" description="Latest news and updates from the Hübner Lab.">
+  <div class="container py-20">
+    <div class="section-enter mb-16">
+      <p class="caption mb-4">News</p>
+      <h1 style="font-size: var(--text-h1);">Updates</h1>
+    </div>
+
+    {sorted.length === 0 && (
+      <p style="color: var(--color-soil);">No news posts yet — check back soon.</p>
+    )}
+
+    <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      {sorted.map((post) => (
+        <NewsCard
+          title={post.data.title}
+          date={post.data.date}
+          slug={post.id}
+          summary={post.data.summary}
+          tags={post.data.tags}
+        />
+      ))}
+    </div>
+  </div>
+</Base>

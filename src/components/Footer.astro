@@ -1,0 +1,61 @@
+---
+const base = import.meta.env.BASE_URL;
+const year = new Date().getFullYear();
+---
+
+<footer
+  class="mt-24 border-t"
+  style="border-color: color-mix(in srgb, var(--color-soil) 20%, transparent);"
+>
+  <div class="container py-12 grid gap-8 md:grid-cols-3">
+    <!-- Contact -->
+    <div>
+      <p class="caption mb-3">Contact</p>
+      <p style="color: var(--color-soil); font-size: 0.9375rem; line-height: 1.6;">
+        Sariel Hübner<br />
+        Tel-Hai College &amp; Migal<br />
+        Kiryat Shmona, Israel<br />
+        <a href="mailto:sariel.hubner@migal.org.il" class="mt-1 inline-block" style="color: var(--color-data);">
+          sariel.hubner@migal.org.il
+        </a>
+      </p>
+    </div>
+
+    <!-- Quick links -->
+    <div>
+      <p class="caption mb-3">Explore</p>
+      <ul class="list-none m-0 p-0 flex flex-col gap-1.5">
+        {[
+          { href: `${base}/research`,     label: 'Research' },
+          { href: `${base}/team`,         label: 'Team' },
+          { href: `${base}/publications`, label: 'Publications' },
+          { href: `${base}/news`,         label: 'News' },
+        ].map(({ href, label }) => (
+          <li>
+            <a href={href} style="color: var(--color-soil); font-size: 0.9375rem;" class="no-underline hover:underline">
+              {label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+
+    <!-- Affiliations -->
+    <div>
+      <p class="caption mb-3">Affiliations</p>
+      <p style="color: var(--color-soil); font-size: 0.9375rem; line-height: 1.6;">
+        Tel-Hai College<br />
+        Migal – Galilee Research Institute<br />
+        Kiryat Shmona, Israel
+      </p>
+    </div>
+  </div>
+
+  <div
+    class="container pb-6 flex justify-between items-center text-xs"
+    style="color: color-mix(in srgb, var(--color-soil) 60%, transparent);"
+  >
+    <span>© {year} Hübner Lab. All rights reserved.</span>
+    <span>Built with <a href="https://astro.build" style="color: var(--color-soil);">Astro</a></span>
+  </div>
+</footer>

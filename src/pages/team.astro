@@ -1,0 +1,58 @@
+---
+import Base from '../layouts/Base.astro';
+import TeamCard from '../components/TeamCard.astro';
+import { getCollection } from 'astro:content';
+
+const allMembers = await getCollection('team');
+const current = allMembers
+  .filter((m) => !m.data.alumni)
+  .sort((a, b) => a.data.order - b.data.order);
+const alumni = allMembers
+  .filter((m) => m.data.alumni)
+  .sort((a, b) => a.data.order - b.data.order);
+---
+
+<Base title="Team" description="Meet the Hübner Lab team at Tel-Hai College and Migal.">
+  <div class="container py-20">
+    <div class="section-enter max-w-2xl mb-16">
+      <p class="caption mb-4">Team</p>
+      <h1 style="font-size: var(--text-h1);">People</h1>
+      <p class="mt-4 leading-relaxed" style="color: var(--color-soil);">
+        A multidisciplinary team of genomicists, bioinformaticians, and ecologists
+        at Tel-Hai College and Migal – Galilee Research Institute.
+      </p>
+      <p class="mt-3 text-sm italic" style="color: color-mix(in srgb, var(--color-soil) 60%, transparent);">
+        Team list reflects 2022 roster — updates coming soon.
+      </p>
+    </div>
+
+    <!-- Current members -->
+    <div class="grid gap-4 md:grid-cols-2">
+      {current.map((m) => (
+        <TeamCard
+          name={m.data.name}
+          role={m.data.role}
+          email={m.data.email}
+          orcid={m.data.orcid}
+          scholar={m.data.scholar}
+          photo={m.data.photo}
+        />
+      ))}
+    </div>
+
+    <!-- Alumni -->
+    {alumni.length > 0 && (
+      <div class="mt-16 section-enter">
+        <p class="caption mb-6">Alumni</p>
+        <ul class="list-none m-0 p-0 flex flex-col gap-2">
+          {alumni.map((m) => (
+            <li class="flex items-center gap-3 py-2 border-b" style="border-color: color-mix(in srgb, var(--color-soil) 12%, transparent);">
+              <span class="font-medium" style="color: var(--color-ink);">{m.data.name}</span>
+              <span class="text-sm" style="color: var(--color-soil);">{m.data.role}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    )}
+  </div>
+</Base>

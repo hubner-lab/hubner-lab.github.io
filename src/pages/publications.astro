@@ -1,0 +1,50 @@
+---
+import Base from '../layouts/Base.astro';
+import PublicationItem from '../components/PublicationItem.astro';
+import publications from '../data/publications.json';
+
+// Group by year, descending
+const byYear = publications.reduce<Record<number, typeof publications>>((acc, pub) => {
+  (acc[pub.year] ??= []).push(pub);
+  return acc;
+}, {});
+
+const years = Object.keys(byYear)
+  .map(Number)
+  .sort((a, b) => b - a);
+---
+
+<Base title="Publications" description="Scientific publications from the Hübner Lab.">
+  <div class="container py-20">
+    <div class="section-enter max-w-2xl mb-16">
+      <p class="caption mb-4">Publications</p>
+      <h1 style="font-size: var(--text-h1);">Research output</h1>
+      <p class="mt-4 leading-relaxed" style="color: var(--color-soil);">
+        Peer-reviewed articles, preprints, and book chapters.
+        <strong>Hübner, S.</strong> is bolded in author lists.
+        Updated daily via Google Scholar.
+      </p>
+    </div>
+
+    {years.map((year) => (
+      <div class="section-enter mb-12">
+        <h2
+          class="text-2xl mb-4 pb-2 border-b"
+          style="font-family: var(--font-display); color: var(--color-wheat); border-color: color-mix(in srgb, var(--color-wheat) 25%, transparent);"
+        >
+          {year}
+        </h2>
+        {byYear[year].map((pub) => (
+          <PublicationItem
+            title={pub.title}
+            authors={pub.authors}
+            venue={pub.venue}
+            year={pub.year}
+            url={pub.url || undefined}
+            citations={pub.citations || undefined}
+          />
+        ))}
+      </div>
+    ))}
+  </div>
+</Base>

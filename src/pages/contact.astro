@@ -1,0 +1,91 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base title="Contact" description="Contact the Hübner Lab at Tel-Hai College and Migal, Israel.">
+  <div class="container py-20">
+    <div class="section-enter max-w-2xl mb-16">
+      <p class="caption mb-4">Contact</p>
+      <h1 style="font-size: var(--text-h1);">Get in touch</h1>
+    </div>
+
+    <div class="grid gap-12 md:grid-cols-2 max-w-3xl">
+      <!-- Contact details -->
+      <div class="section-enter">
+        <div class="mb-8">
+          <p class="caption mb-3">Principal Investigator</p>
+          <p class="text-xl font-semibold mb-1" style="font-family: var(--font-display);">Sariel Hübner</p>
+          <p style="color: var(--color-soil);">Associate Professor</p>
+        </div>
+
+        <div class="mb-6">
+          <p class="caption mb-2">Email</p>
+          <a href="mailto:sariel.hubner@migal.org.il" style="color: var(--color-data);">
+            sariel.hubner@migal.org.il
+          </a>
+        </div>
+
+        <div class="mb-6">
+          <p class="caption mb-2">Address</p>
+          <address style="font-style: normal; color: var(--color-soil); line-height: 1.8;">
+            Migal – Galilee Research Institute<br />
+            2 Hamaarag St.<br />
+            Kiryat Shmona 1101600<br />
+            Israel
+          </address>
+        </div>
+
+        <div>
+          <p class="caption mb-3">Links</p>
+          <div class="flex flex-col gap-2">
+            <a
+              href="https://scholar.google.com/citations?user=yqB4jesAAAAJ"
+              target="_blank"
+              rel="noopener noreferrer"
+              style="color: var(--color-data);"
+            >
+              Google Scholar
+            </a>
+            <a
+              href="https://www.migal.org.il"
+              target="_blank"
+              rel="noopener noreferrer"
+              style="color: var(--color-data);"
+            >
+              Migal Institute
+            </a>
+            <a
+              href="https://www.tel-hai.ac.il"
+              target="_blank"
+              rel="noopener noreferrer"
+              style="color: var(--color-data);"
+            >
+              Tel-Hai College
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Map placeholder -->
+      <div class="section-enter">
+        <p class="caption mb-3">Location</p>
+        <div
+          class="rounded-xl overflow-hidden border"
+          style="border-color: color-mix(in srgb, var(--color-soil) 15%, transparent);"
+        >
+          <iframe
+            src="https://www.openstreetmap.org/export/embed.html?bbox=35.557,33.198,35.577,33.218&layer=mapnik&marker=33.208,35.567"
+            width="100%"
+            height="280"
+            style="border: none; display: block;"
+            loading="lazy"
+            title="Migal – Galilee Research Institute location"
+          ></iframe>
+        </div>
+        <p class="text-xs mt-2" style="color: color-mix(in srgb, var(--color-soil) 50%, transparent);">
+          Kiryat Shmona, Northern Israel
+        </p>
+      </div>
+    </div>
+  </div>
+</Base>

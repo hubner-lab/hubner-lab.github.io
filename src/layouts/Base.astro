@@ -1,0 +1,46 @@
+---
+import '../styles/global.css';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description = 'Hübner Lab — evolutionary and landscape genomics at Tel-Hai College and Migal.' } = Astro.props;
+const base = import.meta.env.BASE_URL;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href={`${base}/favicon.svg`} />
+    <title>{title} | Hübner Lab</title>
+  </head>
+  <body style="background-color: var(--color-paper);">
+    <Nav />
+    <main>
+      <slot />
+    </main>
+    <Footer />
+    <script>
+      // Section entry animation via IntersectionObserver
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('visible');
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.1 }
+      );
+      document.querySelectorAll('.section-enter').forEach((el) => observer.observe(el));
+    </script>
+  </body>
+</html>

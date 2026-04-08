@@ -1,0 +1,44 @@
+---
+interface Props {
+  id: string;
+  freq?: number;
+  speed?: number;
+  seed?: number;
+  height?: string;
+  class?: string;
+}
+
+const {
+  id,
+  freq = 0.12,
+  speed = 0.004,
+  seed = 0,
+  height = '520px',
+  class: className = '',
+} = Astro.props;
+---
+
+<div class={`relative w-full overflow-hidden rounded-lg ${className}`} style={`height: ${height};`}>
+  <canvas
+    id={id}
+    data-freq={freq}
+    data-speed={speed}
+    data-seed={seed}
+    class="absolute inset-0 w-full h-full"
+    aria-hidden="true"
+  ></canvas>
+</div>
+
+<script>
+  import { startTopoCanvas } from './topoCanvas.ts';
+
+  function initCanvas(canvas: HTMLCanvasElement) {
+    const freq  = parseFloat(canvas.dataset.freq  ?? '0.12');
+    const speed = parseFloat(canvas.dataset.speed ?? '0.004');
+    const seed  = parseFloat(canvas.dataset.seed  ?? '0');
+    startTopoCanvas({ canvas, freq, speed, seed });
+  }
+
+  // Init all topo canvases on the page
+  document.querySelectorAll<HTMLCanvasElement>('canvas[data-freq]').forEach(initCanvas);
+</script>

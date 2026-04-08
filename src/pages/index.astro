@@ -1,0 +1,95 @@
+---
+import Base from '../layouts/Base.astro';
+import TopoCanvas from '../components/TopoCanvas.astro';
+import NewsCard from '../components/NewsCard.astro';
+import { getCollection } from 'astro:content';
+
+const base = import.meta.env.BASE_URL;
+
+// Latest 3 news posts
+const allNews = await getCollection('news');
+const latestNews = allNews
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, 3);
+---
+
+<Base title="Home">
+  <!-- Hero -->
+  <section class="relative">
+    <TopoCanvas id="hero-canvas" freq={0.10} speed={0.003} seed={0} height="520px" />
+
+    <!-- Overlay text -->
+    <div
+      class="absolute inset-0 flex flex-col items-center justify-center text-center px-6"
+      style="background: linear-gradient(to bottom, transparent 40%, color-mix(in srgb, var(--color-paper) 70%, transparent) 100%);"
+    >
+      <p class="caption mb-4" style="color: var(--color-wheat);">Evolutionary &amp; Landscape Genomics</p>
+      <h1
+        class="mb-6 max-w-3xl"
+        style="font-size: var(--text-display); font-family: var(--font-display); font-variation-settings: 'opsz' 144; font-weight: 700; color: var(--color-ink);"
+      >
+        Hübner Lab
+      </h1>
+      <p class="text-lg max-w-xl leading-relaxed" style="color: var(--color-soil);">
+        Decoding the genomic basis of plant adaptation, speciation, and domestication —
+        from wild barley to sunflower.
+      </p>
+      <div class="mt-8 flex gap-4 flex-wrap justify-center">
+        <a
+          href={`${base}/research`}
+          class="px-6 py-3 rounded-full font-medium text-sm no-underline transition-opacity duration-200 hover:opacity-80"
+          style="background-color: var(--color-ink); color: var(--color-paper);"
+        >
+          Our Research
+        </a>
+        <a
+          href={`${base}/publications`}
+          class="px-6 py-3 rounded-full font-medium text-sm no-underline border transition-opacity duration-200 hover:opacity-80"
+          style="border-color: var(--color-soil); color: var(--color-soil);"
+        >
+          Publications
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Mission -->
+  <section class="container section-enter mt-24">
+    <div class="max-w-2xl">
+      <p class="caption mb-4">Mission</p>
+      <h2 class="mb-6" style="font-size: clamp(1.5rem, 3vw, 2.25rem);">
+        Understanding how plants adapt and diversify across landscapes
+      </h2>
+      <p class="leading-relaxed" style="color: var(--color-soil);">
+        Our research integrates population genomics, landscape ecology, and quantitative genetics
+        to understand the forces shaping genetic diversity in wild and domesticated plant species.
+        We work across a range of crops and their wild relatives — including wild barley,
+        sunflower, wheat, grapevine, and tef — using genome-wide data to illuminate the
+        evolutionary histories and adaptive potential of these plants.
+      </p>
+    </div>
+  </section>
+
+  <!-- Latest news teaser -->
+  {latestNews.length > 0 && (
+    <section class="container mt-24">
+      <div class="flex items-baseline justify-between mb-8">
+        <p class="caption">Latest News</p>
+        <a href={`${base}/news`} style="color: var(--color-data); font-size: 0.875rem;">All news →</a>
+      </div>
+      <div class="grid gap-4 md:grid-cols-3">
+        {latestNews.map((post) => (
+          <NewsCard
+            title={post.data.title}
+            date={post.data.date}
+            slug={post.id}
+            summary={post.data.summary}
+            tags={post.data.tags}
+          />
+        ))}
+      </div>
+    </section>
+  )}
+
+  <div class="h-24" aria-hidden="true"></div>
+</Base>

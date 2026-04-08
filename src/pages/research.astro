@@ -1,0 +1,75 @@
+---
+import Base from '../layouts/Base.astro';
+import PillarCard from '../components/PillarCard.astro';
+---
+
+<Base title="Research" description="Research areas of the Hübner Lab: speciation, adaptation, and domestication genomics.">
+  <div class="container py-20">
+    <div class="section-enter max-w-2xl mb-16">
+      <p class="caption mb-4">Research</p>
+      <h1 style="font-size: var(--text-h1);">
+        The genomics of plant evolution
+      </h1>
+      <p class="mt-4 leading-relaxed" style="color: var(--color-soil);">
+        We study how selection, drift, gene flow, and the environment shape
+        genetic variation across plant populations and species. Our work spans
+        wild and domesticated systems, combining population-scale whole-genome
+        sequencing with landscape, ecological, and phenotypic data.
+      </p>
+    </div>
+
+    <!-- Three research pillars -->
+    <div class="grid gap-8 md:grid-cols-3">
+      <PillarCard
+        title="Speciation"
+        body="How do populations diverge into distinct species? We investigate the genomic architecture of reproductive isolation, admixture barriers, and the role of chromosomal rearrangements in speciation — with a focus on wild barley (Hordeum spontaneum) and sunflower."
+        canvasId="canvas-speciation"
+        freq={0.22}
+        speed={0.006}
+        seed={10}
+        organisms={['Hordeum spontaneum', 'Helianthus annuus']}
+      />
+      <PillarCard
+        title="Adaptation"
+        body="How do plants track environmental heterogeneity? We identify signatures of local adaptation using landscape genomics, environmental association analysis, and GWAS, linking genetic variants to climate, soil, and phenology across large geographic gradients."
+        canvasId="canvas-adaptation"
+        freq={0.12}
+        speed={0.003}
+        seed={25}
+        organisms={['Hordeum spontaneum', 'Triticum aestivum', 'Eragrostis tef']}
+      />
+      <PillarCard
+        title="Domestication"
+        body="What genomic changes accompanied the transition from wild to cultivated? We reconstruct domestication history, identify selective sweeps, and trace the origin and spread of crop lineages — in barley, wheat, grapevine, and tef."
+        canvasId="canvas-domestication"
+        freq={0.07}
+        speed={0.002}
+        seed={50}
+        organisms={['Hordeum vulgare', 'Triticum aestivum', 'Vitis vinifera', 'Eragrostis tef']}
+      />
+    </div>
+
+    <!-- Organism grid -->
+    <div class="section-enter mt-20">
+      <p class="caption mb-6">Study systems</p>
+      <div class="flex flex-wrap gap-3">
+        {[
+          'Wild barley (Hordeum spontaneum)',
+          'Barley (Hordeum vulgare)',
+          'Wild emmer wheat',
+          'Bread wheat (Triticum aestivum)',
+          'Sunflower (Helianthus annuus)',
+          'Grapevine (Vitis vinifera)',
+          'Tef (Eragrostis tef)',
+        ].map((org) => (
+          <span
+            class="px-4 py-2 rounded-full text-sm border"
+            style="border-color: color-mix(in srgb, var(--color-leaf) 30%, transparent); color: var(--color-leaf);"
+          >
+            <em>{org}</em>
+          </span>
+        ))}
+      </div>
+    </div>
+  </div>
+</Base>

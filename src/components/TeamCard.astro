@@ -1,0 +1,52 @@
+---
+interface Props {
+  name: string;
+  role: string;
+  bio?: string;
+  email?: string;
+  orcid?: string;
+  scholar?: string;
+  photo?: string;
+}
+
+const { name, role, bio, email, orcid, scholar, photo } = Astro.props;
+const base = import.meta.env.BASE_URL;
+---
+
+<article
+  class="section-enter flex gap-4 p-5 rounded-xl border"
+  style="border-color: color-mix(in srgb, var(--color-soil) 15%, transparent);"
+>
+  <!-- Avatar -->
+  <div
+    class="shrink-0 w-16 h-16 rounded-full overflow-hidden"
+    style="background-color: color-mix(in srgb, var(--color-wheat) 20%, var(--color-paper));"
+  >
+    {photo
+      ? <img src={`${base}/team/${photo}`} alt={name} class="w-full h-full object-cover" loading="lazy" />
+      : <div class="w-full h-full flex items-center justify-center text-xl font-semibold" style="color: var(--color-wheat); font-family: var(--font-display);">
+          {name.charAt(0)}
+        </div>
+    }
+  </div>
+
+  <!-- Info -->
+  <div class="flex-1 min-w-0">
+    <h3 class="text-base font-semibold leading-tight mb-0.5" style="font-family: var(--font-display); color: var(--color-ink);">
+      {name}
+    </h3>
+    <p class="caption mb-2">{role}</p>
+    {bio && <p class="text-sm leading-relaxed mb-2" style="color: var(--color-soil);">{bio}</p>}
+    <div class="flex flex-wrap gap-3 text-xs">
+      {email && (
+        <a href={`mailto:${email}`} style="color: var(--color-data);">Email</a>
+      )}
+      {orcid && (
+        <a href={`https://orcid.org/${orcid}`} target="_blank" rel="noopener noreferrer" style="color: var(--color-data);">ORCID</a>
+      )}
+      {scholar && (
+        <a href={`https://scholar.google.com/citations?user=${scholar}`} target="_blank" rel="noopener noreferrer" style="color: var(--color-data);">Scholar</a>
+      )}
+    </div>
+  </div>
+</article>

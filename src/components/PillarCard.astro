@@ -1,0 +1,40 @@
+---
+import TopoCanvas from './TopoCanvas.astro';
+
+interface Props {
+  title: string;
+  body: string;
+  canvasId: string;
+  freq?: number;
+  speed?: number;
+  seed?: number;
+  organisms?: string[];
+}
+
+const { title, body, canvasId, freq = 0.12, speed = 0.004, seed = 0, organisms } = Astro.props;
+---
+
+<article
+  class="section-enter rounded-2xl overflow-hidden border"
+  style="border-color: color-mix(in srgb, var(--color-soil) 15%, transparent);"
+>
+  <TopoCanvas id={canvasId} freq={freq} speed={speed} seed={seed} height="160px" />
+  <div class="p-6">
+    <h3 class="text-xl font-semibold mb-3" style="font-family: var(--font-display); font-variation-settings: 'opsz' 36; color: var(--color-ink);">
+      {title}
+    </h3>
+    <p class="text-sm leading-relaxed mb-4" style="color: var(--color-soil);">{body}</p>
+    {organisms && organisms.length > 0 && (
+      <div class="flex flex-wrap gap-2">
+        {organisms.map((org) => (
+          <span
+            class="px-2.5 py-1 rounded-full text-xs"
+            style="background-color: color-mix(in srgb, var(--color-leaf) 12%, transparent); color: var(--color-leaf);"
+          >
+            {org}
+          </span>
+        ))}
+      </div>
+    )}
+  </div>
+</article>
