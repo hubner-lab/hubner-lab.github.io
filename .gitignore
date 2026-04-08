@@ -1,1 +1,5 @@
 oldsite.html
+
+# Python
+__pycache__/
+*.pyc
