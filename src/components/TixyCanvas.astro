@@ -1,0 +1,48 @@
+---
+interface Props {
+  id: string;
+  cols?: number;
+  rows?: number;
+  wordSpeed?: number;
+  ambientSpeed?: number;
+  height?: string;
+  class?: string;
+}
+
+const {
+  id,
+  cols         = 140,
+  rows         = 40,
+  wordSpeed    = 0.012,
+  ambientSpeed = 0.002,
+  height       = '520px',
+  class: className = '',
+} = Astro.props;
+---
+
+<div class={`relative w-full overflow-hidden rounded-lg ${className}`} style={`height: ${height};`}>
+  <canvas
+    id={id}
+    data-tixy-text="Hübner Lab"
+    data-tixy-cols={cols}
+    data-tixy-rows={rows}
+    data-tixy-word-speed={wordSpeed}
+    data-tixy-ambient-speed={ambientSpeed}
+    class="absolute inset-0 w-full h-full"
+    aria-hidden="true"
+  ></canvas>
+</div>
+
+<script>
+  import { startTixyCanvas } from './tixyCanvas.ts';
+
+  document.querySelectorAll<HTMLCanvasElement>('canvas[data-tixy-text]').forEach((canvas) => {
+    startTixyCanvas({
+      canvas,
+      cols:         parseInt(canvas.dataset.tixyCols         ?? '140',    10),
+      rows:         parseInt(canvas.dataset.tixyRows         ?? '40',     10),
+      wordSpeed:    parseFloat(canvas.dataset.tixyWordSpeed    ?? '0.012'),
+      ambientSpeed: parseFloat(canvas.dataset.tixyAmbientSpeed ?? '0.002'),
+    });
+  });
+</script>

@@ -36,6 +36,13 @@
 
 html {
   background-color: var(--color-paper);
+  /* Whisper focal gradient: barely perceptible lit-from-above warmth */
+  background-image: radial-gradient(
+    ellipse 120% 60% at 50% 0%,
+    color-mix(in srgb, var(--color-paper) 96%, #fff) 0%,
+    var(--color-paper) 65%
+  );
+  background-attachment: fixed;
   color: var(--color-ink);
   font-family: var(--font-body);
   font-size: var(--text-body);

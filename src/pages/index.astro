@@ -1,6 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
-import TopoCanvas from '../components/TopoCanvas.astro';
+import TixyCanvas from '../components/TixyCanvas.astro';
 import NewsCard from '../components/NewsCard.astro';
 import { getCollection } from 'astro:content';
 
@@ -16,39 +16,39 @@ const latestNews = allNews
 <Base title="Home">
   <!-- Hero -->
   <section class="relative">
-    <TopoCanvas id="hero-canvas" freq={0.10} speed={0.003} seed={0} height="520px" />
+    <TixyCanvas id="hero-tixy" height="clamp(520px, 72vh, 680px)" />
 
-    <!-- Overlay text -->
-    <div
-      class="absolute inset-0 flex flex-col items-center justify-center text-center px-6"
-      style="background: linear-gradient(to bottom, transparent 40%, color-mix(in srgb, var(--color-paper) 70%, transparent) 100%);"
-    >
-      <p class="caption mb-4" style="color: var(--color-wheat);">Evolutionary &amp; Landscape Genomics</p>
-      <h1
-        class="mb-6 max-w-3xl"
-        style="font-size: var(--text-display); font-family: var(--font-display); font-variation-settings: 'opsz' 144; font-weight: 700; color: var(--color-ink);"
-      >
-        Hübner Lab
-      </h1>
-      <p class="text-lg max-w-xl leading-relaxed" style="color: var(--color-soil);">
-        Decoding the genomic basis of plant adaptation, speciation, and domestication —
-        from wild barley to sunflower.
-      </p>
-      <div class="mt-8 flex gap-4 flex-wrap justify-center">
-        <a
-          href={`${base}/research`}
-          class="px-6 py-3 rounded-full font-medium text-sm no-underline transition-opacity duration-200 hover:opacity-80"
-          style="background-color: var(--color-ink); color: var(--color-paper);"
-        >
-          Our Research
-        </a>
-        <a
-          href={`${base}/publications`}
-          class="px-6 py-3 rounded-full font-medium text-sm no-underline border transition-opacity duration-200 hover:opacity-80"
-          style="border-color: var(--color-soil); color: var(--color-soil);"
-        >
-          Publications
-        </a>
+    <!-- sr-only wordmark for SEO/a11y — visually the dot grid spells the name -->
+    <h1 class="sr-only">Hübner Lab — Evolutionary and Landscape Genomics</h1>
+
+    <!-- Top-left eyebrow caption -->
+    <div class="absolute top-8 left-0 right-0 px-8 md:px-12 pointer-events-none">
+      <p class="caption" style="color: var(--color-leaf);">Evolutionary &amp; Landscape Genomics</p>
+    </div>
+
+    <!-- Bottom-left: subtitle + CTAs — editorial asymmetric column -->
+    <div class="absolute bottom-10 left-0 right-0 px-8 md:px-12">
+      <div class="max-w-[520px]">
+        <p class="text-lg leading-relaxed mb-5" style="color: var(--color-soil);">
+          Decoding the genomic basis of plant adaptation, speciation,
+          and domestication — from wild barley to sunflower.
+        </p>
+        <div class="flex gap-3 flex-wrap">
+          <a
+            href={`${base}/research`}
+            class="cursor-pointer px-5 py-2.5 rounded-full font-medium text-sm no-underline shadow-sm hover:shadow-md transition-all duration-200 hover:opacity-90"
+            style="background-color: var(--color-ink); color: var(--color-paper);"
+          >
+            Our Research
+          </a>
+          <a
+            href={`${base}/publications`}
+            class="cursor-pointer px-5 py-2.5 rounded-full font-medium text-sm no-underline border transition-colors duration-200 hover:bg-black/5"
+            style="border-color: var(--color-soil); color: var(--color-soil);"
+          >
+            Publications
+          </a>
+        </div>
       </div>
     </div>
   </section>
