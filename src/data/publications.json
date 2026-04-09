@@ -1,258 +1,506 @@
 [
   {
-    "year": 2022,
-    "title": "Wild sunflower goes viral: citizen science and comparative genomics allow tracking the origin and establishment of invasive sunflower in the Levant",
-    "authors": "Hübner S., Sisou D., Tali M., Todesco M., Matzrafi M., Eizenberg H.",
-    "venue": "Molecular Ecology",
-    "url": "",
+    "year": 2026,
+    "title": "Evolutionary graph pangenome of the order Poales from chloroplast genomes highlight phylogenetic inconsistencies",
+    "authors": "Rakan Haib and Sariel Hübner",
+    "venue": "",
+    "url": "https://www.researchsquare.com/article/rs-8786947/latest",
     "citations": 0
   },
   {
-    "year": 2022,
-    "title": "Are we there yet? Driving the road to evolutionary pan-genomics",
-    "authors": "Hübner S.",
-    "venue": "Current Opinion in Plant Biology",
-    "url": "",
+    "year": 2026,
+    "title": "Intraspecific genome size variation is attributed to adaptive silencing of transposable elements in Hordeum species",
+    "authors": "Evgenii Potapenko and Bar Shermeister and Tali Mandel and Sariel Hübner",
+    "venue": "Molecular Biology and Evolution",
+    "url": "https://academic.oup.com/mbe/article-pdf/doi/10.1093/molbev/msag051/67287342/msag051.pdf",
     "citations": 0
   },
   {
+    "year": 2026,
+    "title": "The transposable elements syndrome of wheat domestication",
+    "authors": "Guy Ben Zvi and Sariel Hübner",
+    "venue": "bioRxiv",
+    "url": "https://www.biorxiv.org/content/10.64898/2026.01.28.702265.abstract",
+    "citations": 0
+  },
+  {
+    "year": 2025,
+    "title": "Prioritizing parents from global genebanks to breed climate-resilient crops",
+    "authors": "Quinn Campbell and Nora Castañeda-Álvarez and Ryan Domingo and Eric Bishop-von Wettberg and Bryan Runck and Hervé Nandkangré and Anna Halpin-McCormick and Nathan Fumia and Jeffrey Neyhart and Benjamin Kilian and Peterson Wambugu and Desterio Nyamongo and Sariel Hübner and Sidney Sitar and Addie Thompson and Loren Rieseberg and Michael A Gore and Michael B Kantar",
+    "venue": "Nature Climate Change",
+    "url": "https://www.nature.com/articles/s41558-025-02333-x",
+    "citations": 11
+  },
+  {
+    "year": 2025,
+    "title": "Genomic dissection of productivity, lodging, and morpho‐physiological traits in Eragrostis tef under contrasting water availabilities",
+    "authors": "Muluken Demelie Alemu and Shiran Ben‐Zeev and Timo Hellwig and Vered Barak and Gil Shoshani and Assaf Chen and Stephane Razzon and Ittai Herrmann and Alexandra Vorobyova and Sariel Hübner and Yehoshua Saranga",
+    "venue": "Plants, People, Planet",
+    "url": "https://nph.onlinelibrary.wiley.com/doi/abs/10.1002/ppp3.10505",
+    "citations": 5
+  },
+  {
+    "year": 2025,
+    "title": "Environmental genomic selection to leverage polygenic local adaptation in barley landraces",
+    "authors": "Anna Halpin-McCormick and Quinn Campbell and Sónia Negrão and Peter L Morrell and Sariel Hübner and Jeffrey L Neyhart and Michael B Kantar",
+    "venue": "Communications biology",
+    "url": "https://www.nature.com/articles/s42003-025-08045-4",
+    "citations": 4
+  },
+  {
+    "year": 2025,
+    "title": "Shared selection and genetic architecture drive strikingly repeatable evolution in long-term experimental hybrid populations",
+    "authors": "Gregory L Owens and Celine Caseys and Nora Mitchell and Sariel Hübner and Kenneth D Whitney and Loren H Rieseberg",
+    "venue": "Molecular Biology and Evolution",
+    "url": "https://academic.oup.com/mbe/article-pdf/doi/10.1093/molbev/msaf014/61527151/msaf014.pdf",
+    "citations": 4
+  },
+  {
+    "year": 2025,
+    "title": "On the origin of the late-flowering ppd-H1 allele in barley",
+    "authors": "Rajiv Sharma and Salar Shaaf and Kerstin Neumann and Peter Civan and Yu Guo and Martin Mascher and Michal David and Adnan Al-Yassin and Hakan Özkan and Tom Blake and Sariel Hübner and Nora P Castañeda-Álvarez and Stefania Grando and Salvatore Ceccarelli and Michael Baum and Andreas Graner and George Coupland and Klaus Pillen and Ehud Weiss and Ian J Mackay and Wayne Powell and Benjamin Kilian",
+    "venue": "Theoretical and Applied Genetics",
+    "url": "https://link.springer.com/article/10.1007/s00122-025-04981-1",
+    "citations": 2
+  },
+  {
+    "year": 2025,
+    "title": "Genome size variation is attributed to adaptive purging of transposable elements",
+    "authors": "Evgenii Potapenko and Bar Shermeister and Tali Mandel and Sariel Hübner",
+    "venue": "bioRxiv",
+    "url": "https://www.biorxiv.org/content/10.1101/2025.09.26.678839.abstract",
+    "citations": 1
+  },
+  {
+    "year": 2025,
+    "title": "Wild genes to the rescue: High-throughput genomics reveals the wild source of broomrape resistance in sunflower",
+    "authors": "Dana Sisou and Hammam Ziadna and Mika Eizenberg-Weiss and Hanan Eizenberg and Sariel Hübner",
+    "venue": "bioRxiv",
+    "url": "https://www.biorxiv.org/content/10.1101/2025.09.14.676089.abstract",
+    "citations": 0
+  },
+  {
+    "year": 2024,
+    "title": "Climate resilience conserved in global germplasm repositories: Picking the most promising parents for agile plant breeding",
+    "authors": "Quinn Campbell and Nora Castaneda-Alvarez and Ryan Domingo and Eric Bishop-von Wettberg and Bryan Runck and Hervé Nandkangré and Anna McCormick and Nathan Fumia and Jeffrey Neyhart and Benjamin Kilian and Peterson Wambugu and Desterio Nyamongo and Sariel Hübner and Sidney Sitar and Addie Thompson and Loren Rieseberg and Michael A Gore and Michael Kantar",
+    "venue": "bioRxiv",
+    "url": "https://www.biorxiv.org/content/10.1101/2024.05.11.593573.abstract",
+    "citations": 3
+  },
+  {
+    "year": 2024,
+    "title": "Back to the Future: Environmental genomic selection to take advantage of polygenic local adaptation",
+    "authors": "Anna Halpin-McCormick and Quinn Campbell and Sónia Negrão and Peter L Morrell and Sariel Hubner and Jeff Neyhart and Michael Kantar",
+    "venue": "bioRxiv",
+    "url": "https://www.biorxiv.org/content/10.1101/2024.10.09.617488.abstract",
+    "citations": 2
+  },
+  {
+    "year": 2024,
+    "title": "A numerical model supports the evolutionary advantage of recombination plasticity in shifting environments",
+    "authors": "Sviatoslav R Rybnikov and Sariel Hübner and Abraham B Korol",
+    "venue": "The American Naturalist",
+    "url": "https://www.journals.uchicago.edu/doi/abs/10.1086/728405",
+    "citations": 2
+  },
+  {
+    "year": 2024,
+    "title": "Not so selfish: transposable elements fuel adaptation to climate change",
+    "authors": "Evgenii V Potapenko and David Schwarts and Tali Mandel and Nimrod Ashkenazy and Dana Fuerst and Guy Atsmon and Abraham B Korol and Michael B Kantar and Avi Bar-Massada and Sariel Hübner",
+    "venue": "BioRxiv",
+    "url": "https://www.biorxiv.org/content/10.1101/2024.09.02.610836.abstract",
+    "citations": 1
+  },
+  {
+    "year": 2023,
+    "title": "Dual domestications and origin of traits in grapevine evolution",
+    "authors": "Yang Dong and Shengchang Duan and Qiuju Xia and Zhenchang Liang and Xiao Dong and Kristine Margaryan and Mirza Musayev and Svitlana Goryslavets and Goran Zdunić and Pierre-François Bert and Thierry Lacombe and Erika Maul and Peter Nick and Kakha Bitskinashvili and György Dénes Bisztray and Elyashiv Drori and Gabriella De Lorenzis and Jorge Cunha and Carmen Florentina Popescu and Rosa Arroyo-Garcia and Claire Arnold and Ali Ergül and Yifan Zhu and Chao Ma and Shufen Wang and Siqi Liu and Liu Tang and Chunping Wang and Dawei Li and Yunbing Pan and Jingxian Li and Ling Yang and Xuzhen Li and Guisheng Xiang and Zijiang Yang and Baozheng Chen and Zhanwu Dai and Yi Wang and Arsen Arakelyan and Varis Kuliyev and Gennady Spotar and Nabil Girollet and Serge Delrot and Nathalie Ollat and Patrice This and Cécile Marchal and Gautier Sarah and Valérie Laucou and Roberto Bacilieri and Franco Röckel and Pingyin Guan and Andreas Jung and Michael Riemann and Levan Ujmajuridze and Tekle Zakalashvili and David Maghradze and Maria Höhn and Gizella Jahnke and Erzsébet Kiss and Tamás Deák and Oshrit Rahimi and Sariel Hübner and Fabrizio Grassi and Francesco Mercati and Francesco Sunseri and José Eiras-Dias and Anamaria Mirabela Dumitru and David Carrasco and Alberto Rodriguez-Izquierdo and Gregorio Muñoz and Tamer Uysal and Cengiz Özer and Kemal Kazan and Meilong Xu and Yunyue Wang and Shusheng Zhu and Jiang Lu and Maoxiang Zhao and Lei Wang and Songtao Jiu and Ying Zhang and Lei Sun and Huanming Yang and Ehud Weiss and Shiping Wang and Youyong Zhu and Shaohua Li and Jun Sheng and Wei Chen",
+    "venue": "Science",
+    "url": "https://www.science.org/doi/abs/10.1126/science.add8655",
+    "citations": 301
+  },
+  {
+    "year": 2023,
+    "title": "The genomics of linkage drag in inbred lines of sunflower",
+    "authors": "Kaichi Huang and Mojtaba Jahani and Jérôme Gouzy and Alexandra Legendre and Sébastien Carrere and José Miguel Lázaro-Guevara and Eric Gerardo González Segovia and Marco Todesco and Baptiste Mayjonade and Nathalie Rodde and Stephane Cauet and Isabelle Dufau and S Evan Staton and Nicolas Pouilly and Marie-Claude Boniface and Camille Tapy and Brigitte Mangin and Alexandra Duhnen and Veronique Gautier and Charles Poncet and Cecile Donnadieu and Tali Mandel and Sariel Hübner and John M Burke and Sonia Vautrin and Arnaud Bellec and Gregory L Owens and Nicolas Langlade and Stephane Munos and Loren H Rieseberg",
+    "venue": "Proceedings of the National Academy of Sciences",
+    "url": "https://www.pnas.org/doi/abs/10.1073/pnas.2205783119",
+    "citations": 75
+  },
+  {
+    "year": 2023,
+    "title": "Modeling the evolution of recombination plasticity: A prospective review",
+    "authors": "Sviatoslav R Rybnikov and Zeev Frenkel and Sariel Hübner and Daniel B Weissman and Abraham B Korol",
+    "venue": "",
+    "url": "https://onlinelibrary.wiley.com/doi/abs/10.1002/bies.202200237",
+    "citations": 11
+  },
+  {
+    "year": 2023,
+    "title": "Genetic architecture of rust resistance in a wheat (Triticum turgidum) diversity panel",
+    "authors": "Valentyna Klymiuk and Teketel Haile and Jennifer Ens and Krystalee Wiebe and Amidou N’Diaye and Andrii Fatiukha and Tamar Krugman and Roi Ben-David and Sariel Hübner and Sylvie Cloutier and Curtis J Pozniak",
+    "venue": "Frontiers in Plant Science",
+    "url": "https://www.frontiersin.org/journals/plant-science/articles/10.3389/fpls.2023.1145371/full",
+    "citations": 8
+  },
+  {
+    "year": 2023,
+    "title": "Evolutionary conservation and transcriptome analyses attribute perenniality and flowering to day-length responsive genes in bulbous barley (Hordeum bulbosum)",
+    "authors": "Dana Fuerst and Bar Shermeister and Tali Mandel and Sariel Hübner",
+    "venue": "Genome biology and evolution",
+    "url": "https://academic.oup.com/gbe/article-abstract/15/1/evac168/6855281",
+    "citations": 7
+  },
+  {
+    "year": 2023,
+    "title": "Wild Grapevine (Vitis vinifera L. subsp. sylvestris (C.C. Gmelin) Hegi)—Novel Species to the Israeli Flora",
+    "authors": "Oshrit Rahimi and Jotham Ziffer Berger and Ilana Shtein and Mafatlal M Kher and Suembikya Frumin and Sariel Hübner and Ehud Weiss and Elyashiv Drori",
+    "venue": "Horticulturae",
+    "url": "https://www.mdpi.com/2311-7524/9/9/998",
+    "citations": 3
+  },
+  {
     "year": 2022,
-    "title": "Emmer wheat eco-geographic and genomic congruence shapes phenotypic performance under mediterranean climate",
-    "authors": "Fadida-Myers A., Fuerst D., Tzuberi A., Yadav S., Nashef K., Roychowdhury R., Paola Sansaloni C., Hübner S., Ben-David R.",
+    "title": "Are we there yet? Driving the road to evolutionary graph-pangenomics",
+    "authors": "Sariel Hübner",
+    "venue": "",
+    "url": "https://www.sciencedirect.com/science/article/pii/S1369526622000243",
+    "citations": 23
+  },
+  {
+    "year": 2022,
+    "title": "Emmer wheat eco-geographic and genomic congruence shapes phenotypic performance under Mediterranean climate",
+    "authors": "Aviya Fadida-Myers and Dana Fuerst and Aviv Tzuberi and Shailesh Yadav and Kamal Nashef and Rajib Roychowdhury and Carolina Paola Sansaloni and Sariel Hübner and Roi Ben-David",
     "venue": "Plants",
-    "url": "",
-    "citations": 0
+    "url": "https://www.mdpi.com/2223-7747/11/11/1460",
+    "citations": 14
+  },
+  {
+    "year": 2022,
+    "title": "Wild sunflower goes viral: Citizen science and comparative genomics allow tracking the origin and establishment of invasive sunflower in the Levant",
+    "authors": "Sariel Hübner and Dana Sisou and Tali Mandel and Marco Todesco and Maor Matzrafi and Hanan Eizenberg",
+    "venue": "Molecular Ecology",
+    "url": "https://onlinelibrary.wiley.com/doi/abs/10.1111/mec.16380",
+    "citations": 11
   },
   {
     "year": 2022,
     "title": "GWANN: Implementing deep learning in genome wide association studies",
-    "authors": "Ashkenazy N., Feder M., Shir O.M., Hübner S.",
-    "venue": "bioRxiv (preprint)",
-    "url": "",
+    "authors": "Nimrod Ashkenazy and Martin Feder and Ofer M Shir and Sariel Hübner",
+    "venue": "bioRxiv",
+    "url": "https://www.biorxiv.org/content/10.1101/2022.06.01.494275.abstract",
+    "citations": 6
+  },
+  {
+    "year": 2022,
+    "title": "A numerical model supports the evolutionary advantage of plastic increase in recombination rate in response to environmental shifts",
+    "authors": "Sviatoslav Rybnikov and Sariel Hubner and Abraham B Korol",
+    "venue": "",
+    "url": "https://scholar.google.com/scholar?cluster=169660489207441322&hl=en&oi=scholarr",
+    "citations": 0
+  },
+  {
+    "year": 2022,
+    "title": "Identification of minor alleles associated with reduced lodging in tef (Eragrostis tef)",
+    "authors": "S Ben-Zeev and T Hellwig and M Demeile and V Barak and S Vorobyova and S Hübner and Y Saranga",
+    "venue": "",
+    "url": "https://europepmc.org/article/ppr/ppr470786",
     "citations": 0
   },
   {
     "year": 2022,
     "title": "Novel diversity panel facilitates genomic dissection of lodging in tef (Eragrostis tef)",
-    "authors": "Ben-Zeev S., Hellwig T., Demeile M., Barak V., Vorobyova S., Hübner S., Saranga Y.",
-    "venue": "bioRxiv (preprint)",
-    "url": "",
+    "authors": "Shiran Ben-Zeev and Timo Hellwig and Muluken Demeile and Vered Barak and Sasha Vorobyova and Sariel Hübner and Yehoshua Saranga",
+    "venue": "bioRxiv",
+    "url": "https://www.biorxiv.org/content/10.1101/2022.03.17.484745.abstract",
     "citations": 0
   },
   {
     "year": 2021,
-    "title": "Fitness Dependence as an Evolutionary Rescue for Recombination Across Diverse Mating Systems",
-    "authors": "Rybnikov S., Weissman D., Hübner S., Korol A.B.",
-    "venue": "Journal of Theoretical Biology",
-    "url": "",
-    "citations": 0
+    "title": "Tapping diversity from the wild: from sampling to implementation",
+    "authors": "Sariel Hübner and Michael B Kantar",
+    "venue": "",
+    "url": "https://www.frontiersin.org/journals/plant-science/articles/10.3389/fpls.2021.626565/full",
+    "citations": 48
   },
   {
     "year": 2021,
-    "title": "Biological and Transcriptomic Characterization of Pre-haustorial Resistance to Sunflower Broomrape (Orobanche Cumana W.) in Sunflower (Helianthus annuus)",
-    "authors": "Sisou D., Tadmor Y., Plakhine D., Ziadna H., Hübner S., Eizenberg E.",
+    "title": "Biological and Transcriptomic Characterization of Pre-Haustorial Resistance to Sunflower Broomrape (Orobanche cumana W.) in Sunflowers (Helianthus annuus)",
+    "authors": "Dana Sisou and Yaakov Tadmor and Dina Plakhine and Hammam Ziadna and Sariel Hübner and Hanan Eizenberg",
     "venue": "Plants",
-    "url": "",
-    "citations": 0
+    "url": "https://www.mdpi.com/2223-7747/10/9/1810",
+    "citations": 36
   },
   {
     "year": 2021,
-    "title": "Multivariate Analysis of Wild Grapevine Populations Reveal the Factors Constraining the Species Distribution",
-    "authors": "Rahimi O., Ohana-Levi N., Brauner H., Inbar N., Hübner S., Drori E.",
+    "title": "Genomic evidence supports an independent history of Levantine and Eurasian grapevines",
+    "authors": "Aviad Sivan and Oshrit Rahimi and Bar Lavi and Mali Salmon‐Divon and Ehud Weiss and Elyashiv Drori and Sariel Hübner",
+    "venue": "Plants, People, Planet",
+    "url": "https://nph.onlinelibrary.wiley.com/doi/abs/10.1002/ppp3.10197",
+    "citations": 29
+  },
+  {
+    "year": 2021,
+    "title": "Demographic and ecogeographic factors limit wild grapevine spread at the southern edge of its distribution range",
+    "authors": "Oshrit Rahimi and Noa Ohana‐Levi and Hodaya Brauner and Nimrod Inbar and Sariel Hübner and Elyashiv Drori",
     "venue": "Ecology and Evolution",
-    "url": "",
-    "citations": 0
-  },
-  {
-    "year": 2021,
-    "title": "Tapping diversity from the wild: sampling, characterizing and implementing",
-    "authors": "Hübner S., Kantar M.",
-    "venue": "Frontiers in Plant Science",
-    "url": "",
-    "citations": 0
-  },
-  {
-    "year": 2021,
-    "title": "Genomic Evidences Support an Independent History of Grapevine Domestication in the Levant",
-    "authors": "Sivan A., Rahimi O., Salmon-Divon M., Weiss E., Drori E., Hübner S.",
-    "venue": "Plants People Planet",
-    "url": "",
-    "citations": 0
+    "url": "https://onlinelibrary.wiley.com/doi/abs/10.1002/ece3.7519",
+    "citations": 8
   },
   {
     "year": 2021,
     "title": "Image processing and genome-wide association studies in sunflower identify loci associated with seed-coat characteristics",
-    "authors": "Hasson H., Dudhe M.Y., Mandel T., Warschefsky E., Rieseberg L.H., Hübner S.",
-    "venue": "bioRxiv (preprint)",
-    "url": "",
-    "citations": 0
+    "authors": "Hod Hasson and Mangesh Y Dudhe and Tali Mandel and Emily Warschefsky and Loren H Rieseberg and Sariel Hübner",
+    "venue": "BioRxiv",
+    "url": "https://www.biorxiv.org/content/10.1101/2021.04.15.439933.abstract",
+    "citations": 8
   },
   {
     "year": 2021,
-    "title": "Shift-inducible transgenerational increase in recombination rate as an evolving strategy in a periodic environment: a numerical model",
-    "authors": "Rybnikov S., Hübner S., Korol A.B.",
-    "venue": "bioRxiv (preprint)",
-    "url": "",
-    "citations": 0
+    "title": "Fitness dependence preserves selection for recombination across diverse mixed mating strategies",
+    "authors": "Sviatoslav Rybnikov and Daniel B Weissman and Sariel Hübner and Abraham B Korol",
+    "venue": "Journal of Theoretical Biology",
+    "url": "https://www.sciencedirect.com/science/article/pii/S002251932100268X",
+    "citations": 6
   },
   {
     "year": 2021,
-    "title": "Decoupling the molecular regulation of perenniality and flowering in bulbous barley (Hordeum bulbosum)",
-    "authors": "Fuerst D., Shermeister B., Mandel T., Hübner S.",
-    "venue": "bioRxiv (preprint)",
-    "url": "",
+    "title": "Shift-inducible [transgenerational] increase in recombination rate as an evolving strategy in a periodic environment: a numerical model",
+    "authors": "Sviatoslav Rybnikov and Sariel Hübner and Abraham B Korol",
+    "venue": "bioRxiv",
+    "url": "https://www.biorxiv.org/content/10.1101/2021.10.28.466217.abstract",
+    "citations": 2
+  },
+  {
+    "year": 2021,
+    "title": "Data from: Genomic analysis of a migratory divide reveals candidate genes for migration and implicates selective sweeps in generating islands of differentiation",
+    "authors": "Kira E Delmore and Sariel Hübner and Nolan C Kane and Richard Schuster and Rose L Andrew and Francisco Câmara and Roderic Guigo and Darren E Irwin",
+    "venue": "",
+    "url": "https://borealisdata.ca/dataset.xhtml?persistentId=doi:10.5683/SP2/QTSUZP",
     "citations": 0
   },
   {
     "year": 2020,
-    "title": "On the origin of photoperiod non-responsive Barley",
-    "authors": "Sharma R., Shaaf S., Neumann K., Guo Y., Mascher M., David M., Al-Yassin A., Özkan H., Blake T., Hübner S., Castañeda-Álvarez N.P., Grando S., Ceccarelli S., Baum M., Graner A., Coupland G., Pillen K., Weiss E., Mackay I.J., Powell W., Kilian B.",
-    "venue": "bioRxiv (preprint)",
-    "url": "",
+    "title": "On the origin of photoperiod non-responsiveness in barley",
+    "authors": "Rajiv Sharma and Salar Shaaf and Kerstin Neumann and Yu Go and Martin Mascher and Michal David and Adnan Al-Yassin and Hakan Özkan and Tom Blake and Sariel Hübner and Nora P Castañeda-Álvarez and Stefania Grando and Salvatore Ceccarelli and Michael Baum and Andreas Graner and George Coupland and Klaus Pillen and Ehud Weiss and Ian J Mackay and Wayne Powell and Benjamin Kilian",
+    "venue": "bioRxiv",
+    "url": "https://www.biorxiv.org/content/10.1101/2020.07.02.185488.abstract",
+    "citations": 12
+  },
+  {
+    "year": 2020,
+    "title": "The Cultivated Sunflower Pan-Genome Provides Evidence That Introgression from Wild Species Shaped the Gene Repertoire and Enhanced Disease Resistance",
+    "authors": "Sariel Hübner and Loren Rieseberg",
+    "venue": "Plant and Animal Genome XXVIII Conference (January 11-15, 2020)",
+    "url": "https://pag.confex.com/pag/xxviii/meetingapp.cgi/Paper/39601",
     "citations": 0
   },
   {
     "year": 2019,
-    "title": "Genome-Wide Association Mapping in Sunflower Identifies Loci Associated with Flooding Resistance That Lack Antagonistic Effects on Performance",
-    "authors": "Gao L., Lee J.S., Hübner S., Qu Y., Rieseberg L.H.",
-    "venue": "New Phytologist",
-    "url": "",
-    "citations": 0
+    "title": "Sunflower pan-genome analysis shows that hybridization altered gene content and disease resistance",
+    "authors": "Sariel Hübner and Natalia Bercovich and Marco Todesco and Jennifer R Mandel and Jens Odenheimer and Emanuel Ziegler and Joon S Lee and Gregory J Baute and Gregory L Owens and Christopher J Grassa and Daniel P Ebert and Katherine L Ostevik and Brook T Moyers and Sarah Yakimowski and Rishi R Masalia and Lexuan Gao and Irina Ćalić and John E Bowers and Nolan C Kane and Dirk ZH Swanevelder and Timo Kubach and Stephane Muños and Nicolas B Langlade and John M Burke and Loren H Rieseberg",
+    "venue": "Nature plants",
+    "url": "https://www.nature.com/articles/s41477-018-0329-0",
+    "citations": 295
   },
   {
-    "year": 2018,
-    "title": "The Cultivated Sunflower Pan-Genome Provides Insights on the Contribution of Introgression to the Breeding of Modern Varieties",
-    "authors": "Hübner S., Bercovich N., Todesco M., Mandel J.R., Odenheimer J., Ziegler E., Baute G.J., Owens G.L., Grassa C.J., Ebert D.P., Ostevik K.L., Moyers B., Bowers J.E., Calic I., Masalia R.R., Kane N.C., Swanevelder D.Z.H., Kubach T., Muños S., Langlade N.B., Burke J.M., Rieseberg L.H.",
-    "venue": "Nature Plants",
-    "url": "",
-    "citations": 0
-  },
-  {
-    "year": 2018,
-    "title": "Neo-Domestication of an Interspecific Tetraploid Helianthus annuus × Helianthus tuberosus Population That Segregates for Perennial Habit",
-    "authors": "Kantar M., Hübner S., Herman A., Bock D., Baute G., Betts K., Ott M., Brandvain Y., Wyse D., Stupar R.M., Rieseberg L.H.",
-    "venue": "Genes",
-    "url": "",
-    "citations": 0
-  },
-  {
-    "year": 2018,
-    "title": "Genomic Sequence and Copy-Number Evolution During Hybrid Crop Development in Sunflowers",
-    "authors": "Owens G.L., Baute G.J., Hübner S., Rieseberg L.H.",
+    "year": 2019,
+    "title": "Genomic sequence and copy number evolution during hybrid crop development in sunflowers",
+    "authors": "Gregory L Owens and Gregory J Baute and Sariel Hubner and Loren H Rieseberg",
     "venue": "Evolutionary Applications",
-    "url": "https://doi.org/10.1111/eva.12603",
-    "citations": 0
+    "url": "https://onlinelibrary.wiley.com/doi/abs/10.1111/eva.12603",
+    "citations": 39
+  },
+  {
+    "year": 2019,
+    "title": "Genetic and phenotypic analyses indicate that resistance to flooding stress is uncoupled from performance in cultivated sunflower",
+    "authors": "Lexuan Gao and Joon Seon Lee and Sariel Hübner and Brent S Hulke and Yan Qu and Loren H Rieseberg",
+    "venue": "New Phytologist",
+    "url": "https://nph.onlinelibrary.wiley.com/doi/abs/10.1111/nph.15894",
+    "citations": 24
+  },
+  {
+    "year": 2018,
+    "title": "Neo-Domestication of an Interspecific Tetraploid Helianthus annuus × Helianthus tuberous Population That Segregates for Perennial Habit",
+    "authors": "Michael B Kantar and Sariel Hüber and Adam Herman and Dan G Bock and Greg Baute and Kevin Betts and Matthew Ott and Yaniv Brandvain and Donald Wyse and Robert M Stupar and Loren H Rieseberg",
+    "venue": "Genes",
+    "url": "https://www.mdpi.com/2073-4425/9/9/422",
+    "citations": 16
   },
   {
     "year": 2017,
-    "title": "The Sunflower Genome Provides Insights Into Oil Metabolism, Flowering and Asterid Evolution",
-    "authors": "Badouin H., Gouzy J., Grassa C.J., Murat F., Staton S.E., Cottret L., Lelandais-Brière C., Owens G.L., Carrère S., Mayjonade B., Legrand L., Gill N., Kane N.C., Bowers J.E., Hübner S. et al.",
+    "title": "The sunflower genome provides insights into oil metabolism, flowering and Asterid evolution",
+    "authors": "Hélène Badouin and Jérôme Gouzy and Christopher J Grassa and Florent Murat and S Evan Staton and Ludovic Cottret and Christine Lelandais-Brière and Gregory L Owens and Sébastien Carrère and Baptiste Mayjonade and Ludovic Legrand and Navdeep Gill and Nolan C Kane and John E Bowers and Sariel Hubner and Arnaud Bellec and Aurélie Bérard and Hélène Bergès and Nicolas Blanchet and Marie-Claude Boniface and Dominique Brunel and Olivier Catrice and Nadia Chaidir and Clotilde Claudel and Cecile Donnadieu and Thomas Faraut and Ghislain Fievet and Nicolas Helmstetter and Matthew King and Steven J Knapp and Zhao Lai and Marie-Christine Le Paslier and Yannick Lippi and Lolita Lorenzon and Jennifer R Mandel and Gwenola Marage and Gwenaëlle Marchand and Elodie Marquand and Emmanuelle Bret-Mestries and Evan Morien and Savithri Nambeesan and Thuy Nguyen and Prune Pegot-Espagnet and Nicolas Pouilly and Frances Raftis and Erika Sallet and Thomas Schiex and Justine Thomas and Céline Vandecasteele and Didier Vares and Felicity Vear and Sonia Vautrin and Martin Crespi and Brigitte Mangin and John M Burke and Jerome Salse and Stéphane Muños and Patrick Vincourt and Loren H Rieseberg and Nicolas B Langlade",
     "venue": "Nature",
-    "url": "",
-    "citations": 0
+    "url": "https://www.nature.com/articles/nature22380",
+    "citations": 860
   },
   {
     "year": 2016,
-    "title": "Genomic Analysis of 6,000-Year-Old Cultivated Grain Illuminates the Domestication History of Barley",
-    "authors": "Mascher M., Schuenemann V.J., Davidovich U., Marom N., Himmelbach A., Hübner S., Korol A., David M., Reiter E., Riehl S., Schreiber M., Vohr S.H., Green R.E., Dawson I.K., Russell J., Kilian B., Muehlbauer G.J., Waugh R., Fahima T., Krause J., Weiss E., Stein N.",
+    "title": "Hybridization and extinction",
+    "authors": "Marco Todesco and Mariana A Pascual and Gregory L Owens and Katherine L Ostevik and Brook T Moyers and Sariel Hübner and Sylvia M Heredia and Min A Hahn and Celine Caseys and Dan G Bock and Loren H Rieseberg",
+    "venue": "",
+    "url": "https://onlinelibrary.wiley.com/doi/abs/10.1111/eva.12367",
+    "citations": 907
+  },
+  {
+    "year": 2016,
+    "title": "What we still don't know about invasion genetics",
+    "authors": "Dan G Bock and Celine Caseys and Roger D Cousens and Min A Hahn and Sylvia M Heredia and Sariel Hübner and Kathryn G Turner and Kenneth D Whitney and Loren H Rieseberg",
+    "venue": "",
+    "url": "https://onlinelibrary.wiley.com/doi/abs/10.1002/9781119072799.ch20",
+    "citations": 524
+  },
+  {
+    "year": 2016,
+    "title": "Genomic analysis of 6,000-year-old cultivated grain illuminates the domestication history of barley",
+    "authors": "Martin Mascher and Verena J Schuenemann and Uri Davidovich and Nimrod Marom and Axel Himmelbach and Sariel Hübner and Abraham Korol and Michal David and Ella Reiter and Simone Riehl and Mona Schreiber and Samuel H Vohr and Richard E Green and Ian K Dawson and Joanne Russell and Benjamin Kilian and Gary J Muehlbauer and Robbie Waugh and Tzion Fahima and Johannes Krause and Ehud Weiss and Nils Stein",
     "venue": "Nature Genetics",
-    "url": "",
-    "citations": 0
-  },
-  {
-    "year": 2016,
-    "title": "Hybridization and Extinction",
-    "authors": "Todesco M., Pascual M.A., Owens G.L., Ostevik K.L., Moyers B.T., Hübner S., Heredia S.M., Caseys C., Bock D.G., Rieseberg L.H.",
-    "venue": "Evolutionary Applications",
-    "url": "",
-    "citations": 0
+    "url": "https://www.nature.com/articles/ng.3611",
+    "citations": 189
   },
   {
     "year": 2016,
     "title": "Why Close a Bacterial Genome? The Plasmid of Alteromonas Macleodii HOT1A3 is a Vector for Inter-Specific Transfer of a Flexible Genomic Island",
-    "authors": "Fadeev E., De Pascale F., Vezzi A., Hübner S., Aharonovich D., Sher D.",
-    "venue": "Frontiers in Microbiology",
+    "authors": "Eduard Fadeev and Fabio De Pascale and Alessandro Vezzi and Sariel Hübner and Dikla Aharonovich and Daniel Sher",
+    "venue": "Frontiers in microbiology",
+    "url": "https://www.frontiersin.org/journals/microbiology/articles/10.3389/fmicb.2016.00248/full",
+    "citations": 30
+  },
+  {
+    "year": 2016,
+    "title": "Invasion genetics: the Baker and Stebbins legacy",
+    "authors": "Spencer CH Barrett and Robert I Colautti and Katrina M Dlugosch and Loren H Rieseberg",
+    "venue": "",
+    "url": "https://books.google.com/books?hl=en&lr=&id=AVSvDAAAQBAJ&oi=fnd&pg=PA13&dq=info:SHidAIJpmjoJ:scholar.google.com&ots=pS6RZl4IvO&sig=e5NrSuY-zotKSJ3moUtLcUHvMfY",
+    "citations": 27
+  },
+  {
+    "year": 2016,
+    "title": "WHAT WE STILL DON'T KNOW ABOUT INVASION GENETICS",
+    "authors": "Min A Hahn and Sylvia M Heredia and Sariel Hübner and Kathryn G Turner and Kenneth D Whitney and Loren H Rieseberg",
+    "venue": "Invasion Genetics: The Baker and Stebbins Legacy",
+    "url": "https://books.google.com/books?hl=en&lr=&id=AVSvDAAAQBAJ&oi=fnd&pg=PA346&dq=info:ZOj1zZlAjLQJ:scholar.google.com&ots=pS6RZl4JuT&sig=2dRqffe_83z6JPf1i0NIotTTkpQ",
+    "citations": 0
+  },
+  {
+    "year": 2016,
+    "title": "Broadening the genetic basis for crop improvement: Interspecific hybridization within and between ploidy levels in Helianthus",
+    "authors": "Michael B. Kantar and Sariel Hubner and Loren Rieseberg",
+    "venue": "",
     "url": "",
     "citations": 0
   },
   {
     "year": 2015,
-    "title": "RNA-Seq Analysis Identifies Genes Associated with Differential Reproductive Success Under Drought-Stress in Accessions of Wild Barley Hordeum spontaneum",
-    "authors": "Hübner S., Korol A.B., Schmid K.J.",
-    "venue": "BMC Plant Biology",
-    "url": "",
-    "citations": 0
-  },
-  {
-    "year": 2015,
-    "title": "Identification of Conserved Drought-Adaptive Genes Using a Cross-Species Meta-Analysis Approach",
-    "authors": "Shaar L., Hübner S., Peleg Z.",
-    "venue": "BMC Plant Biology",
-    "url": "",
-    "citations": 0
-  },
-  {
-    "year": 2015,
-    "title": "Transcriptomic Changes in Glumes of Tetraploid Wheat Species Across a Domestication Gradient",
-    "authors": "Zhou H., Tsarfati R., Hübner S., Krugman T., Fahima T., Abbo S., Saranga Y., Korol A.B.",
-    "venue": "BMC Genomics",
-    "url": "",
-    "citations": 0
-  },
-  {
-    "year": 2015,
-    "title": "Patterns of Genomic Divergence in a Migratory Divide",
-    "authors": "Delmore K.E., Hübner S., Kane N.C., Andrew R.L., Camera F., Irwin D.E.",
+    "title": "Genomic analysis of a migratory divide reveals candidate genes for migration and implicates selective sweeps in generating islands of differentiation",
+    "authors": "Kira E Delmore and Sariel Hübner and Nolan C Kane and Richard Schuster and Rose L Andrew and Francisco Câmara and Roderic Guigó and Darren E Irwin",
     "venue": "Molecular Ecology",
-    "url": "",
+    "url": "https://onlinelibrary.wiley.com/doi/abs/10.1111/mec.13150",
+    "citations": 137
+  },
+  {
+    "year": 2015,
+    "title": "Identification of conserved drought-adaptive genes using a cross-species meta-analysis approach",
+    "authors": "Lidor Shaar-Moshe and Sariel Hübner and Zvi Peleg",
+    "venue": "BMC plant biology",
+    "url": "https://link.springer.com/article/10.1186/s12870-015-0493-6",
+    "citations": 116
+  },
+  {
+    "year": 2015,
+    "title": "RNA-Seq analysis identifies genes associated with differential reproductive success under drought-stress in accessions of wild barley Hordeum spontaneum",
+    "authors": "Sariel Hübner and Abraham B Korol and Karl J Schmid",
+    "venue": "BMC plant biology",
+    "url": "https://link.springer.com/article/10.1186/s12870-015-0528-z",
+    "citations": 75
+  },
+  {
+    "year": 2015,
+    "title": "Transcriptome profiling of wheat glumes in wild emmer, hulled landraces and modern cultivars",
+    "authors": "Hongda Zou and Raanan Tzarfati and Sariel Hübner and Tamar Krugman and Tzion Fahima and Shahal Abbo and Yehoshua Saranga and Abraham B Korol",
+    "venue": "BMC genomics",
+    "url": "https://link.springer.com/article/10.1186/s12864-015-1996-0",
+    "citations": 20
+  },
+  {
+    "year": 2015,
+    "title": "Transcriptome profiling of wheat glumes in wild emmer, hulled landraces and modern cultivars.",
+    "authors": "Zou HongDa Zou HongDa and R Tzarfati and S Hübner and T Krugman and T Fahima and S Abbo and Y Saranga and AB Korol",
+    "venue": "",
+    "url": "https://www.cabidigitallibrary.org/doi/full/10.5555/20153392433",
     "citations": 0
   },
   {
     "year": 2014,
-    "title": "What We Still Don't Know About Invasion Genetics",
-    "authors": "Bock D.G., Caseys C., Cousens R.D., Hahn M., Heredia S.M., Hübner S., Turner K.G., Whitney K.D., Rieseberg L.H.",
-    "venue": "Molecular Ecology",
-    "url": "",
+    "title": "Development of Perennial Sunflower to Provide Food and Ecosystem Services.",
+    "authors": "Michael Benjamin Kantar and Dan Bock and Thomas Kono and Sariel Hubner and Greg Baute and Kevin Betts and Donald Wyse and Robert Stupar and Loren Rieseberg",
+    "venue": "ASA, CSSA and SSSA International Annual Meetings (2014)",
+    "url": "https://scisoc.confex.com/scisoc/2014am/meetingapp.cgi/Paper/86069",
     "citations": 0
   },
   {
     "year": 2013,
-    "title": "Genome Differentiation of Drosophila melanogaster from a Microclimate Contrast in Evolution Canyon, Israel",
-    "authors": "Hübner S., Rashkovetskya E., Kimc Y.B., Ohd J.H., Michalakc K., Weiner D., Korol A.B., Nevo E., Michalack P.",
-    "venue": "Proceedings of the National Academy of Sciences USA",
-    "url": "",
-    "citations": 0
+    "title": "Phenotypic landscapes: phenological patterns in wild and cultivated barley",
+    "authors": "S Hübner and E Bdolach and S Ein‐Gedy and KJ Schmid and A Korol and E Fridman",
+    "venue": "Journal of evolutionary biology",
+    "url": "https://academic.oup.com/jeb/article-abstract/26/1/163/7318377",
+    "citations": 44
   },
   {
     "year": 2013,
-    "title": "Phenotypic Landscapes: Phenological Patterns in Wild and Cultivated Barley",
-    "authors": "Hübner S., Bdolach E., Ein-Gedi S., Schmid K.J., Korol A.B., Fridman E.",
-    "venue": "Journal of Evolutionary Biology",
-    "url": "",
-    "citations": 0
+    "title": "Genome differentiation of Drosophila melanogaster from a microclimate contrast in Evolution Canyon, Israel",
+    "authors": "Sariel Hübner and Eugenia Rashkovetsky and Young Bun Kim and Jung Hun Oh and Katarzyna Michalak and Dmitry Weiner and Abraham B Korol and Eviatar Nevo and Pawel Michalak",
+    "venue": "Proceedings of the National Academy of Sciences",
+    "url": "https://www.pnas.org/doi/abs/10.1073/pnas.1321533111",
+    "citations": 43
   },
   {
     "year": 2012,
-    "title": "Islands and Streams: Clusters and Gene Flow in Wild Barley Populations from the Levant",
-    "authors": "Hübner S., Günther T., Flavell A., Fridman E., Graner A., Korol A.B., Schmid K.J.",
-    "venue": "Molecular Ecology",
-    "url": "",
-    "citations": 0
+    "title": "Islands and streams: clusters and gene flow in wild barley populations from the Levant",
+    "authors": "Sariel Hübner and Torsten Günther and Andrew Flavell and Eyal Fridman and Andreas Graner and Abraham Korol and Karl J Schmid",
+    "venue": "Molecular ecology",
+    "url": "https://onlinelibrary.wiley.com/doi/abs/10.1111/j.1365-294X.2011.05434.x",
+    "citations": 72
+  },
+  {
+    "year": 2012,
+    "title": "Comparing genetic diversity within a crop and its wild progenitor: a case study for barley.",
+    "authors": "B Kilian and H Özkan and S Shaaf and S Hübner and RK Pasam and R Sharma and K Neumann and W Weissgerber and FA Konovalov and Jens Keilwagen and S Friedel and H Knüpffer and M von Korff and G Coupland and A Graner",
+    "venue": "",
+    "url": "https://www.cabidigitallibrary.org/doi/abs/10.1079/9781845938512.0186",
+    "citations": 4
   },
   {
     "year": 2011,
-    "title": "Transcriptome Sequencing of the Blind Subterranean Mole Rat, Spalax galili: Utility and Potential for the Discovery of Novel Evolutionary Patterns",
-    "authors": "Malik A., Korol A.B., Hübner S., Hernandez A.G., Thimmapuram J., Ali S., Glaser F., Paz A., Avivi A., Band M.",
-    "venue": "PLoS ONE",
-    "url": "",
+    "title": "Transcriptome sequencing of the blind subterranean mole rat, Spalax galili: utility and potential for the discovery of novel evolutionary patterns",
+    "authors": "Assaf Malik and Abraham Korol and Sariel Hübner and Alvaro G Hernandez and Jyothi Thimmapuram and Shahjahan Ali and Fabian Glaser and Arnon Paz and Aaron Avivi and Mark Band",
+    "venue": "PloS one",
+    "url": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0021227",
+    "citations": 42
+  },
+  {
+    "year": 2011,
+    "title": "Transcriptome Sequencing of the Blind Subterranean Mole Rat",
+    "authors": "A Malik and A Korol and S Hübner and AG Hernandez and J Thimmapuram",
+    "venue": "Spalax galili",
+    "url": "https://pdfs.semanticscholar.org/90d7/c6695fe6dc2402822ff55d8d8184ecb68970.pdf",
     "citations": 0
   },
   {
     "year": 2009,
-    "title": "Strong Correlation of Wild Barley Population Structure (Hordeum spontaneum) with Temperature and Precipitation Variation",
-    "authors": "Hübner S., Höffken M., Oren E., Haseneyer G., Stein N., Graner A., Schmid K.J., Fridman E.",
-    "venue": "Molecular Ecology",
-    "url": "",
+    "title": "Strong correlation of wild barley (Hordeum spontaneum) population structure with temperature and precipitation variation",
+    "authors": "S Hübner and M Höffken and E Oren and G Haseneyer and N Stein and A Graner and K Schmid and E Fridman",
+    "venue": "Molecular ecology",
+    "url": "https://onlinelibrary.wiley.com/doi/abs/10.1111/j.1365-294X.2009.04106.x",
+    "citations": 149
+  },
+  {
+    "year": 0,
+    "title": "Sunflower Domestication in Space and Time",
+    "authors": "Nathan Wales and Melis Akman and Ray HB Watson and Sariel Hubner and Fátima Sánchez Barreiro and Bruce D Smith and Kristen J Gremillion and Loren H Rieseberg and M Thomas P Gilbert and Benjamin K Blackman",
+    "venue": "",
+    "url": "https://scholar.google.com/scholar?cluster=8000455445847107189&hl=en&oi=scholarr",
     "citations": 0
   }
 ]
