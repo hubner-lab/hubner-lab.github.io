@@ -1,0 +1,41 @@
+---
+import type { PresetKey } from './reactionDiffusion.ts';
+
+interface Props {
+  id: string;
+  preset?: PresetKey;
+  height?: string;
+  class?: string;
+}
+
+const {
+  id,
+  preset    = 'coral',
+  height    = '100%',
+  class: className = '',
+} = Astro.props;
+---
+
+<div
+  class={`relative w-full overflow-hidden ${className}`}
+  style={`height: ${height};`}
+>
+  <canvas
+    id={id}
+    data-rd-preset={preset}
+    class="absolute inset-0 w-full h-full"
+    aria-hidden="true"
+  ></canvas>
+</div>
+
+<script>
+  import { startReactionDiffusion } from './reactionDiffusion.ts';
+  import type { PresetKey } from './reactionDiffusion.ts';
+
+  document.querySelectorAll<HTMLCanvasElement>('canvas[data-rd-preset]').forEach((canvas) => {
+    startReactionDiffusion({
+      canvas,
+      preset: (canvas.dataset.rdPreset ?? 'coral') as PresetKey,
+    });
+  });
+</script>

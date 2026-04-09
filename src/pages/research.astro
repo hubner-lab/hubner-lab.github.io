@@ -1,24 +1,43 @@
 ---
 import Base from '../layouts/Base.astro';
 import PillarCard from '../components/PillarCard.astro';
+import ReactionDiffusionCanvas from '../components/ReactionDiffusionCanvas.astro';
 ---
 
 <Base title="Research" description="Research areas of the Hübner Lab: speciation, adaptation, and domestication genomics.">
-  <div class="container py-20">
-    <div class="section-enter max-w-2xl mb-16">
-      <p class="caption mb-4">Research</p>
-      <h1 style="font-size: var(--text-h1);">
-        The genomics of plant evolution
-      </h1>
-      <p class="mt-4 leading-relaxed" style="color: var(--color-soil);">
-        We study how selection, drift, gene flow, and the environment shape
-        genetic variation across plant populations and species. Our work spans
-        wild and domesticated systems, combining population-scale whole-genome
-        sequencing with landscape, ecological, and phenotypic data.
-      </p>
+
+  <!-- Hero intro with Gray-Scott reaction-diffusion background -->
+  <!-- Explicit paper bg so the section is never transparent -->
+  <section class="relative" style="background-color: #F7F6F1;">
+    <!-- RD canvas — absolute fill, pointer-events off, softened with opacity -->
+    <div class="absolute inset-0 pointer-events-none" style="opacity: 0.55;" aria-hidden="true">
+      <ReactionDiffusionCanvas id="rd-research" preset="coral" height="100%" />
+      <!-- Gradient mask: fades pattern to paper (hardcoded hex avoids CSS-var resolution issues) -->
+      <div
+        class="absolute inset-0"
+        style="background: linear-gradient(180deg, transparent 0%, transparent 25%, #F7F6F1 85%);"
+      ></div>
     </div>
 
-    <!-- Three research pillars -->
+    <!-- Intro text — sits on top, relative so z stacking works -->
+    <div class="container relative py-20">
+      <div class="section-enter max-w-2xl mb-16">
+        <p class="caption mb-4">Research</p>
+        <h1 style="font-size: var(--text-h1);">
+          The genomics of plant evolution
+        </h1>
+        <p class="mt-4 leading-relaxed" style="color: var(--color-soil);">
+          We study how selection, drift, gene flow, and the environment shape
+          genetic variation across plant populations and species. Our work spans
+          wild and domesticated systems, combining population-scale whole-genome
+          sequencing with landscape, ecological, and phenotypic data.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Three research pillars + study systems — outside the RD section -->
+  <div class="container pb-20">
     <div class="grid gap-8 md:grid-cols-3">
       <PillarCard
         title="Speciation"
