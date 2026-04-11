@@ -81,19 +81,19 @@
   },
   {
     "year": 2024,
+    "title": "Back to the Future: Environmental genomic selection to take advantage of polygenic local adaptation",
+    "authors": "Anna Halpin-McCormick and Quinn Campbell and Sónia Negrão and Peter L Morrell and Sariel Hubner and Jeff Neyhart and Michael Kantar",
+    "venue": "bioRxiv",
+    "url": "https://www.biorxiv.org/content/10.1101/2024.10.09.617488.abstract",
+    "citations": 3
+  },
+  {
+    "year": 2024,
     "title": "Climate resilience conserved in global germplasm repositories: Picking the most promising parents for agile plant breeding",
     "authors": "Quinn Campbell and Nora Castaneda-Alvarez and Ryan Domingo and Eric Bishop-von Wettberg and Bryan Runck and Hervé Nandkangré and Anna McCormick and Nathan Fumia and Jeffrey Neyhart and Benjamin Kilian and Peterson Wambugu and Desterio Nyamongo and Sariel Hübner and Sidney Sitar and Addie Thompson and Loren Rieseberg and Michael A Gore and Michael Kantar",
     "venue": "bioRxiv",
     "url": "https://www.biorxiv.org/content/10.1101/2024.05.11.593573.abstract",
     "citations": 3
-  },
-  {
-    "year": 2024,
-    "title": "Back to the Future: Environmental genomic selection to take advantage of polygenic local adaptation",
-    "authors": "Anna Halpin-McCormick and Quinn Campbell and Sónia Negrão and Peter L Morrell and Sariel Hubner and Jeff Neyhart and Michael Kantar",
-    "venue": "bioRxiv",
-    "url": "https://www.biorxiv.org/content/10.1101/2024.10.09.617488.abstract",
-    "citations": 2
   },
   {
     "year": 2024,
@@ -117,7 +117,7 @@
     "authors": "Yang Dong and Shengchang Duan and Qiuju Xia and Zhenchang Liang and Xiao Dong and Kristine Margaryan and Mirza Musayev and Svitlana Goryslavets and Goran Zdunić and Pierre-François Bert and Thierry Lacombe and Erika Maul and Peter Nick and Kakha Bitskinashvili and György Dénes Bisztray and Elyashiv Drori and Gabriella De Lorenzis and Jorge Cunha and Carmen Florentina Popescu and Rosa Arroyo-Garcia and Claire Arnold and Ali Ergül and Yifan Zhu and Chao Ma and Shufen Wang and Siqi Liu and Liu Tang and Chunping Wang and Dawei Li and Yunbing Pan and Jingxian Li and Ling Yang and Xuzhen Li and Guisheng Xiang and Zijiang Yang and Baozheng Chen and Zhanwu Dai and Yi Wang and Arsen Arakelyan and Varis Kuliyev and Gennady Spotar and Nabil Girollet and Serge Delrot and Nathalie Ollat and Patrice This and Cécile Marchal and Gautier Sarah and Valérie Laucou and Roberto Bacilieri and Franco Röckel and Pingyin Guan and Andreas Jung and Michael Riemann and Levan Ujmajuridze and Tekle Zakalashvili and David Maghradze and Maria Höhn and Gizella Jahnke and Erzsébet Kiss and Tamás Deák and Oshrit Rahimi and Sariel Hübner and Fabrizio Grassi and Francesco Mercati and Francesco Sunseri and José Eiras-Dias and Anamaria Mirabela Dumitru and David Carrasco and Alberto Rodriguez-Izquierdo and Gregorio Muñoz and Tamer Uysal and Cengiz Özer and Kemal Kazan and Meilong Xu and Yunyue Wang and Shusheng Zhu and Jiang Lu and Maoxiang Zhao and Lei Wang and Songtao Jiu and Ying Zhang and Lei Sun and Huanming Yang and Ehud Weiss and Shiping Wang and Youyong Zhu and Shaohua Li and Jun Sheng and Wei Chen",
     "venue": "Science",
     "url": "https://www.science.org/doi/abs/10.1126/science.add8655",
-    "citations": 301
+    "citations": 302
   },
   {
     "year": 2023,
@@ -349,7 +349,7 @@
     "authors": "Dan G Bock and Celine Caseys and Roger D Cousens and Min A Hahn and Sylvia M Heredia and Sariel Hübner and Kathryn G Turner and Kenneth D Whitney and Loren H Rieseberg",
     "venue": "",
     "url": "https://onlinelibrary.wiley.com/doi/abs/10.1002/9781119072799.ch20",
-    "citations": 524
+    "citations": 526
   },
   {
     "year": 2016,
@@ -372,7 +372,7 @@
     "title": "Invasion genetics: the Baker and Stebbins legacy",
     "authors": "Spencer CH Barrett and Robert I Colautti and Katrina M Dlugosch and Loren H Rieseberg",
     "venue": "",
-    "url": "https://books.google.com/books?hl=en&lr=&id=AVSvDAAAQBAJ&oi=fnd&pg=PA13&dq=info:SHidAIJpmjoJ:scholar.google.com&ots=pS6RZl4IvO&sig=e5NrSuY-zotKSJ3moUtLcUHvMfY",
+    "url": "https://books.google.com/books?hl=en&lr=&id=AVSvDAAAQBAJ&oi=fnd&pg=PA13&dq=info:SHidAIJpmjoJ:scholar.google.com&ots=pS6R_s4NwQ&sig=xAUfG-QNBIwwuGICNLExgZy6L9U",
     "citations": 27
   },
   {
@@ -380,7 +380,7 @@
     "title": "WHAT WE STILL DON'T KNOW ABOUT INVASION GENETICS",
     "authors": "Min A Hahn and Sylvia M Heredia and Sariel Hübner and Kathryn G Turner and Kenneth D Whitney and Loren H Rieseberg",
     "venue": "Invasion Genetics: The Baker and Stebbins Legacy",
-    "url": "https://books.google.com/books?hl=en&lr=&id=AVSvDAAAQBAJ&oi=fnd&pg=PA346&dq=info:ZOj1zZlAjLQJ:scholar.google.com&ots=pS6RZl4JuT&sig=2dRqffe_83z6JPf1i0NIotTTkpQ",
+    "url": "https://books.google.com/books?hl=en&lr=&id=AVSvDAAAQBAJ&oi=fnd&pg=PA346&dq=info:ZOj1zZlAjLQJ:scholar.google.com&ots=pS6R_s5EvT&sig=7ub8SknuSk-bcAJ9X1zNI2vyJzQ",
     "citations": 0
   },
   {
