@@ -1,6 +1,14 @@
 [
   {
     "year": 2026,
+    "title": "Wild genes to the rescue: High-throughput genomics reveals the wild source of broomrape resistance in sunflower",
+    "authors": "Dana Sisou and Hammam Ziadna and Mika Eizenberg-Weiss and Hanan Eizenberg and Sariel Hübner",
+    "venue": "Journal of Experimental Botany",
+    "url": "https://academic.oup.com/jxb/advance-article-abstract/doi/10.1093/jxb/erag141/8537280",
+    "citations": 0
+  },
+  {
+    "year": 2026,
     "title": "Evolutionary graph pangenome of the order Poales from chloroplast genomes highlight phylogenetic inconsistencies",
     "authors": "Rakan Haib and Sariel Hübner",
     "venue": "",
@@ -72,14 +80,6 @@
     "citations": 1
   },
   {
-    "year": 2025,
-    "title": "Wild genes to the rescue: High-throughput genomics reveals the wild source of broomrape resistance in sunflower",
-    "authors": "Dana Sisou and Hammam Ziadna and Mika Eizenberg-Weiss and Hanan Eizenberg and Sariel Hübner",
-    "venue": "bioRxiv",
-    "url": "https://www.biorxiv.org/content/10.1101/2025.09.14.676089.abstract",
-    "citations": 0
-  },
-  {
     "year": 2024,
     "title": "Back to the Future: Environmental genomic selection to take advantage of polygenic local adaptation",
     "authors": "Anna Halpin-McCormick and Quinn Campbell and Sónia Negrão and Peter L Morrell and Sariel Hubner and Jeff Neyhart and Michael Kantar",
@@ -125,7 +125,7 @@
     "authors": "Kaichi Huang and Mojtaba Jahani and Jérôme Gouzy and Alexandra Legendre and Sébastien Carrere and José Miguel Lázaro-Guevara and Eric Gerardo González Segovia and Marco Todesco and Baptiste Mayjonade and Nathalie Rodde and Stephane Cauet and Isabelle Dufau and S Evan Staton and Nicolas Pouilly and Marie-Claude Boniface and Camille Tapy and Brigitte Mangin and Alexandra Duhnen and Veronique Gautier and Charles Poncet and Cecile Donnadieu and Tali Mandel and Sariel Hübner and John M Burke and Sonia Vautrin and Arnaud Bellec and Gregory L Owens and Nicolas Langlade and Stephane Munos and Loren H Rieseberg",
     "venue": "Proceedings of the National Academy of Sciences",
     "url": "https://www.pnas.org/doi/abs/10.1073/pnas.2205783119",
-    "citations": 75
+    "citations": 76
   },
   {
     "year": 2023,
@@ -292,7 +292,7 @@
     "title": "The Cultivated Sunflower Pan-Genome Provides Evidence That Introgression from Wild Species Shaped the Gene Repertoire and Enhanced Disease Resistance",
     "authors": "Sariel Hübner and Loren Rieseberg",
     "venue": "Plant and Animal Genome XXVIII Conference (January 11-15, 2020)",
-    "url": "https://pag.confex.com/pag/xxviii/meetingapp.cgi/Paper/39601",
+    "url": "https://scholar.google.com/scholar?cluster=119805374918992798&hl=en&oi=scholarr",
     "citations": 0
   },
   {
@@ -333,7 +333,7 @@
     "authors": "Hélène Badouin and Jérôme Gouzy and Christopher J Grassa and Florent Murat and S Evan Staton and Ludovic Cottret and Christine Lelandais-Brière and Gregory L Owens and Sébastien Carrère and Baptiste Mayjonade and Ludovic Legrand and Navdeep Gill and Nolan C Kane and John E Bowers and Sariel Hubner and Arnaud Bellec and Aurélie Bérard and Hélène Bergès and Nicolas Blanchet and Marie-Claude Boniface and Dominique Brunel and Olivier Catrice and Nadia Chaidir and Clotilde Claudel and Cecile Donnadieu and Thomas Faraut and Ghislain Fievet and Nicolas Helmstetter and Matthew King and Steven J Knapp and Zhao Lai and Marie-Christine Le Paslier and Yannick Lippi and Lolita Lorenzon and Jennifer R Mandel and Gwenola Marage and Gwenaëlle Marchand and Elodie Marquand and Emmanuelle Bret-Mestries and Evan Morien and Savithri Nambeesan and Thuy Nguyen and Prune Pegot-Espagnet and Nicolas Pouilly and Frances Raftis and Erika Sallet and Thomas Schiex and Justine Thomas and Céline Vandecasteele and Didier Vares and Felicity Vear and Sonia Vautrin and Martin Crespi and Brigitte Mangin and John M Burke and Jerome Salse and Stéphane Muños and Patrick Vincourt and Loren H Rieseberg and Nicolas B Langlade",
     "venue": "Nature",
     "url": "https://www.nature.com/articles/nature22380",
-    "citations": 862
+    "citations": 864
   },
   {
     "year": 2016,
@@ -341,7 +341,7 @@
     "authors": "Marco Todesco and Mariana A Pascual and Gregory L Owens and Katherine L Ostevik and Brook T Moyers and Sariel Hübner and Sylvia M Heredia and Min A Hahn and Celine Caseys and Dan G Bock and Loren H Rieseberg",
     "venue": "",
     "url": "https://onlinelibrary.wiley.com/doi/abs/10.1111/eva.12367",
-    "citations": 907
+    "citations": 909
   },
   {
     "year": 2016,
@@ -372,7 +372,7 @@
     "title": "Invasion genetics: the Baker and Stebbins legacy",
     "authors": "Spencer CH Barrett and Robert I Colautti and Katrina M Dlugosch and Loren H Rieseberg",
     "venue": "",
-    "url": "https://books.google.com/books?hl=en&lr=&id=AVSvDAAAQBAJ&oi=fnd&pg=PA13&dq=info:SHidAIJpmjoJ:scholar.google.com&ots=pS6STo6NAU&sig=de4ZBPWWCfTDdFjO-sooJqGbRDM",
+    "url": "https://books.google.com/books?hl=en&lr=&id=AVSvDAAAQBAJ&oi=fnd&pg=PA13&dq=info:SHidAIJpmjoJ:scholar.google.com&ots=pS6SVu6HsS&sig=1eiEZzTezvVuWnnA6kFPQ_PmaXI",
     "citations": 27
   },
   {
@@ -380,7 +380,7 @@
     "title": "WHAT WE STILL DON'T KNOW ABOUT INVASION GENETICS",
     "authors": "Min A Hahn and Sylvia M Heredia and Sariel Hübner and Kathryn G Turner and Kenneth D Whitney and Loren H Rieseberg",
     "venue": "Invasion Genetics: The Baker and Stebbins Legacy",
-    "url": "https://books.google.com/books?hl=en&lr=&id=AVSvDAAAQBAJ&oi=fnd&pg=PA346&dq=info:ZOj1zZlAjLQJ:scholar.google.com&ots=pS6STpZEAO&sig=8yUa5u0TBDSKvBye5xA2WjnFQlM",
+    "url": "https://books.google.com/books?hl=en&lr=&id=AVSvDAAAQBAJ&oi=fnd&pg=PA346&dq=info:ZOj1zZlAjLQJ:scholar.google.com&ots=pS6SVu6IsP&sig=V-MccYdxvi43s4Fubc8y80uwEss",
     "citations": 0
   },
   {
