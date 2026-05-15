@@ -1,6 +1,14 @@
 [
   {
     "year": 2026,
+    "title": "Ancient grains illuminate the mosaic origin of domesticated wheat",
+    "authors": "Yael Lev-Mirom and Nimrod Ashkenazy and Valentyna Klymiuk and Jennifer Ens and Krysta Wiebe and Verena J Schuenemann and Tamar Eilam and Sharon Kulikovsky and Bar A Lavi and Torsten Günther and Tamar Krugman and Hanan Sela and Eitan Klein and Amir Ganor and Uri Davidovich and Roi Porat and Erez Ben-Yosef and Michal David and Sivan Frankin and Roi Ben-David and Emile Cavalet-Giorsa and Simon G Krattinger and Abraham Korol and Martin Mascher and Axel Himmelbach and Nils Stein and Johannes Krause and Assaf Distelfeld and Ehud Weiss and Tzion Fahima and Curtis J Pozniak and Sariel Hübner",
+    "venue": "Nature plants",
+    "url": "https://www.nature.com/articles/s41477-026-02283-y",
+    "citations": 0
+  },
+  {
+    "year": 2026,
     "title": "Wild genes to the rescue: High-throughput genomics reveals the wild source of broomrape resistance in sunflower",
     "authors": "Dana Sisou and Hammam Ziadna and Mika Eizenberg-Weiss and Hanan Eizenberg and Sariel Hübner",
     "venue": "Journal of Experimental Botany",
@@ -37,7 +45,7 @@
     "authors": "Quinn Campbell and Nora Castañeda-Álvarez and Ryan Domingo and Eric Bishop-von Wettberg and Bryan Runck and Hervé Nandkangré and Anna Halpin-McCormick and Nathan Fumia and Jeffrey Neyhart and Benjamin Kilian and Peterson Wambugu and Desterio Nyamongo and Sariel Hübner and Sidney Sitar and Addie Thompson and Loren Rieseberg and Michael A Gore and Michael B Kantar",
     "venue": "Nature Climate Change",
     "url": "https://www.nature.com/articles/s41558-025-02333-x",
-    "citations": 10
+    "citations": 11
   },
   {
     "year": 2025,
@@ -45,7 +53,7 @@
     "authors": "Muluken Demelie Alemu and Shiran Ben‐Zeev and Timo Hellwig and Vered Barak and Gil Shoshani and Assaf Chen and Stephane Razzon and Ittai Herrmann and Alexandra Vorobyova and Sariel Hübner and Yehoshua Saranga",
     "venue": "Plants, People, Planet",
     "url": "https://nph.onlinelibrary.wiley.com/doi/abs/10.1002/ppp3.10505",
-    "citations": 6
+    "citations": 7
   },
   {
     "year": 2025,
@@ -53,7 +61,7 @@
     "authors": "Anna Halpin-McCormick and Quinn Campbell and Sónia Negrão and Peter L Morrell and Sariel Hübner and Jeffrey L Neyhart and Michael B Kantar",
     "venue": "Communications biology",
     "url": "https://www.nature.com/articles/s42003-025-08045-4",
-    "citations": 4
+    "citations": 5
   },
   {
     "year": 2025,
@@ -117,7 +125,7 @@
     "authors": "Yang Dong and Shengchang Duan and Qiuju Xia and Zhenchang Liang and Xiao Dong and Kristine Margaryan and Mirza Musayev and Svitlana Goryslavets and Goran Zdunić and Pierre-François Bert and Thierry Lacombe and Erika Maul and Peter Nick and Kakha Bitskinashvili and György Dénes Bisztray and Elyashiv Drori and Gabriella De Lorenzis and Jorge Cunha and Carmen Florentina Popescu and Rosa Arroyo-Garcia and Claire Arnold and Ali Ergül and Yifan Zhu and Chao Ma and Shufen Wang and Siqi Liu and Liu Tang and Chunping Wang and Dawei Li and Yunbing Pan and Jingxian Li and Ling Yang and Xuzhen Li and Guisheng Xiang and Zijiang Yang and Baozheng Chen and Zhanwu Dai and Yi Wang and Arsen Arakelyan and Varis Kuliyev and Gennady Spotar and Nabil Girollet and Serge Delrot and Nathalie Ollat and Patrice This and Cécile Marchal and Gautier Sarah and Valérie Laucou and Roberto Bacilieri and Franco Röckel and Pingyin Guan and Andreas Jung and Michael Riemann and Levan Ujmajuridze and Tekle Zakalashvili and David Maghradze and Maria Höhn and Gizella Jahnke and Erzsébet Kiss and Tamás Deák and Oshrit Rahimi and Sariel Hübner and Fabrizio Grassi and Francesco Mercati and Francesco Sunseri and José Eiras-Dias and Anamaria Mirabela Dumitru and David Carrasco and Alberto Rodriguez-Izquierdo and Gregorio Muñoz and Tamer Uysal and Cengiz Özer and Kemal Kazan and Meilong Xu and Yunyue Wang and Shusheng Zhu and Jiang Lu and Maoxiang Zhao and Lei Wang and Songtao Jiu and Ying Zhang and Lei Sun and Huanming Yang and Ehud Weiss and Shiping Wang and Youyong Zhu and Shaohua Li and Jun Sheng and Wei Chen",
     "venue": "Science",
     "url": "https://www.science.org/doi/abs/10.1126/science.add8655",
-    "citations": 302
+    "citations": 312
   },
   {
     "year": 2023,
@@ -125,7 +133,7 @@
     "authors": "Kaichi Huang and Mojtaba Jahani and Jérôme Gouzy and Alexandra Legendre and Sébastien Carrere and José Miguel Lázaro-Guevara and Eric Gerardo González Segovia and Marco Todesco and Baptiste Mayjonade and Nathalie Rodde and Stephane Cauet and Isabelle Dufau and S Evan Staton and Nicolas Pouilly and Marie-Claude Boniface and Camille Tapy and Brigitte Mangin and Alexandra Duhnen and Veronique Gautier and Charles Poncet and Cecile Donnadieu and Tali Mandel and Sariel Hübner and John M Burke and Sonia Vautrin and Arnaud Bellec and Gregory L Owens and Nicolas Langlade and Stephane Munos and Loren H Rieseberg",
     "venue": "Proceedings of the National Academy of Sciences",
     "url": "https://www.pnas.org/doi/abs/10.1073/pnas.2205783119",
-    "citations": 76
+    "citations": 77
   },
   {
     "year": 2023,
@@ -141,7 +149,7 @@
     "authors": "Valentyna Klymiuk and Teketel Haile and Jennifer Ens and Krystalee Wiebe and Amidou N’Diaye and Andrii Fatiukha and Tamar Krugman and Roi Ben-David and Sariel Hübner and Sylvie Cloutier and Curtis J Pozniak",
     "venue": "Frontiers in Plant Science",
     "url": "https://www.frontiersin.org/journals/plant-science/articles/10.3389/fpls.2023.1145371/full",
-    "citations": 8
+    "citations": 9
   },
   {
     "year": 2023,
@@ -165,7 +173,7 @@
     "authors": "Sariel Hübner",
     "venue": "",
     "url": "https://www.sciencedirect.com/science/article/pii/S1369526622000243",
-    "citations": 24
+    "citations": 25
   },
   {
     "year": 2022,
@@ -173,7 +181,7 @@
     "authors": "Aviya Fadida-Myers and Dana Fuerst and Aviv Tzuberi and Shailesh Yadav and Kamal Nashef and Rajib Roychowdhury and Carolina Paola Sansaloni and Sariel Hübner and Roi Ben-David",
     "venue": "Plants",
     "url": "https://www.mdpi.com/2223-7747/11/11/1460",
-    "citations": 14
+    "citations": 16
   },
   {
     "year": 2022,
@@ -181,7 +189,7 @@
     "authors": "Sariel Hübner and Dana Sisou and Tali Mandel and Marco Todesco and Maor Matzrafi and Hanan Eizenberg",
     "venue": "Molecular Ecology",
     "url": "https://onlinelibrary.wiley.com/doi/abs/10.1111/mec.16380",
-    "citations": 11
+    "citations": 12
   },
   {
     "year": 2022,
@@ -237,15 +245,7 @@
     "authors": "Aviad Sivan and Oshrit Rahimi and Bar Lavi and Mali Salmon‐Divon and Ehud Weiss and Elyashiv Drori and Sariel Hübner",
     "venue": "Plants, People, Planet",
     "url": "https://nph.onlinelibrary.wiley.com/doi/abs/10.1002/ppp3.10197",
-    "citations": 29
-  },
-  {
-    "year": 2021,
-    "title": "Demographic and ecogeographic factors limit wild grapevine spread at the southern edge of its distribution range",
-    "authors": "Oshrit Rahimi and Noa Ohana‐Levi and Hodaya Brauner and Nimrod Inbar and Sariel Hübner and Elyashiv Drori",
-    "venue": "Ecology and Evolution",
-    "url": "https://onlinelibrary.wiley.com/doi/abs/10.1002/ece3.7519",
-    "citations": 8
+    "citations": 31
   },
   {
     "year": 2021,
@@ -253,6 +253,14 @@
     "authors": "Hod Hasson and Mangesh Y Dudhe and Tali Mandel and Emily Warschefsky and Loren H Rieseberg and Sariel Hübner",
     "venue": "BioRxiv",
     "url": "https://www.biorxiv.org/content/10.1101/2021.04.15.439933.abstract",
+    "citations": 10
+  },
+  {
+    "year": 2021,
+    "title": "Demographic and ecogeographic factors limit wild grapevine spread at the southern edge of its distribution range",
+    "authors": "Oshrit Rahimi and Noa Ohana‐Levi and Hodaya Brauner and Nimrod Inbar and Sariel Hübner and Elyashiv Drori",
+    "venue": "Ecology and Evolution",
+    "url": "https://onlinelibrary.wiley.com/doi/abs/10.1002/ece3.7519",
     "citations": 8
   },
   {
@@ -301,7 +309,7 @@
     "authors": "Sariel Hübner and Natalia Bercovich and Marco Todesco and Jennifer R Mandel and Jens Odenheimer and Emanuel Ziegler and Joon S Lee and Gregory J Baute and Gregory L Owens and Christopher J Grassa and Daniel P Ebert and Katherine L Ostevik and Brook T Moyers and Sarah Yakimowski and Rishi R Masalia and Lexuan Gao and Irina Ćalić and John E Bowers and Nolan C Kane and Dirk ZH Swanevelder and Timo Kubach and Stephane Muños and Nicolas B Langlade and John M Burke and Loren H Rieseberg",
     "venue": "Nature plants",
     "url": "https://www.nature.com/articles/s41477-018-0329-0",
-    "citations": 295
+    "citations": 299
   },
   {
     "year": 2019,
@@ -317,7 +325,7 @@
     "authors": "Lexuan Gao and Joon Seon Lee and Sariel Hübner and Brent S Hulke and Yan Qu and Loren H Rieseberg",
     "venue": "New Phytologist",
     "url": "https://nph.onlinelibrary.wiley.com/doi/abs/10.1111/nph.15894",
-    "citations": 24
+    "citations": 25
   },
   {
     "year": 2018,
@@ -333,7 +341,7 @@
     "authors": "Hélène Badouin and Jérôme Gouzy and Christopher J Grassa and Florent Murat and S Evan Staton and Ludovic Cottret and Christine Lelandais-Brière and Gregory L Owens and Sébastien Carrère and Baptiste Mayjonade and Ludovic Legrand and Navdeep Gill and Nolan C Kane and John E Bowers and Sariel Hubner and Arnaud Bellec and Aurélie Bérard and Hélène Bergès and Nicolas Blanchet and Marie-Claude Boniface and Dominique Brunel and Olivier Catrice and Nadia Chaidir and Clotilde Claudel and Cecile Donnadieu and Thomas Faraut and Ghislain Fievet and Nicolas Helmstetter and Matthew King and Steven J Knapp and Zhao Lai and Marie-Christine Le Paslier and Yannick Lippi and Lolita Lorenzon and Jennifer R Mandel and Gwenola Marage and Gwenaëlle Marchand and Elodie Marquand and Emmanuelle Bret-Mestries and Evan Morien and Savithri Nambeesan and Thuy Nguyen and Prune Pegot-Espagnet and Nicolas Pouilly and Frances Raftis and Erika Sallet and Thomas Schiex and Justine Thomas and Céline Vandecasteele and Didier Vares and Felicity Vear and Sonia Vautrin and Martin Crespi and Brigitte Mangin and John M Burke and Jerome Salse and Stéphane Muños and Patrick Vincourt and Loren H Rieseberg and Nicolas B Langlade",
     "venue": "Nature",
     "url": "https://www.nature.com/articles/nature22380",
-    "citations": 864
+    "citations": 877
   },
   {
     "year": 2016,
@@ -341,7 +349,7 @@
     "authors": "Marco Todesco and Mariana A Pascual and Gregory L Owens and Katherine L Ostevik and Brook T Moyers and Sariel Hübner and Sylvia M Heredia and Min A Hahn and Celine Caseys and Dan G Bock and Loren H Rieseberg",
     "venue": "",
     "url": "https://onlinelibrary.wiley.com/doi/abs/10.1111/eva.12367",
-    "citations": 909
+    "citations": 918
   },
   {
     "year": 2016,
@@ -349,7 +357,7 @@
     "authors": "Dan G Bock and Celine Caseys and Roger D Cousens and Min A Hahn and Sylvia M Heredia and Sariel Hübner and Kathryn G Turner and Kenneth D Whitney and Loren H Rieseberg",
     "venue": "",
     "url": "https://onlinelibrary.wiley.com/doi/abs/10.1002/9781119072799.ch20",
-    "citations": 526
+    "citations": 532
   },
   {
     "year": 2016,
@@ -357,7 +365,7 @@
     "authors": "Martin Mascher and Verena J Schuenemann and Uri Davidovich and Nimrod Marom and Axel Himmelbach and Sariel Hübner and Abraham Korol and Michal David and Ella Reiter and Simone Riehl and Mona Schreiber and Samuel H Vohr and Richard E Green and Ian K Dawson and Joanne Russell and Benjamin Kilian and Gary J Muehlbauer and Robbie Waugh and Tzion Fahima and Johannes Krause and Ehud Weiss and Nils Stein",
     "venue": "Nature Genetics",
     "url": "https://www.nature.com/articles/ng.3611",
-    "citations": 189
+    "citations": 192
   },
   {
     "year": 2016,
@@ -372,15 +380,15 @@
     "title": "Invasion genetics: the Baker and Stebbins legacy",
     "authors": "Spencer CH Barrett and Robert I Colautti and Katrina M Dlugosch and Loren H Rieseberg",
     "venue": "",
-    "url": "https://books.google.com/books?hl=en&lr=&id=AVSvDAAAQBAJ&oi=fnd&pg=PA13&dq=info:SHidAIJpmjoJ:scholar.google.com&ots=pS6SVu6HsS&sig=1eiEZzTezvVuWnnA6kFPQ_PmaXI",
-    "citations": 27
+    "url": "https://books.google.com/books?hl=en&lr=&id=AVSvDAAAQBAJ&oi=fnd&pg=PA13&dq=info:SHidAIJpmjoJ:scholar.google.com&ots=pS6U_n0GtQ&sig=Go4i9Gwn1cVQpzW23BcQn5GIgss",
+    "citations": 29
   },
   {
     "year": 2016,
     "title": "WHAT WE STILL DON'T KNOW ABOUT INVASION GENETICS",
     "authors": "Min A Hahn and Sylvia M Heredia and Sariel Hübner and Kathryn G Turner and Kenneth D Whitney and Loren H Rieseberg",
     "venue": "Invasion Genetics: The Baker and Stebbins Legacy",
-    "url": "https://books.google.com/books?hl=en&lr=&id=AVSvDAAAQBAJ&oi=fnd&pg=PA346&dq=info:ZOj1zZlAjLQJ:scholar.google.com&ots=pS6SVu6IsP&sig=V-MccYdxvi43s4Fubc8y80uwEss",
+    "url": "https://books.google.com/books?hl=en&lr=&id=AVSvDAAAQBAJ&oi=fnd&pg=PA346&dq=info:ZOj1zZlAjLQJ:scholar.google.com&ots=pS6U_n0HtO&sig=xIQUGHzV9CzWEUJ962jXb5OMw1E",
     "citations": 0
   },
   {
@@ -397,7 +405,7 @@
     "authors": "Kira E Delmore and Sariel Hübner and Nolan C Kane and Richard Schuster and Rose L Andrew and Francisco Câmara and Roderic Guigó and Darren E Irwin",
     "venue": "Molecular Ecology",
     "url": "https://onlinelibrary.wiley.com/doi/abs/10.1111/mec.13150",
-    "citations": 137
+    "citations": 138
   },
   {
     "year": 2015,
@@ -405,7 +413,7 @@
     "authors": "Lidor Shaar-Moshe and Sariel Hübner and Zvi Peleg",
     "venue": "BMC plant biology",
     "url": "https://link.springer.com/article/10.1186/s12870-015-0493-6",
-    "citations": 117
+    "citations": 120
   },
   {
     "year": 2015,
@@ -441,19 +449,19 @@
   },
   {
     "year": 2013,
+    "title": "Genome differentiation of Drosophila melanogaster from a microclimate contrast in Evolution Canyon, Israel",
+    "authors": "Sariel Hübner and Eugenia Rashkovetsky and Young Bun Kim and Jung Hun Oh and Katarzyna Michalak and Dmitry Weiner and Abraham B Korol and Eviatar Nevo and Pawel Michalak",
+    "venue": "Proceedings of the National Academy of Sciences",
+    "url": "https://www.pnas.org/doi/abs/10.1073/pnas.1321533111",
+    "citations": 45
+  },
+  {
+    "year": 2013,
     "title": "Phenotypic landscapes: phenological patterns in wild and cultivated barley",
     "authors": "S Hübner and E Bdolach and S Ein‐Gedy and KJ Schmid and A Korol and E Fridman",
     "venue": "Journal of evolutionary biology",
     "url": "https://academic.oup.com/jeb/article-abstract/26/1/163/7318377",
     "citations": 44
-  },
-  {
-    "year": 2013,
-    "title": "Genome differentiation of Drosophila melanogaster from a microclimate contrast in Evolution Canyon, Israel",
-    "authors": "Sariel Hübner and Eugenia Rashkovetsky and Young Bun Kim and Jung Hun Oh and Katarzyna Michalak and Dmitry Weiner and Abraham B Korol and Eviatar Nevo and Pawel Michalak",
-    "venue": "Proceedings of the National Academy of Sciences",
-    "url": "https://www.pnas.org/doi/abs/10.1073/pnas.1321533111",
-    "citations": 43
   },
   {
     "year": 2012,
@@ -469,7 +477,7 @@
     "authors": "B Kilian and H Özkan and S Shaaf and S Hübner and RK Pasam and R Sharma and K Neumann and W Weissgerber and FA Konovalov and Jens Keilwagen and S Friedel and H Knüpffer and M von Korff and G Coupland and A Graner",
     "venue": "",
     "url": "https://www.cabidigitallibrary.org/doi/abs/10.1079/9781845938512.0186",
-    "citations": 4
+    "citations": 5
   },
   {
     "year": 2011,
