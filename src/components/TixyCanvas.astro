@@ -7,6 +7,7 @@ interface Props {
   ambientSpeed?: number;
   height?: string;
   bgImage?: string;
+  bgVideo?: string;
   class?: string;
 }
 
@@ -18,22 +19,27 @@ const {
   ambientSpeed = 0.002,
   height       = '520px',
   bgImage      = '',
+  bgVideo      = '',
   class: className = '',
 } = Astro.props;
+
+// Derive WebM path from MP4 path (same name, different ext) for <source> fallback
+const bgVideoWebm = bgVideo ? bgVideo.replace(/\.mp4$/, '.webm') : '';
 ---
 
 <div class={`relative w-full overflow-hidden rounded-lg ${className}`} style={`height: ${height};`}>
-  {bgImage && (
+  {bgVideo ? (
     <>
-      <!-- Static wheat-field backdrop (animatable / swappable later) -->
-      <div
-        class="absolute inset-0"
-        style={`background-image: url(${bgImage}); background-size: cover; background-position: center 60%;`}
+      <!-- Looping video backdrop — autoplay muted so browsers allow it -->
+      <video
+        class="absolute inset-0 w-full h-full object-cover"
+        autoplay muted loop playsinline
         aria-hidden="true"
-      ></div>
-      <!-- Soft dark scrim: a gentle halo behind the wordmark band (~38% height)
-           plus top + bottom fades. Keeps the photo vivid at the edges while
-           giving the dot wordmark and overlay text enough contrast to read. -->
+      >
+        {bgVideoWebm && <source src={bgVideoWebm} type="video/webm" />}
+        <source src={bgVideo} type="video/mp4" />
+      </video>
+      <!-- Soft dark scrim: halo behind wordmark band + top/bottom fades -->
       <div
         class="absolute inset-0 pointer-events-none"
         style="background:
@@ -42,7 +48,24 @@ const {
         aria-hidden="true"
       ></div>
     </>
-  )}
+  ) : bgImage ? (
+    <>
+      <!-- Static photo backdrop -->
+      <div
+        class="absolute inset-0"
+        style={`background-image: url(${bgImage}); background-size: cover; background-position: center 60%;`}
+        aria-hidden="true"
+      ></div>
+      <!-- Soft dark scrim -->
+      <div
+        class="absolute inset-0 pointer-events-none"
+        style="background:
+          radial-gradient(ellipse 62% 40% at 50% 38%, rgba(11,15,20,0.42) 0%, rgba(11,15,20,0) 72%),
+          linear-gradient(180deg, rgba(11,15,20,0.30) 0%, rgba(11,15,20,0) 26%, rgba(11,15,20,0) 60%, rgba(11,15,20,0.38) 100%);"
+        aria-hidden="true"
+      ></div>
+    </>
+  ) : null}
   <canvas
     id={id}
     data-tixy-text="Hübner Lab"

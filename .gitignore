@@ -20,3 +20,6 @@ assets/*.jpg
 assets/*.jpeg
 assets/*.png
 assets/*.webp
+assets/*.mp4
+assets/*.mov
+assets/*.webm
