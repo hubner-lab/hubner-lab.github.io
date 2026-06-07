@@ -197,6 +197,58 @@ export function startTixyCanvas(opts: TixyCanvasOptions): () => void {
   let raf      = 0;
   let wordMasks: WordMask[] | null = null;
 
+  // Dark backing plate — cached offscreen, rebuilt only when W/H/dpr change
+  let plateCanvas: HTMLCanvasElement | null = null;
+  let plateW = 0, plateH = 0, plateDpr = 0;
+
+  // ── Shadow plate builder ──────────────────────────────────────────────────
+  // Stamps dark dots at static (non-breathing) radius into an offscreen canvas,
+  // then blurs them into one continuous soft dark halo that hugs the letterforms.
+  // Built ONCE per unique (W, H, dpr) — blitted each frame with a single drawImage.
+  function buildShadowPlate(masks: WordMask[], W: number, H: number, dpr: number): void {
+    const cellW = W / cols;
+    const cellH = H / rows;
+    const maxR  = Math.min(cellW, cellH) * 0.55; // same formula as draw()
+    const plateR = maxR * 1.25;                  // slightly larger than colored dots
+    const blurPx = maxR * 1.6;                   // merges adjacent stamps into soft shape
+
+    // 1) Stamp dark dots into an unblurred offscreen (device-px sized, logical-px drawn)
+    const oc = document.createElement('canvas');
+    oc.width  = Math.max(1, Math.round(W * dpr));
+    oc.height = Math.max(1, Math.round(H * dpr));
+    const octx = oc.getContext('2d')!;
+    octx.setTransform(dpr, 0, 0, dpr, 0, 0); // draw in logical px like main ctx
+
+    octx.fillStyle = 'rgba(8,12,16,0.55)';
+    for (const wm of masks) {
+      for (let yi = 0; yi < rows; yi++) {
+        for (let xi = 0; xi < cols; xi++) {
+          const m = wm.mask[yi * cols + xi];
+          if (m < 0.12) continue;
+          const r  = Math.max(m, 0.5) * plateR; // floor so thin strokes cast shade
+          const cx = (xi + 0.5) * cellW;
+          const cy = (yi + 0.5) * cellH;
+          octx.beginPath();
+          octx.arc(cx, cy, r, 0, Math.PI * 2);
+          octx.fill();
+        }
+      }
+    }
+
+    // 2) Blur the stamped canvas into a continuous soft halo (true Gaussian via filter)
+    const blurred = document.createElement('canvas');
+    blurred.width  = oc.width;
+    blurred.height = oc.height;
+    const bctx = blurred.getContext('2d')!;
+    bctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    bctx.filter = `blur(${blurPx}px)`;
+    bctx.drawImage(oc, 0, 0, W, H); // logical dest (transform handles dpr)
+    bctx.filter = 'none';           // always reset filter
+
+    plateCanvas = blurred;
+    plateW = W; plateH = H; plateDpr = dpr;
+  }
+
   // ── Resize ────────────────────────────────────────────────────────────────
   function resize() {
     const dpr  = window.devicePixelRatio || 1;
@@ -221,6 +273,15 @@ export function startTixyCanvas(opts: TixyCanvasOptions): () => void {
 
     if (!wordMasks) return; // nothing to draw until masks are ready
 
+    // ── Dark backing plate (text-shaped shading) ────────────────────────
+    // Rebuild only when geometry or DPR changes; blit with one drawImage per frame.
+    // Plate blit happens BEFORE the glow is set so the plate itself is not glowed.
+    const dpr = window.devicePixelRatio || 1;
+    if (!plateCanvas || plateW !== W || plateH !== H || plateDpr !== dpr) {
+      buildShadowPlate(wordMasks, W, H, dpr);
+    }
+    if (plateCanvas) ctx.drawImage(plateCanvas, 0, 0, W, H); // logical dest — DPR-safe
+
     // ── Wordmark — orbital ripple + color sweep ─────────────────────────
     // A focal point traces a slow elliptical orbit inside each word's bounds.
     // Concentric rings expand outward from it (radial ripple). Users track the
@@ -228,6 +289,7 @@ export function startTixyCanvas(opts: TixyCanvasOptions): () => void {
     // Color drifts on an independent diagonal wave for decoupled visual rhythm.
     ctx.shadowColor = 'rgba(200, 220, 40, 0.45)'; // yellow-green glow
     ctx.shadowBlur  = 14;
+    const ringK = Math.max(0.75, maxR * 0.18); // dark contour ring width
 
     for (const wm of wordMasks) {
       // Focal point orbits the word's centroid (different ellipse per word via phase)
@@ -262,6 +324,13 @@ export function startTixyCanvas(opts: TixyCanvasOptions): () => void {
           const cx = (xi + 0.5) * cellW;
           const cy = (yi + 0.5) * cellH;
 
+          // Dark contour ring — thin dark rim for crispness on bright backgrounds
+          ctx.beginPath();
+          ctx.arc(cx, cy, r + ringK, 0, Math.PI * 2);
+          ctx.fillStyle = 'rgba(10,14,18,0.5)';
+          ctx.fill();
+
+          // Colored dot on top
           ctx.beginPath();
           ctx.arc(cx, cy, r, 0, Math.PI * 2);
           ctx.fillStyle = palette(WORDMARK_COLORS, hueWave);
