@@ -18,12 +18,12 @@ export interface TixyCanvasOptions {
 }
 
 // ── Palettes ────────────────────────────────────────────────────────────────
-// Wordmark: deep field green → fresh barley → golden wheat
-// Follows the crop life cycle: dark soil → spring shoot → ripe grain
+// Wordmark: bright spring green → yellow-green → bright straw
+// Flows green→yellow; lighter tones for contrast against blue-sky video
 const WORDMARK_COLORS: [number, number, number][] = [
-  [ 45,  80,  22],  // #2D5016 deep field green
-  [122, 158,  46],  // #7A9E2E barley / young crop
-  [201, 162,  75],  // #C9A24B golden wheat (original site wheat token)
+  [100, 195,  45],  // #64C32D bright spring green
+  [195, 215,  35],  // #C3D723 yellow-green
+  [250, 225,  50],  // #FAE132 bright straw yellow
 ];
 
 // ── Helpers ─────────────────────────────────────────────────────────────────
@@ -226,8 +226,8 @@ export function startTixyCanvas(opts: TixyCanvasOptions): () => void {
     // Concentric rings expand outward from it (radial ripple). Users track the
     // moving focal point and follow the rings — creates a "want to watch" quality.
     // Color drifts on an independent diagonal wave for decoupled visual rhythm.
-    ctx.shadowColor = 'rgba(90, 110, 20, 0.30)'; // olive-wheat glow
-    ctx.shadowBlur  = 10;
+    ctx.shadowColor = 'rgba(200, 220, 40, 0.45)'; // yellow-green glow
+    ctx.shadowBlur  = 14;
 
     for (const wm of wordMasks) {
       // Focal point orbits the word's centroid (different ellipse per word via phase)
@@ -252,7 +252,11 @@ export function startTixyCanvas(opts: TixyCanvasOptions): () => void {
           const breathe = 0.74 + 0.28 * (ring * 0.5 + 0.5); // 0.74 → 1.02
 
           // Color: independent slow diagonal sweep (decoupled from ring phase)
-          const hueWave = 0.5 + 0.5 * Math.sin(dx * 0.07 - dy * 0.04 + tWord * 0.55 + wm.phase);
+          const baseHue  = 0.5 + 0.5 * Math.sin(dx * 0.07 - dy * 0.04 + tWord * 0.55 + wm.phase);
+          // Border dots (low m) pushed toward bright straw end (+0.42);
+          // inner dots sweep the greener half — same gradient, offset start.
+          const edgeFactor = Math.max(0, 1 - (m - 0.12) / 0.38);
+          const hueWave    = Math.min(1, baseHue + edgeFactor * 0.42);
 
           const r  = m * maxR * breathe;
           const cx = (xi + 0.5) * cellW;
