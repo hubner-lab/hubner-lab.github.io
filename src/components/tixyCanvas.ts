@@ -1,15 +1,11 @@
-import { createNoise3D } from 'simplex-noise';
-
 /**
- * TixyCanvas — dual-layer meditative dot grid.
+ * TixyCanvas — "Hübner Lab" dot-grid wordmark.
  *
- *   Layer 1 (ambient)  : pale simplex-noise field over the whole canvas,
- *                        small dots, very slow hue drift.
- *   Layer 2 (wordmark) : larger dots masked to the text "Hübner Lab",
- *                        near-static (dots always ≥85% of max radius),
- *                        deep botanical palette, subtle diagonal breathing.
- *                        Each word ("Hübner", "Lab") has its own phase
- *                        offset so they pulse slightly out of sync.
+ *   Larger dots masked to the text "Hübner Lab", deep botanical palette,
+ *   orbital ripple + diagonal color sweep. Each word ("Hübner", "Lab")
+ *   has its own phase offset so they pulse slightly out of sync. The
+ *   canvas is transparent except the wordmark dots, so a static photo
+ *   placed behind it (see TixyCanvas.astro `bgImage`) shows through.
  */
 
 export interface TixyCanvasOptions {
@@ -28,14 +24,6 @@ const WORDMARK_COLORS: [number, number, number][] = [
   [ 45,  80,  22],  // #2D5016 deep field green
   [122, 158,  46],  // #7A9E2E barley / young crop
   [201, 162,  75],  // #C9A24B golden wheat (original site wheat token)
-];
-
-// Ambient: sky blue → cornflower → deep sky
-// Clearly visible cool blues — complement the warm wheat-green wordmark.
-const AMBIENT_COLORS: [number, number, number][] = [
-  [126, 200, 232],  // #7EC8E8 sky blue
-  [ 74, 174, 212],  // #4AAED4 cornflower
-  [ 40, 144, 190],  // #2890BE deep horizon
 ];
 
 // ── Helpers ─────────────────────────────────────────────────────────────────
@@ -151,16 +139,30 @@ async function prepareWordMasks(
   canvasW: number,
   canvasH: number,
 ): Promise<WordMask[]> {
-  const fontSize = Math.floor(canvasH * 0.40);
+  let fontSize = Math.floor(canvasH * 0.40);
   await document.fonts.load(`700 ${fontSize}px "Fraunces Variable"`);
 
   // Measure each word to compute natural x positions
   const tmp = document.createElement('canvas').getContext('2d')!;
   tmp.font = `700 ${fontSize}px "Fraunces Variable", Georgia, serif`;
-  const wHub = tmp.measureText('Hübner').width;
-  const wLab = tmp.measureText('Lab').width;
-  const gap  = fontSize * 0.35;
-  const total = wHub + gap + wLab;
+  let wHub = tmp.measureText('Hübner').width;
+  let wLab = tmp.measureText('Lab').width;
+  let gap  = fontSize * 0.35;
+  let total = wHub + gap + wLab;
+
+  // Fit-to-width clamp: fontSize is derived from canvas height, but on a wide-
+  // but-short hero the wordmark can exceed the canvas width and spill past the
+  // edges. measureText scales linearly with fontSize, so shrink to fit (leave
+  // ~7% margin each side) and re-measure.
+  const maxWidth = canvasW * 0.86;
+  if (total > maxWidth) {
+    fontSize = Math.floor(fontSize * (maxWidth / total));
+    tmp.font = `700 ${fontSize}px "Fraunces Variable", Georgia, serif`;
+    wHub  = tmp.measureText('Hübner').width;
+    wLab  = tmp.measureText('Lab').width;
+    gap   = fontSize * 0.35;
+    total = wHub + gap + wLab;
+  }
 
   // Left edge in pixels of the composite wordmark, centered in canvas
   const leftPx = (canvasW - total) / 2;
@@ -179,37 +181,19 @@ async function prepareWordMasks(
   return [hub, lab];
 }
 
-// ── Vignette ────────────────────────────────────────────────────────────────
-/** Radial overlay: transparent at centre → paper tint at corners.
- *  Focuses eye on the wordmark and softens ambient edge noise. */
-function drawVignette(ctx: CanvasRenderingContext2D, W: number, H: number) {
-  const cx = W / 2;
-  const cy = H / 2;
-  const innerR = Math.min(W, H) * 0.20;
-  const outerR = Math.max(W, H) * 0.75;
-  const vg = ctx.createRadialGradient(cx, cy, innerR, cx, cy, outerR);
-  vg.addColorStop(0, 'rgba(247,246,241,0)');
-  vg.addColorStop(1, 'rgba(247,246,241,0.35)');
-  ctx.fillStyle = vg;
-  ctx.fillRect(0, 0, W, H);
-}
-
 // ── Main ────────────────────────────────────────────────────────────────────
 export function startTixyCanvas(opts: TixyCanvasOptions): () => void {
   const {
     canvas,
-    cols         = 140,
-    rows         = 40,
-    wordSpeed    = 0.012,
-    ambientSpeed = 0.002,
+    cols      = 140,
+    rows      = 40,
+    wordSpeed = 0.012,
   } = opts;
 
-  const noise3D = createNoise3D();
   const ctx     = canvas.getContext('2d')!;
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   let tWord    = 0;
-  let tAmbient = 0;
   let raf      = 0;
   let wordMasks: WordMask[] | null = null;
 
@@ -231,33 +215,13 @@ export function startTixyCanvas(opts: TixyCanvasOptions): () => void {
     // Wordmark dots get a larger cell budget for dominance
     const maxR  = Math.min(cellW, cellH) * 0.55;
 
+    // Transparent canvas — the wheat photo behind shows through everywhere
+    // except the wordmark dots drawn below.
     ctx.clearRect(0, 0, W, H);
 
-    // ── Layer 1: Ambient field ───────────────────────────────────────────
-    // Sub-pixel dots at 55% alpha — create a diffuse sky-blue tint via antialiasing.
-    ctx.globalAlpha = 0.55;
-    for (let yi = 0; yi < rows; yi++) {
-      for (let xi = 0; xi < cols; xi++) {
-        const n  = noise3D(xi * 0.08, yi * 0.08, tAmbient);
-        const nh = (n + 1) / 2;
-        const r  = (0.05 + 0.22 * nh) * maxR * 0.45;
-        const cx = (xi + 0.5) * cellW;
-        const cy = (yi + 0.5) * cellH;
-        ctx.beginPath();
-        ctx.arc(cx, cy, r, 0, Math.PI * 2);
-        ctx.fillStyle = palette(AMBIENT_COLORS, nh);
-        ctx.fill();
-      }
-    }
-    ctx.globalAlpha = 1.0;
+    if (!wordMasks) return; // nothing to draw until masks are ready
 
-    if (!wordMasks) {
-      // Vignette even when masks aren't ready
-      drawVignette(ctx, W, H);
-      return;
-    }
-
-    // ── Layer 2: Wordmark — orbital ripple + color sweep ────────────────
+    // ── Wordmark — orbital ripple + color sweep ─────────────────────────
     // A focal point traces a slow elliptical orbit inside each word's bounds.
     // Concentric rings expand outward from it (radial ripple). Users track the
     // moving focal point and follow the rings — creates a "want to watch" quality.
@@ -302,16 +266,12 @@ export function startTixyCanvas(opts: TixyCanvasOptions): () => void {
       }
     }
 
-    ctx.shadowBlur = 0; // reset — avoid leaking glow onto vignette
-
-    // ── Vignette: radial fade, transparent centre → paper at corners ─────
-    drawVignette(ctx, W, H);
+    ctx.shadowBlur = 0; // reset glow
   }
 
   // ── Frame loop ────────────────────────────────────────────────────────────
   function frame() {
-    tWord    += wordSpeed;
-    tAmbient += ambientSpeed;
+    tWord += wordSpeed;
     draw();
     raf = requestAnimationFrame(frame);
   }

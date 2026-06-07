@@ -6,6 +6,7 @@ interface Props {
   wordSpeed?: number;
   ambientSpeed?: number;
   height?: string;
+  bgImage?: string;
   class?: string;
 }
 
@@ -16,11 +17,32 @@ const {
   wordSpeed    = 0.012,
   ambientSpeed = 0.002,
   height       = '520px',
+  bgImage      = '',
   class: className = '',
 } = Astro.props;
 ---
 
 <div class={`relative w-full overflow-hidden rounded-lg ${className}`} style={`height: ${height};`}>
+  {bgImage && (
+    <>
+      <!-- Static wheat-field backdrop (animatable / swappable later) -->
+      <div
+        class="absolute inset-0"
+        style={`background-image: url(${bgImage}); background-size: cover; background-position: center 60%;`}
+        aria-hidden="true"
+      ></div>
+      <!-- Soft dark scrim: a gentle halo behind the wordmark band (~38% height)
+           plus top + bottom fades. Keeps the photo vivid at the edges while
+           giving the dot wordmark and overlay text enough contrast to read. -->
+      <div
+        class="absolute inset-0 pointer-events-none"
+        style="background:
+          radial-gradient(ellipse 62% 40% at 50% 38%, rgba(11,15,20,0.42) 0%, rgba(11,15,20,0) 72%),
+          linear-gradient(180deg, rgba(11,15,20,0.30) 0%, rgba(11,15,20,0) 26%, rgba(11,15,20,0) 60%, rgba(11,15,20,0.38) 100%);"
+        aria-hidden="true"
+      ></div>
+    </>
+  )}
   <canvas
     id={id}
     data-tixy-text="Hübner Lab"

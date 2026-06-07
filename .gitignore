@@ -14,3 +14,9 @@ node_modules/
 # Python
 __pycache__/
 *.pyc
+
+# Raw asset source bin (deployed copies live in public/)
+assets/*.jpg
+assets/*.jpeg
+assets/*.png
+assets/*.webp
