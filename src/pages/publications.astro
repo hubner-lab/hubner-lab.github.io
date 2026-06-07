@@ -15,7 +15,8 @@ const years = Object.keys(byYear)
 ---
 
 <Base title="Publications" description="Scientific publications from the Hübner Lab.">
-  <div class="container py-20">
+  <div class="container py-20 relative">
+
     <div class="section-enter max-w-2xl mb-16">
       <p class="caption mb-4">Publications</p>
       <h1 style="font-size: var(--text-h1);">Research output</h1>
@@ -26,8 +27,9 @@ const years = Object.keys(byYear)
       </p>
     </div>
 
-    {years.map((year) => (
-      <div class="section-enter mb-12">
+    {years.map((year, i) => (
+      <div class="section-enter mb-12 relative">
+
         <h2
           class="text-2xl mb-4 pb-2 border-b"
           style="font-family: var(--font-display); color: var(--color-wheat); border-color: color-mix(in srgb, var(--color-wheat) 25%, transparent);"

@@ -1,0 +1,314 @@
+---
+/**
+ * TeamGraph — Formal, static constellation of lab members.
+ *
+ * Uses force-graph as a Canvas2D renderer only (no physics).
+ * Positions are pre-computed in a hub-and-spoke circle.
+ * Hub (Sariel) at centre, members in one orbital ring.
+ * Each node: circular photo/placeholder + name + role below.
+ * Photos come from `member.photo` (URL). Falls back to initials.
+ */
+
+interface Member {
+  id:       string;
+  name:     string;
+  role:     string;
+  email?:   string;
+  photo?:   string;
+  scholar?: string;
+  isAlumni: boolean;
+  order:    number;
+}
+
+interface Props {
+  members: Member[];
+  height?: string;
+}
+
+const { members, height = '580px' } = Astro.props;
+
+// Sort: hub first, current by order, alumni last
+const sorted = [...members].sort((a, b) => {
+  if (a.order === 1) return -1;
+  if (b.order === 1) return  1;
+  if (a.isAlumni !== b.isAlumni) return a.isAlumni ? 1 : -1;
+  return a.order - b.order;
+});
+
+// ── Compute fixed positions (hub-and-spoke circle) ─────────────────────────
+// Hub at (0, 0); non-hub members evenly spaced on a ring.
+// Positions are in force-graph abstract coords (centred at 0,0).
+const RING_RADIUS = 170;                     // px in graph-space
+const nonHub = sorted.filter(m => m.order !== 1);
+
+const positions: Record<string, { x: number; y: number }> = {};
+sorted.forEach(m => {
+  if (m.order === 1) {
+    positions[m.id] = { x: 0, y: 0 };
+  }
+});
+nonHub.forEach((m, i) => {
+  const angle = (2 * Math.PI * i / nonHub.length) - Math.PI / 2; // top = -90°
+  positions[m.id] = {
+    x: RING_RADIUS * Math.cos(angle),
+    y: RING_RADIUS * Math.sin(angle),
+  };
+});
+
+// Attach fixed positions to members for JSON embed
+const graphMembers = sorted.map(m => ({
+  ...m,
+  fx: positions[m.id].x,
+  fy: positions[m.id].y,
+}));
+---
+
+<!-- Container fades in after graph is ready -->
+<div
+  id="team-graph-wrap"
+  style={`
+    position: relative;
+    width: 100%;
+    height: ${height};
+    overflow: hidden;
+    border-radius: 1rem;
+    border: 1px solid color-mix(in srgb, var(--color-soil) 10%, transparent);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  `}
+>
+  <div id="team-graph" style="width: 100%; height: 100%;"></div>
+</div>
+
+<p
+  class="mt-4 text-sm text-center"
+  style="color: color-mix(in srgb, var(--color-soil) 45%, transparent); font-style: italic;"
+>
+  Hover to highlight — click name to open profile
+</p>
+
+<!-- Build-time member data as JSON -->
+<script id="team-graph-data" type="application/json" set:html={JSON.stringify(graphMembers)}></script>
+
+<script>
+import ForceGraph from 'force-graph';
+
+// ── Data ───────────────────────────────────────────────────────────────────
+const raw = document.getElementById('team-graph-data')!.textContent!;
+const members: {
+  id: string; name: string; role: string;
+  email?: string; photo?: string; scholar?: string;
+  isAlumni: boolean; order: number;
+  fx: number; fy: number;
+}[] = JSON.parse(raw);
+
+const container  = document.getElementById('team-graph')!;
+const wrap       = document.getElementById('team-graph-wrap')!;
+const reduced    = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// ── Palette ────────────────────────────────────────────────────────────────
+const st  = getComputedStyle(document.documentElement);
+const PAL = {
+  paper:  st.getPropertyValue('--color-paper').trim()  || '#F7F6F1',
+  wheat:  st.getPropertyValue('--color-wheat').trim()  || '#C9A24B',
+  leaf:   st.getPropertyValue('--color-leaf').trim()   || '#3E6B4A',
+  barley: st.getPropertyValue('--color-barley').trim() || '#7A9E2E',
+  stem:   st.getPropertyValue('--color-stem').trim()   || '#2D5016',
+  soil:   st.getPropertyValue('--color-soil').trim()   || '#3A2E1F',
+  data:   st.getPropertyValue('--color-data').trim()   || '#1E5FBF',
+};
+
+function roleColor(role: string, isAlumni: boolean): string {
+  if (isAlumni) return '#7A8A6A';           // muted sage for alumni
+  if (role === 'Principal Investigator') return PAL.wheat;
+  if (role.includes('PhD'))              return PAL.leaf;
+  if (role.includes('Research'))         return PAL.stem;
+  return PAL.barley;
+}
+
+function initials(name: string): string {
+  const p = name.trim().split(/\s+/);
+  return (p[0][0] + (p[p.length - 1]?.[0] ?? '')).toUpperCase();
+}
+
+// ── Image pre-loading ──────────────────────────────────────────────────────
+const imgCache = new Map<string, HTMLImageElement>();
+for (const m of members) {
+  if (m.photo) {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.src = m.photo;
+    imgCache.set(m.id, img);
+  }
+}
+
+// ── Hover state ────────────────────────────────────────────────────────────
+let hoveredId: string | null = null;
+
+// ── Node dimensions ────────────────────────────────────────────────────────
+const R_HUB  = 34;   // hub photo radius
+const R_REG  = 26;   // current-member radius
+const R_ALU  = 22;   // alumni radius (slightly smaller)
+
+function nodeR(node: { id: string; isAlumni: boolean }): number {
+  if (node.id === 'sariel-hubner') return R_HUB;
+  return node.isAlumni ? R_ALU : R_REG;
+}
+
+// ── Node renderer ──────────────────────────────────────────────────────────
+function drawNode(
+  node: { id: string; name: string; role: string; email?: string;
+          isAlumni: boolean; x: number; y: number },
+  ctx:  CanvasRenderingContext2D,
+  globalScale: number,
+) {
+  const isHub     = node.id === 'sariel-hubner';
+  const isHovered = hoveredId === node.id;
+  const isDimmed  = hoveredId !== null && !isHovered;
+  const r         = nodeR(node);
+  const fill      = roleColor(node.role, node.isAlumni);
+  const alumni    = node.isAlumni;
+
+  // Dim all non-hovered nodes when something is hovered
+  ctx.globalAlpha = isDimmed ? (alumni ? 0.25 : 0.35) : (alumni ? 0.65 : 1.0);
+
+  // ── Photo circle ───────────────────────────────────────────────────────
+  const img = imgCache.get(node.id);
+  const imgReady = img?.complete && (img.naturalWidth ?? 0) > 0;
+
+  ctx.save();
+  ctx.beginPath();
+  ctx.arc(node.x, node.y, r, 0, Math.PI * 2);
+  ctx.clip();
+
+  if (imgReady) {
+    ctx.drawImage(img!, node.x - r, node.y - r, r * 2, r * 2);
+  } else {
+    // Placeholder: solid role color fill
+    ctx.fillStyle = fill;
+    ctx.fill();
+
+    // Initials centred
+    const fontSize = isHub ? 15 : 11;
+    ctx.font         = `600 ${fontSize}px "Inter Variable", system-ui, sans-serif`;
+    ctx.fillStyle    = 'rgba(247,246,241,0.96)';
+    ctx.textAlign    = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(initials(node.name), node.x, node.y);
+  }
+  ctx.restore();
+
+  // ── Border ring ────────────────────────────────────────────────────────
+  ctx.beginPath();
+  ctx.arc(node.x, node.y, r, 0, Math.PI * 2);
+  if (isHovered) {
+    ctx.strokeStyle = fill;
+    ctx.lineWidth   = 2.5;
+  } else if (isHub) {
+    ctx.strokeStyle = `${PAL.wheat}88`;
+    ctx.lineWidth   = 2;
+  } else {
+    ctx.strokeStyle = `${fill}55`;
+    ctx.lineWidth   = 1.5;
+  }
+  ctx.stroke();
+
+  // ── Hub glow ring (outer halo) ─────────────────────────────────────────
+  if (isHub && !isDimmed) {
+    ctx.beginPath();
+    ctx.arc(node.x, node.y, r + 7, 0, Math.PI * 2);
+    ctx.strokeStyle = `${PAL.wheat}28`;
+    ctx.lineWidth   = 4;
+    ctx.stroke();
+  }
+
+  // ── Text labels ────────────────────────────────────────────────────────
+  // Scale font inversely to keep labels readable regardless of zoom
+  const baseFontScale = Math.max(globalScale, 0.6);
+  let   textY = node.y + r + 10;
+
+  // Name
+  const namePx = (isHub ? 12.5 : 11) / baseFontScale;
+  ctx.font         = `600 ${namePx}px "Inter Variable", system-ui, sans-serif`;
+  ctx.fillStyle    = isDimmed
+    ? `${PAL.soil}66`
+    : (alumni ? `${PAL.soil}99` : PAL.soil);
+  ctx.textAlign    = 'center';
+  ctx.textBaseline = 'top';
+  ctx.fillText(node.name, node.x, textY);
+  textY += namePx * 1.5;
+
+  // Role
+  const rolePx = (isHub ? 9.5 : 8.5) / baseFontScale;
+  ctx.font      = `${rolePx}px "Inter Variable", system-ui, sans-serif`;
+  ctx.fillStyle = isDimmed
+    ? `${PAL.soil}44`
+    : `${PAL.soil}77`;
+  ctx.fillText(node.role, node.x, textY);
+  textY += rolePx * 1.6;
+
+  // Email — hub only, unhovered
+  if (node.email && isHub && !isDimmed) {
+    const emailPx = 8 / baseFontScale;
+    ctx.font      = `${emailPx}px "Inter Variable", system-ui, sans-serif`;
+    ctx.fillStyle = `${PAL.data}cc`;
+    ctx.fillText(node.email, node.x, textY);
+  }
+
+  ctx.globalAlpha = 1;
+}
+
+// Hit-area: circle only
+function paintArea(
+  node:  { id: string; isAlumni: boolean },
+  color: string,
+  ctx:   CanvasRenderingContext2D,
+) {
+  ctx.fillStyle = color;
+  ctx.beginPath();
+  ctx.arc((node as any).x, (node as any).y, nodeR(node), 0, Math.PI * 2);
+  ctx.fill();
+}
+
+// ── Graph — used as static Canvas2D renderer ───────────────────────────────
+const graph = new (ForceGraph as any)(container)
+  .backgroundColor(PAL.paper + '00')
+  .nodeId('id')
+  .nodeCanvasObject(drawNode)
+  .nodeCanvasObjectMode(() => 'replace')
+  .nodePointerAreaPaint(paintArea)
+  .nodeLabel(() => '')
+  .nodeVal(() => 1)
+  .linkVisibility(false)
+  .enableNodeDrag(false)
+  .enableZoomInteraction(false)
+  .enablePanInteraction(false)
+  .autoPauseRedraw(false)              // keep re-rendering for hover effects
+  .warmupTicks(1)                      // one tick to establish positions
+  .cooldownTicks(1)                    // stop after one rendered frame
+  .onEngineStop(() => {
+    // Called once simulation freezes — safe to fit the viewport
+    graph.zoomToFit(reduced ? 0 : 500, 90);
+    setTimeout(() => { wrap.style.opacity = '1'; }, reduced ? 0 : 80);
+  })
+  .onNodeHover((node: any) => {
+    hoveredId = node ? node.id : null;
+    container.style.cursor = node ? 'pointer' : 'default';
+  })
+  .onNodeClick((node: any) => {
+    if ((node as any).scholar) {
+      window.open(
+        `https://scholar.google.com/citations?user=${(node as any).scholar}`,
+        '_blank', 'noopener'
+      );
+    }
+  });
+
+// Remove all physics forces — purely positional
+graph.d3Force('link',   null);
+graph.d3Force('charge', null);
+graph.d3Force('center', null);
+
+// ── Feed static data ──────────────────────────────────────────────────────
+graph.graphData({ nodes: members, links: [] });
+</script>
