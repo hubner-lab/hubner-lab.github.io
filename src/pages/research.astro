@@ -2,6 +2,7 @@
 import Base from '../layouts/Base.astro';
 import PillarCard from '../components/PillarCard.astro';
 import ReactionDiffusionCanvas from '../components/ReactionDiffusionCanvas.astro';
+const base = import.meta.env.BASE_URL;
 ---
 
 <Base title="Research" description="Research areas of the Hübner Lab: speciation, adaptation, and domestication genomics.">
@@ -43,9 +44,8 @@ import ReactionDiffusionCanvas from '../components/ReactionDiffusionCanvas.astro
         title="Speciation"
         body="How do populations diverge into distinct species? We investigate the genomic architecture of reproductive isolation, admixture barriers, and the role of chromosomal rearrangements in speciation — with a focus on wild barley (Hordeum spontaneum) and sunflower."
         canvasId="canvas-speciation"
-        freq={0.22}
-        speed={0.006}
-        seed={10}
+        img={`${base}botanical/phylogenetic_tree.jpg`}
+        imgAlt="Circular phylogenetic tree"
         organisms={['Hordeum spontaneum', 'Helianthus annuus']}
       />
       <PillarCard

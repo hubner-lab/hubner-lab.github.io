@@ -1,24 +1,35 @@
 ---
 import TopoCanvas from './TopoCanvas.astro';
+import PhyloCanvas from './PhyloCanvas.astro';
 
 interface Props {
   title: string;
   body: string;
   canvasId: string;
+  viz?: 'topo' | 'phylo';
+  img?: string;
+  imgAlt?: string;
   freq?: number;
   speed?: number;
   seed?: number;
   organisms?: string[];
 }
 
-const { title, body, canvasId, freq = 0.12, speed = 0.004, seed = 0, organisms } = Astro.props;
+const { title, body, canvasId, viz = 'topo', img, imgAlt = '', freq = 0.12, speed = 0.004, seed = 0, organisms } = Astro.props;
 ---
 
 <article
   class="section-enter rounded-2xl overflow-hidden border"
   style="border-color: color-mix(in srgb, var(--color-soil) 15%, transparent);"
 >
-  <TopoCanvas id={canvasId} freq={freq} speed={speed} seed={seed} height="160px" />
+  {img
+    ? <div style="height:160px; overflow:hidden; background:#fff; display:flex; align-items:center; justify-content:center;">
+        <img src={img} alt={imgAlt} style="width:100%; height:100%; object-fit:contain;" loading="lazy" />
+      </div>
+    : viz === 'phylo'
+      ? <PhyloCanvas id={canvasId} seed={seed} height="160px" />
+      : <TopoCanvas id={canvasId} freq={freq} speed={speed} seed={seed} height="160px" />
+  }
   <div class="p-6">
     <h3 class="text-xl font-semibold mb-3" style="font-family: var(--font-display); font-variation-settings: 'opsz' 36; color: var(--color-ink);">
       {title}
