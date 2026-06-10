@@ -18,12 +18,14 @@ export interface TixyCanvasOptions {
 }
 
 // ── Palettes ────────────────────────────────────────────────────────────────
-// Wordmark: bright spring green → yellow-green → bright straw
-// Flows green→yellow; lighter tones for contrast against blue-sky video
+// Wordmark: dark forest green → leaf green → lime → soft straw
+// Deeper, darker plant-green range to correspond with the warm dark theme;
+// yellow end present but calmer than the previous neon straw.
 const WORDMARK_COLORS: [number, number, number][] = [
-  [100, 195,  45],  // #64C32D bright spring green
-  [195, 215,  35],  // #C3D723 yellow-green
-  [250, 225,  50],  // #FAE132 bright straw yellow
+  [ 30,  77,  20],  // #1E4D14 dark forest green
+  [ 62, 139,  30],  // #3E8B1E leaf green
+  [143, 181,  46],  // #8FB52E lime
+  [232, 210,  58],  // #E8D23A soft straw
 ];
 
 // ── Helpers ─────────────────────────────────────────────────────────────────
@@ -287,7 +289,7 @@ export function startTixyCanvas(opts: TixyCanvasOptions): () => void {
     // Concentric rings expand outward from it (radial ripple). Users track the
     // moving focal point and follow the rings — creates a "want to watch" quality.
     // Color drifts on an independent diagonal wave for decoupled visual rhythm.
-    ctx.shadowColor = 'rgba(200, 220, 40, 0.45)'; // yellow-green glow
+    ctx.shadowColor = 'rgba(150, 200, 55, 0.42)'; // plant-green glow (matched to darker palette)
     ctx.shadowBlur  = 14;
     const ringK = Math.max(0.75, maxR * 0.18); // dark contour ring width
 
@@ -315,10 +317,11 @@ export function startTixyCanvas(opts: TixyCanvasOptions): () => void {
 
           // Color: independent slow diagonal sweep (decoupled from ring phase)
           const baseHue  = 0.5 + 0.5 * Math.sin(dx * 0.07 - dy * 0.04 + tWord * 0.55 + wm.phase);
-          // Border dots (low m) pushed toward bright straw end (+0.42);
-          // inner dots sweep the greener half — same gradient, offset start.
+          // Border dots (low m) pushed toward straw end (+0.34, reduced from +0.42 for
+          // 4-stop palette so borders reach soft straw without flooding the whole range);
+          // inner dots sweep the darker green half.
           const edgeFactor = Math.max(0, 1 - (m - 0.12) / 0.38);
-          const hueWave    = Math.min(1, baseHue + edgeFactor * 0.42);
+          const hueWave    = Math.min(1, baseHue + edgeFactor * 0.34);
 
           const r  = m * maxR * breathe;
           const cx = (xi + 0.5) * cellW;
