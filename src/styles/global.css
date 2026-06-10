@@ -5,11 +5,13 @@
 @import "tailwindcss";
 
 @theme {
-  /* Palette — Field & Data */
-  --color-paper:  #F7F6F1;
-  --color-ink:    #0B0F14;
-  --color-soil:   #3A2E1F;
-  --color-data:   #1E5FBF;
+  /* Palette — Field & Data (light defaults) */
+  --color-paper:   #F7F6F1;
+  --color-surface: #F7F6F1;  /* card/elevated surface — same as paper in light */
+  --color-glow:    #FFFFFF;   /* top "lit-from-above" highlight */
+  --color-ink:     #0B0F14;
+  --color-soil:    #3A2E1F;
+  --color-data:    #1E5FBF;
   --color-wheat:     #C9A24B;
   --color-leaf:      #3E6B4A;
   --color-stem:      #2D5016;
@@ -37,12 +39,25 @@
   box-sizing: border-box;
 }
 
+/* ─── Dark theme override ──────────────────────────────────────────────────── */
+:root[data-theme="dark"] {
+  --color-paper:   #221208;
+  --color-surface: #2E1A0E;
+  --color-glow:    #3A2010;
+  --color-ink:     #ECE6DA;
+  --color-soil:    #A99D8B;
+  --color-data:    #7FB0E8;
+  --color-wheat:   #D4B05E;
+  --color-leaf:    #6FAE7C;
+  color-scheme: dark;
+}
+
 html {
   background-color: var(--color-paper);
   /* Whisper focal gradient: barely perceptible lit-from-above warmth */
   background-image: radial-gradient(
     ellipse 120% 60% at 50% 0%,
-    color-mix(in srgb, var(--color-paper) 96%, #fff) 0%,
+    color-mix(in srgb, var(--color-paper) 96%, var(--color-glow)) 0%,
     var(--color-paper) 65%
   );
   background-attachment: fixed;

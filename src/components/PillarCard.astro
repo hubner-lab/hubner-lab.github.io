@@ -17,12 +17,12 @@ interface Props {
   organisms?: string[];
 }
 
-const { title, body, canvasId, viz = 'topo', img, imgAlt = '', imgFit = 'contain', imgBg = '#fff', freq = 0.12, speed = 0.004, seed = 0, organisms } = Astro.props;
+const { title, body, canvasId, viz = 'topo', img, imgAlt = '', imgFit = 'contain', imgBg = 'transparent', freq = 0.12, speed = 0.004, seed = 0, organisms } = Astro.props;
 ---
 
 <article
   class="section-enter rounded-2xl overflow-hidden border"
-  style="border-color: color-mix(in srgb, var(--color-soil) 15%, transparent);"
+  style="border-color: color-mix(in srgb, var(--color-soil) 15%, transparent); background-color: var(--color-surface);"
 >
   {img
     ? <div style={`height:160px; overflow:hidden; background:${imgBg}; display:flex; align-items:center; justify-content:center;`}>

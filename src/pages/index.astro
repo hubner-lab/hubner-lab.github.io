@@ -43,7 +43,9 @@ const latestNews = allNews
           </a>
           <a
             href={`${base}/publications`}
-            class="cursor-pointer px-5 py-2.5 rounded-full font-medium text-sm no-underline border transition-colors duration-200 hover:bg-black/5"
+            class="cursor-pointer px-5 py-2.5 rounded-full font-medium text-sm no-underline border transition-colors duration-200"
+            onmouseover="this.style.backgroundColor='color-mix(in srgb, var(--color-ink) 8%, transparent)'"
+            onmouseout="this.style.backgroundColor=''"
             style="border-color: var(--color-soil); color: var(--color-soil);"
           >
             Publications

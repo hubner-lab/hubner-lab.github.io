@@ -20,6 +20,13 @@ const base = import.meta.env.BASE_URL;
     <meta name="description" content={description} />
     <link rel="icon" type="image/svg+xml" href={`${base}/favicon.svg`} />
     <title>{title} | Hübner Lab</title>
+    <!-- No-flash theme script: runs before first paint, defaults to dark -->
+    <script is:inline>
+      (function() {
+        var t = localStorage.getItem('theme') || 'dark';
+        document.documentElement.dataset.theme = t;
+      })();
+    </script>
   </head>
   <body style="background-color: var(--color-paper);">
     <Nav />

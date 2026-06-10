@@ -1,4 +1,5 @@
 ---
+import ThemeToggle from './ThemeToggle.astro';
 const base = import.meta.env.BASE_URL;
 
 const links = [
@@ -16,8 +17,8 @@ const current = Astro.url.pathname;
   aria-label="Main navigation"
   class="fixed top-4 left-4 right-4 z-50 flex items-center justify-between gap-4
          rounded-full px-5 py-2.5
-         backdrop-blur-md border border-white/20"
-  style="background-color: color-mix(in srgb, var(--color-paper) 85%, transparent);"
+         backdrop-blur-md border"
+  style="background-color: color-mix(in srgb, var(--color-paper) 85%, transparent); border-color: color-mix(in srgb, var(--color-ink) 12%, transparent);"
 >
   <!-- Logo / home link -->
   <a
@@ -29,7 +30,8 @@ const current = Astro.url.pathname;
     Hübner Lab
   </a>
 
-  <!-- Links -->
+  <!-- Links + theme toggle -->
+  <div class="flex items-center gap-1">
   <ul class="flex items-center gap-1 list-none m-0 p-0" role="list">
     {links.map(({ href, label }) => {
       const isActive = current.startsWith(href.replace(base, '') || '/') && href !== (base || '/');
@@ -49,6 +51,8 @@ const current = Astro.url.pathname;
       );
     })}
   </ul>
+  <ThemeToggle />
+  </div>
 </nav>
 
 <!-- Spacer so content isn't hidden under the fixed nav -->

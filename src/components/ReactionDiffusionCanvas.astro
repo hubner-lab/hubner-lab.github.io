@@ -29,13 +29,22 @@ const {
 </div>
 
 <script>
-  import { startReactionDiffusion } from './reactionDiffusion.ts';
+  import { startReactionDiffusion, PALETTE_LIGHT, PALETTE_DARK } from './reactionDiffusion.ts';
   import type { PresetKey } from './reactionDiffusion.ts';
 
+  function currentPalette() {
+    return document.documentElement.dataset.theme === 'dark' ? PALETTE_DARK : PALETTE_LIGHT;
+  }
+
   document.querySelectorAll<HTMLCanvasElement>('canvas[data-rd-preset]').forEach((canvas) => {
-    startReactionDiffusion({
+    const instance = startReactionDiffusion({
       canvas,
       preset: (canvas.dataset.rdPreset ?? 'coral') as PresetKey,
+      palette: currentPalette(),
+    });
+
+    window.addEventListener('themechange', () => {
+      instance.setPalette(currentPalette());
     });
   });
 </script>

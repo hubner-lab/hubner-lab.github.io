@@ -21,13 +21,27 @@ export const PRESETS: Record<PresetKey, Preset> = {
   zebrafish: { f: 0.026,  k: 0.061,  dA: 1.0, dB: 0.5, iters: 20, seeds: 5 },
 };
 
-// Site palette (earthy botanical) passed as shader uniforms:
-// B=0 → paper,  B≈0.25 → wheat,  B≈0.55 → leaf,  B=1 → soil
-const PALETTE = {
-  paper:  [0.969, 0.965, 0.945] as [number, number, number], // #F7F6F1
-  wheat:  [0.788, 0.635, 0.294] as [number, number, number], // #C9A24B
-  leaf:   [0.243, 0.420, 0.290] as [number, number, number], // #3E6B4A
-  soil:   [0.227, 0.180, 0.122] as [number, number, number], // #3A2E1F
+// Site palette passed as shader uniforms.
+// B=0 → base,  B≈0.25 → mid-low,  B≈0.55 → mid-high,  B=1 → accent
+export type Palette = {
+  paper: [number, number, number];
+  wheat: [number, number, number];
+  leaf:  [number, number, number];
+  soil:  [number, number, number];
+};
+
+export const PALETTE_LIGHT: Palette = {
+  paper: [0.969, 0.965, 0.945], // #F7F6F1 — cream base
+  wheat: [0.788, 0.635, 0.294], // #C9A24B — gold mid-low
+  leaf:  [0.243, 0.420, 0.290], // #3E6B4A — green mid-high
+  soil:  [0.227, 0.180, 0.122], // #3A2E1F — soil filaments
+};
+
+export const PALETTE_DARK: Palette = {
+  paper: [0.133, 0.071, 0.031], // #221208 — dark soil brown base
+  wheat: [0.227, 0.180, 0.122], // #3A2E1F — warm brown mid-low
+  leaf:  [0.831, 0.690, 0.369], // #D4B05E — gold mid-high
+  soil:  [0.435, 0.682, 0.486], // #6FAE7C — green filaments
 };
 
 const SIM_SIZE = 512; // fixed simulation grid, independent of display size
@@ -176,18 +190,27 @@ function makeFBO(
 
 // ─── Main entry point ──────────────────────────────────────────────────────────
 
+export interface RDInstance {
+  stop: () => void;
+  setPalette: (p: Palette) => void;
+}
+
 export function startReactionDiffusion({
   canvas,
   preset: presetKey = 'coral',
+  palette: initialPalette,
 }: {
   canvas: HTMLCanvasElement;
   preset?: PresetKey;
-}): () => void {
+  palette?: Palette;
+}): RDInstance {
   const preset = PRESETS[presetKey] ?? PRESETS.coral;
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // Mutable palette — updated via setPalette() on theme change
+  let pal: Palette = initialPalette ?? PALETTE_LIGHT;
 
   const gl = canvas.getContext('webgl2');
-  if (!gl) return () => {};
+  if (!gl) return { stop: () => {}, setPalette: () => {} };
 
   // Enable float render targets (needed for numerical precision in Gray-Scott)
   const useFloat = !!gl.getExtension('EXT_color_buffer_float');
@@ -273,10 +296,10 @@ export function startReactionDiffusion({
     gl.activeTexture(gl.TEXTURE0);
     gl.bindTexture(gl.TEXTURE_2D, fboA.tex);
     gl.uniform1i(gl.getUniformLocation(displayProg, 'u_state'), 0);
-    gl.uniform3fv(gl.getUniformLocation(displayProg, 'u_paper'), PALETTE.paper);
-    gl.uniform3fv(gl.getUniformLocation(displayProg, 'u_wheat'), PALETTE.wheat);
-    gl.uniform3fv(gl.getUniformLocation(displayProg, 'u_leaf'),  PALETTE.leaf);
-    gl.uniform3fv(gl.getUniformLocation(displayProg, 'u_soil'),  PALETTE.soil);
+    gl.uniform3fv(gl.getUniformLocation(displayProg, 'u_paper'), pal.paper);
+    gl.uniform3fv(gl.getUniformLocation(displayProg, 'u_wheat'), pal.wheat);
+    gl.uniform3fv(gl.getUniformLocation(displayProg, 'u_leaf'),  pal.leaf);
+    gl.uniform3fv(gl.getUniformLocation(displayProg, 'u_soil'),  pal.soil);
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
   }
@@ -290,7 +313,10 @@ export function startReactionDiffusion({
   for (let i = 0; i < WARMUP; i++) simStep();
   display();
 
-  if (reducedMotion) return () => {};
+  if (reducedMotion) return {
+    stop: () => {},
+    setPalette: (p: Palette) => { pal = p; },
+  };
 
   // Normal: rAF loop, paused when off-screen
   let rafId = 0;
@@ -313,16 +339,19 @@ export function startReactionDiffusion({
   }, { threshold: 0.01 });
   io.observe(canvas);
 
-  return () => {
-    io.disconnect();
-    cancelAnimationFrame(rafId);
-    gl.deleteBuffer(quadBuf);
-    gl.deleteProgram(seedProg);
-    gl.deleteProgram(simProg);
-    gl.deleteProgram(displayProg);
-    gl.deleteTexture(fboA.tex);
-    gl.deleteTexture(fboB.tex);
-    gl.deleteFramebuffer(fboA.fbo);
-    gl.deleteFramebuffer(fboB.fbo);
+  return {
+    stop: () => {
+      io.disconnect();
+      cancelAnimationFrame(rafId);
+      gl.deleteBuffer(quadBuf);
+      gl.deleteProgram(seedProg);
+      gl.deleteProgram(simProg);
+      gl.deleteProgram(displayProg);
+      gl.deleteTexture(fboA.tex);
+      gl.deleteTexture(fboB.tex);
+      gl.deleteFramebuffer(fboA.fbo);
+      gl.deleteFramebuffer(fboB.fbo);
+    },
+    setPalette: (p: Palette) => { pal = p; },
   };
 }

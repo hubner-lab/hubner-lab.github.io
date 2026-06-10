@@ -107,16 +107,19 @@ const wrap       = document.getElementById('team-graph-wrap')!;
 const reduced    = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 // ── Palette ────────────────────────────────────────────────────────────────
-const st  = getComputedStyle(document.documentElement);
-const PAL = {
-  paper:  st.getPropertyValue('--color-paper').trim()  || '#F7F6F1',
-  wheat:  st.getPropertyValue('--color-wheat').trim()  || '#C9A24B',
-  leaf:   st.getPropertyValue('--color-leaf').trim()   || '#3E6B4A',
-  barley: st.getPropertyValue('--color-barley').trim() || '#7A9E2E',
-  stem:   st.getPropertyValue('--color-stem').trim()   || '#2D5016',
-  soil:   st.getPropertyValue('--color-soil').trim()   || '#3A2E1F',
-  data:   st.getPropertyValue('--color-data').trim()   || '#1E5FBF',
-};
+function readPAL() {
+  const st = getComputedStyle(document.documentElement);
+  return {
+    paper:  st.getPropertyValue('--color-paper').trim()  || '#F7F6F1',
+    wheat:  st.getPropertyValue('--color-wheat').trim()  || '#C9A24B',
+    leaf:   st.getPropertyValue('--color-leaf').trim()   || '#3E6B4A',
+    barley: st.getPropertyValue('--color-barley').trim() || '#7A9E2E',
+    stem:   st.getPropertyValue('--color-stem').trim()   || '#2D5016',
+    soil:   st.getPropertyValue('--color-soil').trim()   || '#3A2E1F',
+    data:   st.getPropertyValue('--color-data').trim()   || '#1E5FBF',
+  };
+}
+let PAL = readPAL();
 
 function roleColor(role: string, isAlumni: boolean): string {
   if (isAlumni) return '#7A8A6A';           // muted sage for alumni
@@ -311,4 +314,11 @@ graph.d3Force('center', null);
 
 // ── Feed static data ──────────────────────────────────────────────────────
 graph.graphData({ nodes: members, links: [] });
+
+// ── Theme change: re-read CSS vars and refresh render ─────────────────────
+window.addEventListener('themechange', () => {
+  PAL = readPAL();
+  graph.backgroundColor(PAL.paper + '00');
+  graph.resetCountdown();  // nudge force-graph to re-render
+});
 </script>
