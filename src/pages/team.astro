@@ -1,20 +1,24 @@
 ---
 import Base from '../layouts/Base.astro';
-import TeamGraph from '../components/TeamGraph.astro';
+import TeamCard from '../components/TeamCard.astro';
 import { getCollection } from 'astro:content';
 
-const allMembers = await getCollection('team');
+const all = await getCollection('team');
 
-const members = allMembers.map((m) => ({
-  id:       m.id,
-  name:     m.data.name,
-  role:     m.data.role,
-  email:    m.data.email,
-  scholar:  m.data.scholar,
-  photo:    m.data.photo,
+const people = all.map((m) => ({
+  ...m.data,
+  bio: m.body?.trim() || undefined,
+  order: m.data.order ?? 99,
   isAlumni: m.data.alumni ?? false,
-  order:    m.data.order ?? 99,
 }));
+
+const pi      = people.find((p) => p.order === 1)!;
+const current = people
+  .filter((p) => !p.isAlumni && p.order !== 1)
+  .sort((a, b) => a.order - b.order);
+const alumni  = people
+  .filter((p) => p.isAlumni)
+  .sort((a, b) => a.order - b.order);
 ---
 
 <Base title="Team" description="Meet the Hübner Lab team at Tel-Hai College and Migal.">
@@ -22,6 +26,7 @@ const members = allMembers.map((m) => ({
   <section class="relative" style="background-color: var(--color-paper);">
     <div class="container py-20">
 
+      <!-- Header -->
       <div class="section-enter max-w-2xl mb-12">
         <p class="caption mb-4">Team</p>
         <h1 style="font-size: var(--text-h1);">People</h1>
@@ -34,9 +39,79 @@ const members = allMembers.map((m) => ({
         </p>
       </div>
 
-      <div class="section-enter">
-        <TeamGraph members={members} height="580px" />
+      <!-- PI feature card -->
+      <div
+        class="section-enter flex gap-6 p-6 rounded-xl border mb-12 max-w-2xl"
+        style="border-color: color-mix(in srgb, var(--color-wheat) 35%, transparent); background-color: var(--color-surface);"
+      >
+        <!-- Avatar -->
+        <div
+          class="shrink-0 w-20 h-20 rounded-full flex items-center justify-center text-2xl font-semibold"
+          style="background-color: color-mix(in srgb, var(--color-wheat) 25%, var(--color-paper)); color: var(--color-wheat); font-family: var(--font-display);"
+        >
+          {pi.name.charAt(0)}
+        </div>
+
+        <!-- Info -->
+        <div class="flex-1 min-w-0">
+          <h2 class="text-2xl font-semibold mb-0.5" style="font-family: var(--font-display); color: var(--color-ink);">
+            {pi.name}
+          </h2>
+          <p class="caption mb-3">{pi.role}</p>
+          {pi.bio && (
+            <p class="text-sm leading-relaxed mb-3" style="color: var(--color-soil);">{pi.bio}</p>
+          )}
+          <div class="flex flex-wrap gap-4 text-sm">
+            {pi.email && (
+              <a href={`mailto:${pi.email}`} style="color: var(--color-data);">Email</a>
+            )}
+            {pi.scholar && (
+              <a
+                href={`https://scholar.google.com/citations?user=${pi.scholar}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                style="color: var(--color-data);"
+              >
+                Google Scholar
+              </a>
+            )}
+          </div>
+        </div>
       </div>
+
+      <!-- Current members grid -->
+      <div class="section-enter mb-16">
+        <p class="caption mb-6">Lab members</p>
+        <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {current.map((m) => (
+            <TeamCard
+              name={m.name}
+              role={m.role}
+              bio={m.bio}
+              email={m.email}
+              orcid={m.orcid}
+              scholar={m.scholar}
+              photo={m.photo}
+            />
+          ))}
+        </div>
+      </div>
+
+      <!-- Alumni -->
+      {alumni.length > 0 && (
+        <div class="section-enter">
+          <p class="caption mb-4">Alumni</p>
+          <ul class="flex flex-col gap-2">
+            {alumni.map((a) => (
+              <li class="text-sm" style="color: color-mix(in srgb, var(--color-soil) 70%, transparent);">
+                <span class="font-medium" style="color: var(--color-ink);">{a.name}</span>
+                <span class="mx-2" style="color: color-mix(in srgb, var(--color-soil) 40%, transparent);">—</span>
+                {a.role}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
 
     </div>
   </section>

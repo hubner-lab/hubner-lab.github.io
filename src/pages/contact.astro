@@ -1,5 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
+const base = import.meta.env.BASE_URL;
 ---
 
 <Base title="Contact" description="Contact the Hübner Lab at Tel-Hai College and Migal, Israel.">
@@ -66,21 +67,22 @@ import Base from '../layouts/Base.astro';
         </div>
       </div>
 
-      <!-- Map placeholder -->
+      <!-- Map -->
       <div class="section-enter">
         <p class="caption mb-3">Location</p>
         <div
+          id="map-box"
           class="rounded-xl overflow-hidden border"
           style="border-color: color-mix(in srgb, var(--color-soil) 15%, transparent);"
         >
-          <iframe
-            src="https://www.openstreetmap.org/export/embed.html?bbox=35.557,33.198,35.577,33.218&layer=mapnik&marker=33.208,35.567"
-            width="100%"
-            height="280"
-            style="border: none; display: block;"
+          <!-- Default: static raster image — works on all browsers, no WebGL required.
+               The inline script below upgrades to an interactive OSM iframe when WebGL is available. -->
+          <img
+            src={`${base}botanical/map_migal.png`}
+            alt="Map showing Migal – Galilee Research Institute, Kiryat Shmona, Northern Israel"
+            style="display:block;width:100%;height:280px;object-fit:cover;"
             loading="lazy"
-            title="Migal – Galilee Research Institute location"
-          ></iframe>
+          />
         </div>
         <p class="text-xs mt-2" style="color: color-mix(in srgb, var(--color-soil) 50%, transparent);">
           Kiryat Shmona, Northern Israel
@@ -88,4 +90,26 @@ import Base from '../layouts/Base.astro';
       </div>
     </div>
   </div>
+
+  <script is:inline>
+    (function () {
+      function webglOK() {
+        try {
+          var c = document.createElement('canvas');
+          return !!(window.WebGLRenderingContext &&
+            (c.getContext('webgl') || c.getContext('experimental-webgl')));
+        } catch (e) { return false; }
+      }
+      if (!webglOK()) return; // keep static image — no error box shown
+      var box = document.getElementById('map-box');
+      if (!box) return;
+      var f = document.createElement('iframe');
+      f.src = 'https://www.openstreetmap.org/export/embed.html?bbox=35.557,33.198,35.577,33.218&layer=mapnik&marker=33.208,35.567';
+      f.title = 'Migal – Galilee Research Institute location';
+      f.loading = 'lazy';
+      f.style.cssText = 'border:none;display:block;width:100%;height:280px;';
+      box.innerHTML = '';
+      box.appendChild(f);
+    })();
+  </script>
 </Base>
