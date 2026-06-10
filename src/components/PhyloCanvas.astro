@@ -1,0 +1,52 @@
+---
+interface Props {
+  id:       string;
+  seed?:    number;
+  speed?:   number;
+  depth?:   number;
+  arcDeg?:  number;
+  shimmer?: number;
+  height?:  string;
+  class?:   string;
+}
+
+const {
+  id,
+  seed    = 0,
+  speed   = 0.16,
+  depth   = 4,
+  arcDeg  = 300,
+  shimmer = 0.5,
+  height  = '160px',
+  class: className = '',
+} = Astro.props;
+---
+
+<div class={`relative w-full overflow-hidden rounded-lg ${className}`} style={`height: ${height};`}>
+  <canvas
+    id={id}
+    data-phylo
+    data-seed={seed}
+    data-speed={speed}
+    data-depth={depth}
+    data-arc-deg={arcDeg}
+    data-shimmer={shimmer}
+    class="absolute inset-0 w-full h-full"
+    aria-hidden="true"
+  ></canvas>
+</div>
+
+<script>
+  import { startPhyloCanvas } from './phyloCanvas.ts';
+
+  function initPhylo(canvas: HTMLCanvasElement) {
+    const seed    = parseFloat(canvas.dataset.seed    ?? '0');
+    const speed   = parseFloat(canvas.dataset.speed   ?? '0.16');
+    const depth   = parseInt(canvas.dataset.depth     ?? '4', 10);
+    const arcDeg  = parseFloat(canvas.dataset.arcDeg  ?? '300');
+    const shimmer = parseFloat(canvas.dataset.shimmer ?? '0.5');
+    startPhyloCanvas({ canvas, seed, speed, depth, arcDeg, shimmer });
+  }
+
+  document.querySelectorAll<HTMLCanvasElement>('canvas[data-phylo]').forEach(initPhylo);
+</script>
