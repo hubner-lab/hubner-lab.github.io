@@ -169,7 +169,7 @@ async function prepareWordMasks(
   const hubCenterPx = leftPx + wHub / 2;
   const labCenterPx = leftPx + wHub + gap + wLab / 2;
 
-  const yRatio = 0.38; // upper-ish placement to leave room for overlay text
+  const yRatio = 0.30; // center in sky portion of background video
 
   const [hub, lab] = await Promise.all([
     buildWordMask('Hübner', cols, rows, canvasW, canvasH,
