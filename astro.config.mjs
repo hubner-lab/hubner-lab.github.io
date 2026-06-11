@@ -4,8 +4,7 @@ import tailwindcss from '@tailwindcss/vite';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://hubnerlab.github.io',
-  base: '/HubnerLabWebSite',
+  site: 'https://hubner-lab.github.io',
   trailingSlash: 'ignore',
   vite: {
     plugins: [tailwindcss()],
