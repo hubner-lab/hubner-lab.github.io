@@ -26,10 +26,10 @@ const year = new Date().getFullYear();
       <p class="caption mb-3">Explore</p>
       <ul class="list-none m-0 p-0 flex flex-col gap-1.5">
         {[
-          { href: `${base}/research`,     label: 'Research' },
-          { href: `${base}/team`,         label: 'Team' },
-          { href: `${base}/publications`, label: 'Publications' },
-          { href: `${base}/news`,         label: 'News' },
+          { href: `${base}research`,     label: 'Research' },
+          { href: `${base}team`,         label: 'Team' },
+          { href: `${base}publications`, label: 'Publications' },
+          { href: `${base}news`,         label: 'News' },
         ].map(({ href, label }) => (
           <li>
             <a href={href} style="color: var(--color-soil); font-size: 0.9375rem;" class="no-underline hover:underline">

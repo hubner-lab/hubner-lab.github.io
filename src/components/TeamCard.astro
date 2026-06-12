@@ -25,7 +25,7 @@ const base = import.meta.env.BASE_URL;
     style="background-color: color-mix(in srgb, var(--color-wheat) 20%, var(--color-paper));"
   >
     {photo
-      ? <img src={`${base}/team/${photo}`} alt={name} class="w-full h-full object-cover" loading="lazy" />
+      ? <img src={`${base}team/${photo}`} alt={name} class="w-full h-full object-cover" loading="lazy" />
       : <div class="w-full h-full flex items-center justify-center text-xl font-semibold" style="color: var(--color-wheat); font-family: var(--font-display);">
           {name.charAt(0)}
         </div>

@@ -16,7 +16,7 @@ const latestNews = allNews
 <Base title="Home">
   <!-- Hero -->
   <section class="relative">
-    <TixyCanvas id="hero-tixy" height="clamp(520px, 72vh, 680px)" bgVideo={`${base}/botanical/wheat_hero.mp4`} />
+    <TixyCanvas id="hero-tixy" height="clamp(520px, 72vh, 680px)" bgVideo={`${base}botanical/wheat_hero.mp4`} />
 
     <!-- sr-only wordmark for SEO/a11y — visually the dot grid spells the name -->
     <h1 class="sr-only">Hübner Lab — Evolutionary and Landscape Genomics</h1>
@@ -35,14 +35,14 @@ const latestNews = allNews
         </p>
         <div class="flex gap-3 flex-wrap">
           <a
-            href={`${base}/research`}
+            href={`${base}research`}
             class="cursor-pointer px-5 py-2.5 rounded-full font-medium text-sm no-underline shadow-sm hover:shadow-md transition-all duration-200 hover:opacity-90"
             style="background-color: var(--color-ink); color: var(--color-paper);"
           >
             Our Research
           </a>
           <a
-            href={`${base}/publications`}
+            href={`${base}publications`}
             class="cursor-pointer px-5 py-2.5 rounded-full font-medium text-sm no-underline border transition-colors duration-200"
             onmouseover="this.style.backgroundColor='color-mix(in srgb, var(--color-ink) 8%, transparent)'"
             onmouseout="this.style.backgroundColor=''"
@@ -77,7 +77,7 @@ const latestNews = allNews
     <section class="container mt-24">
       <div class="flex items-baseline justify-between mb-8">
         <p class="caption">Latest News</p>
-        <a href={`${base}/news`} style="color: var(--color-data); font-size: 0.875rem;">All news →</a>
+        <a href={`${base}news`} style="color: var(--color-data); font-size: 0.875rem;">All news →</a>
       </div>
       <div class="grid gap-4 md:grid-cols-3">
         {latestNews.map((post) => (
