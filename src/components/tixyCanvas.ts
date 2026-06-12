@@ -28,6 +28,10 @@ const WORDMARK_COLORS: [number, number, number][] = [
   [232, 210,  58],  // #E8D23A soft straw
 ];
 
+// ── Responsive grid ──────────────────────────────────────────────────────────
+/** Target dot-cell size in CSS px — drives adaptive col/row count on resize. */
+const TARGET_CELL_PX = 9;
+
 // ── Helpers ─────────────────────────────────────────────────────────────────
 function lerp(a: number, b: number, t: number): number {
   return a + (b - a) * t;
@@ -187,10 +191,22 @@ async function prepareWordMasks(
 export function startTixyCanvas(opts: TixyCanvasOptions): () => void {
   const {
     canvas,
-    cols      = 140,
-    rows      = 40,
     wordSpeed = 0.012,
   } = opts;
+
+  // Grid caps — prop values become the upper bound; actual live values shrink
+  // on narrow viewports so dots stay visible (~TARGET_CELL_PX-sized cells).
+  const maxCols = opts.cols ?? 140;
+  const maxRows = opts.rows ?? 40;
+  let cols = maxCols;
+  let rows = maxRows;
+
+  /** Compute col/row counts giving ~TARGET_CELL_PX cells, capped at maxima. */
+  function computeGrid(W: number, H: number): { newCols: number; newRows: number } {
+    const newCols = Math.min(maxCols, Math.max(24, Math.round(W / TARGET_CELL_PX)));
+    const newRows = Math.min(maxRows, Math.max(8,  Math.round(H / TARGET_CELL_PX)));
+    return { newCols, newRows };
+  }
 
   const ctx     = canvas.getContext('2d')!;
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -201,7 +217,7 @@ export function startTixyCanvas(opts: TixyCanvasOptions): () => void {
 
   // Dark backing plate — cached offscreen, rebuilt only when W/H/dpr change
   let plateCanvas: HTMLCanvasElement | null = null;
-  let plateW = 0, plateH = 0, plateDpr = 0;
+  let plateW = 0, plateH = 0, plateDpr = 0, plateCols = 0, plateRows = 0;
 
   // ── Shadow plate builder ──────────────────────────────────────────────────
   // Stamps dark dots at static (non-breathing) radius into an offscreen canvas,
@@ -248,16 +264,45 @@ export function startTixyCanvas(opts: TixyCanvasOptions): () => void {
     bctx.filter = 'none';           // always reset filter
 
     plateCanvas = blurred;
-    plateW = W; plateH = H; plateDpr = dpr;
+    plateW = W; plateH = H; plateDpr = dpr; plateCols = cols; plateRows = rows;
   }
 
   // ── Resize ────────────────────────────────────────────────────────────────
+  let rebuildTimer = 0;
+
   function resize() {
     const dpr  = window.devicePixelRatio || 1;
     const rect = canvas.getBoundingClientRect();
     canvas.width  = rect.width  * dpr;
     canvas.height = rect.height * dpr;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0); // reset + scale in one call
+
+    // Recompute adaptive grid from live canvas size.  If dimensions changed
+    // AND masks already exist (not the first build), schedule a debounced
+    // rebuild — font rasterisation is expensive, 200 ms debounce avoids
+    // thrashing during window-resize drags.  The initial build is driven
+    // by the init block below (which calls resize() first to set cols/rows).
+    const { newCols, newRows } = computeGrid(rect.width, rect.height);
+    if (newCols !== cols || newRows !== rows) {
+      cols = newCols;
+      rows = newRows;
+      plateCanvas = null; // stale geometry — force shadow-plate rebuild
+      const hadMasks = wordMasks !== null;
+      wordMasks = null;   // clear stale masks so draw() exits early (prevents
+                          // out-of-bounds when cols changed but masks haven't rebuilt yet)
+      if (hadMasks) {
+        clearTimeout(rebuildTimer);
+        rebuildTimer = window.setTimeout(() => {
+          const r = canvas.getBoundingClientRect();
+          if (r.width > 0 && r.height > 0) {
+            prepareWordMasks(cols, rows, r.width, r.height).then((masks) => {
+              wordMasks = masks;
+              draw();
+            });
+          }
+        }, 200);
+      }
+    }
   }
 
   // ── Draw ──────────────────────────────────────────────────────────────────
@@ -279,7 +324,7 @@ export function startTixyCanvas(opts: TixyCanvasOptions): () => void {
     // Rebuild only when geometry or DPR changes; blit with one drawImage per frame.
     // Plate blit happens BEFORE the glow is set so the plate itself is not glowed.
     const dpr = window.devicePixelRatio || 1;
-    if (!plateCanvas || plateW !== W || plateH !== H || plateDpr !== dpr) {
+    if (!plateCanvas || plateW !== W || plateH !== H || plateDpr !== dpr || plateCols !== cols || plateRows !== rows) {
       buildShadowPlate(wordMasks, W, H, dpr);
     }
     if (plateCanvas) ctx.drawImage(plateCanvas, 0, 0, W, H); // logical dest — DPR-safe

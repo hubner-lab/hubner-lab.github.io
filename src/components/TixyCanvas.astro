@@ -24,21 +24,40 @@ const {
 } = Astro.props;
 
 // Derive WebM path from MP4 path (same name, different ext) for <source> fallback
-const bgVideoWebm = bgVideo ? bgVideo.replace(/\.mp4$/, '.webm') : '';
+const bgVideoWebm   = bgVideo ? bgVideo.replace(/\.mp4$/, '.webm')        : '';
+// Poster still — shown while video buffers and when autoplay is blocked (Low Power Mode, etc.)
+const bgVideoPoster = bgVideo ? bgVideo.replace(/\.mp4$/, '_poster.jpg') : '';
 ---
 
 <div class={`relative w-full overflow-hidden rounded-lg ${className}`} style={`height: ${height};`}>
   {bgVideo ? (
     <>
-      <!-- Looping video backdrop — autoplay muted so browsers allow it -->
+      <!-- Looping video backdrop — autoplay muted so browsers allow it.
+           poster= shows a still frame immediately while the video buffers.
+           webkit-playsinline covers legacy in-app webviews.
+           The <img> below is hidden by default; JS swaps it in when autoplay
+           is blocked (iOS Low Power Mode, Data Saver, user pref). -->
       <video
+        id={`${id}-bg-video`}
+        data-poster-img={`${id}-bg-poster`}
         class="absolute inset-0 w-full h-full object-cover"
-        autoplay muted loop playsinline
+        autoplay muted loop playsinline webkit-playsinline
+        poster={bgVideoPoster}
+        preload="metadata"
         aria-hidden="true"
       >
         {bgVideoWebm && <source src={bgVideoWebm} type="video/webm" />}
         <source src={bgVideo} type="video/mp4" />
       </video>
+      <!-- Autoplay-blocked fallback — hidden by default, revealed by JS -->
+      <img
+        id={`${id}-bg-poster`}
+        src={bgVideoPoster}
+        alt=""
+        aria-hidden="true"
+        hidden
+        class="absolute inset-0 w-full h-full object-cover"
+      />
       <!-- Soft dark scrim: halo behind wordmark band + top/bottom fades -->
       <div
         class="absolute inset-0 pointer-events-none"
@@ -89,5 +108,21 @@ const bgVideoWebm = bgVideo ? bgVideo.replace(/\.mp4$/, '.webm') : '';
       wordSpeed:    parseFloat(canvas.dataset.tixyWordSpeed    ?? '0.012'),
       ambientSpeed: parseFloat(canvas.dataset.tixyAmbientSpeed ?? '0.002'),
     });
+  });
+
+  // Kill the native play button when autoplay is blocked (iOS Low Power Mode,
+  // Data Saver, browser policy). video.play() returns a Promise that rejects
+  // with NotAllowedError in that case — swap to the still <img> fallback.
+  document.querySelectorAll<HTMLVideoElement>('video[data-poster-img]').forEach((video) => {
+    const imgId = video.dataset.posterImg;
+    const img = imgId ? (document.getElementById(imgId) as HTMLImageElement | null) : null;
+    if (!img) return;
+    const p = video.play();
+    if (p !== undefined) {
+      p.catch(() => {
+        video.hidden = true;
+        img.hidden = false;
+      });
+    }
   });
 </script>
