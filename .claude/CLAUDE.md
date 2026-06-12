@@ -1,3 +1,10 @@
+## Git / Deployment
+
+- **Only remote is `hubnerlab`** → `git@github.com:hubner-lab/hubner-lab.github.io.git`
+- All commits push to `hubnerlab` remote: `git push hubnerlab main`
+- `PotapenkoEugene/HubnerLabWebSite` remote (`origin`) has been removed — do not re-add it
+- Push to `hubnerlab` triggers GitHub Actions deploy to the live site (`hubner-lab.github.io`)
+
 ## Active Obsidian Project
 - Project: HubnerLabWebSite
 - File: ~/Orthidian/projects/HubnerLabWebSite.md
