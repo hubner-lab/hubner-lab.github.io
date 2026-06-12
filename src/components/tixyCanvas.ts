@@ -138,6 +138,10 @@ async function buildWordMask(
 /**
  * Pre-measure the two words so they don't overlap when rendered.
  * Returns per-word xRatio (center point) and the shared fontSize.
+ *
+ * On narrow viewports (< 640 px wide) the words stack vertically so each
+ * word fills the canvas width — roughly doubles the per-letter dot count
+ * and keeps the wordmark readable on portrait phones.
  */
 async function prepareWordMasks(
   cols: number,
@@ -145,6 +149,38 @@ async function prepareWordMasks(
   canvasW: number,
   canvasH: number,
 ): Promise<WordMask[]> {
+  // ── Stacked layout (mobile: portrait phones) ────────────────────────────
+  if (canvasW < 640) {
+    let fontSize = Math.floor(canvasH * 0.30); // two lines → smaller per-line budget
+    await document.fonts.load(`700 ${fontSize}px "Fraunces Variable"`);
+
+    const tmp = document.createElement('canvas').getContext('2d')!;
+    tmp.font = `700 ${fontSize}px "Fraunces Variable", Georgia, serif`;
+    let wHub     = tmp.measureText('Hübner').width;
+    let wLab     = tmp.measureText('Lab').width;
+    const wWidest = Math.max(wHub, wLab);
+
+    // Fit the wider word within 90% of canvas width; scale both uniformly.
+    const maxWidth = canvasW * 0.90;
+    if (wWidest > maxWidth) {
+      fontSize = Math.floor(fontSize * (maxWidth / wWidest));
+      tmp.font = `700 ${fontSize}px "Fraunces Variable", Georgia, serif`;
+      wHub = tmp.measureText('Hübner').width; // re-measure (for consistency)
+    }
+
+    // Both words horizontally centered; placed in the upper sky band.
+    // yHub ≈ 0.24, yLab ≈ 0.50 — clear of the bottom tagline (absolute bottom-10).
+    const yHub = 0.24;
+    const yLab = 0.50;
+
+    const [hub, lab] = await Promise.all([
+      buildWordMask('Hübner', cols, rows, canvasW, canvasH, 0.5, yHub, fontSize, 0),
+      buildWordMask('Lab',    cols, rows, canvasW, canvasH, 0.5, yLab, fontSize, Math.PI),
+    ]);
+    return [hub, lab];
+  }
+
+  // ── Side-by-side layout (desktop / landscape) ───────────────────────────
   let fontSize = Math.floor(canvasH * 0.40);
   await document.fonts.load(`700 ${fontSize}px "Fraunces Variable"`);
 
