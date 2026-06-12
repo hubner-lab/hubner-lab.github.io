@@ -22,7 +22,7 @@ export interface TixyCanvasOptions {
 // Deeper, darker plant-green range to correspond with the warm dark theme;
 // yellow end present but calmer than the previous neon straw.
 const WORDMARK_COLORS: [number, number, number][] = [
-  [ 30,  77,  20],  // #1E4D14 dark forest green
+  [ 65, 130,  28],  // #41821C bright forest green
   [ 62, 139,  30],  // #3E8B1E leaf green
   [143, 181,  46],  // #8FB52E lime
   [232, 210,  58],  // #E8D23A soft straw
