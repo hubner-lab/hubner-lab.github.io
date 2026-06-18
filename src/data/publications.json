@@ -53,7 +53,7 @@
     "authors": "Anna Halpin-McCormick and Quinn Campbell and Sónia Negrão and Peter L Morrell and Sariel Hübner and Jeffrey L Neyhart and Michael B Kantar",
     "venue": "Communications biology",
     "url": "https://www.nature.com/articles/s42003-025-08045-4",
-    "citations": 8
+    "citations": 9
   },
   {
     "year": 2025,
@@ -89,18 +89,18 @@
   },
   {
     "year": 2024,
-    "title": "Back to the Future: Environmental genomic selection to take advantage of polygenic local adaptation",
-    "authors": "Anna Halpin-McCormick and Quinn Campbell and Sónia Negrão and Peter L Morrell and Sariel Hubner and Jeff Neyhart and Michael Kantar",
-    "venue": "bioRxiv",
-    "url": "https://www.biorxiv.org/content/10.1101/2024.10.09.617488.abstract",
-    "citations": 3
-  },
-  {
-    "year": 2024,
     "title": "Climate resilience conserved in global germplasm repositories: Picking the most promising parents for agile plant breeding",
     "authors": "Quinn Campbell and Nora Castaneda-Alvarez and Ryan Domingo and Eric Bishop-von Wettberg and Bryan Runck and Hervé Nandkangré and Anna McCormick and Nathan Fumia and Jeffrey Neyhart and Benjamin Kilian and Peterson Wambugu and Desterio Nyamongo and Sariel Hübner and Sidney Sitar and Addie Thompson and Loren Rieseberg and Michael A Gore and Michael Kantar",
     "venue": "bioRxiv",
     "url": "https://www.biorxiv.org/content/10.1101/2024.05.11.593573.abstract",
+    "citations": 4
+  },
+  {
+    "year": 2024,
+    "title": "Back to the Future: Environmental genomic selection to take advantage of polygenic local adaptation",
+    "authors": "Anna Halpin-McCormick and Quinn Campbell and Sónia Negrão and Peter L Morrell and Sariel Hubner and Jeff Neyhart and Michael Kantar",
+    "venue": "bioRxiv",
+    "url": "https://www.biorxiv.org/content/10.1101/2024.10.09.617488.abstract",
     "citations": 3
   },
   {
@@ -125,7 +125,7 @@
     "authors": "Yang Dong and Shengchang Duan and Qiuju Xia and Zhenchang Liang and Xiao Dong and Kristine Margaryan and Mirza Musayev and Svitlana Goryslavets and Goran Zdunić and Pierre-François Bert and Thierry Lacombe and Erika Maul and Peter Nick and Kakha Bitskinashvili and György Dénes Bisztray and Elyashiv Drori and Gabriella De Lorenzis and Jorge Cunha and Carmen Florentina Popescu and Rosa Arroyo-Garcia and Claire Arnold and Ali Ergül and Yifan Zhu and Chao Ma and Shufen Wang and Siqi Liu and Liu Tang and Chunping Wang and Dawei Li and Yunbing Pan and Jingxian Li and Ling Yang and Xuzhen Li and Guisheng Xiang and Zijiang Yang and Baozheng Chen and Zhanwu Dai and Yi Wang and Arsen Arakelyan and Varis Kuliyev and Gennady Spotar and Nabil Girollet and Serge Delrot and Nathalie Ollat and Patrice This and Cécile Marchal and Gautier Sarah and Valérie Laucou and Roberto Bacilieri and Franco Röckel and Pingyin Guan and Andreas Jung and Michael Riemann and Levan Ujmajuridze and Tekle Zakalashvili and David Maghradze and Maria Höhn and Gizella Jahnke and Erzsébet Kiss and Tamás Deák and Oshrit Rahimi and Sariel Hübner and Fabrizio Grassi and Francesco Mercati and Francesco Sunseri and José Eiras-Dias and Anamaria Mirabela Dumitru and David Carrasco and Alberto Rodriguez-Izquierdo and Gregorio Muñoz and Tamer Uysal and Cengiz Özer and Kemal Kazan and Meilong Xu and Yunyue Wang and Shusheng Zhu and Jiang Lu and Maoxiang Zhao and Lei Wang and Songtao Jiu and Ying Zhang and Lei Sun and Huanming Yang and Ehud Weiss and Shiping Wang and Youyong Zhu and Shaohua Li and Jun Sheng and Wei Chen",
     "venue": "Science",
     "url": "https://www.science.org/doi/abs/10.1126/science.add8655",
-    "citations": 324
+    "citations": 325
   },
   {
     "year": 2023,
@@ -341,7 +341,7 @@
     "authors": "Hélène Badouin and Jérôme Gouzy and Christopher J Grassa and Florent Murat and S Evan Staton and Ludovic Cottret and Christine Lelandais-Brière and Gregory L Owens and Sébastien Carrère and Baptiste Mayjonade and Ludovic Legrand and Navdeep Gill and Nolan C Kane and John E Bowers and Sariel Hubner and Arnaud Bellec and Aurélie Bérard and Hélène Bergès and Nicolas Blanchet and Marie-Claude Boniface and Dominique Brunel and Olivier Catrice and Nadia Chaidir and Clotilde Claudel and Cecile Donnadieu and Thomas Faraut and Ghislain Fievet and Nicolas Helmstetter and Matthew King and Steven J Knapp and Zhao Lai and Marie-Christine Le Paslier and Yannick Lippi and Lolita Lorenzon and Jennifer R Mandel and Gwenola Marage and Gwenaëlle Marchand and Elodie Marquand and Emmanuelle Bret-Mestries and Evan Morien and Savithri Nambeesan and Thuy Nguyen and Prune Pegot-Espagnet and Nicolas Pouilly and Frances Raftis and Erika Sallet and Thomas Schiex and Justine Thomas and Céline Vandecasteele and Didier Vares and Felicity Vear and Sonia Vautrin and Martin Crespi and Brigitte Mangin and John M Burke and Jerome Salse and Stéphane Muños and Patrick Vincourt and Loren H Rieseberg and Nicolas B Langlade",
     "venue": "Nature",
     "url": "https://www.nature.com/articles/nature22380",
-    "citations": 884
+    "citations": 885
   },
   {
     "year": 2016,
@@ -349,7 +349,7 @@
     "authors": "Marco Todesco and Mariana A Pascual and Gregory L Owens and Katherine L Ostevik and Brook T Moyers and Sariel Hübner and Sylvia M Heredia and Min A Hahn and Celine Caseys and Dan G Bock and Loren H Rieseberg",
     "venue": "",
     "url": "https://onlinelibrary.wiley.com/doi/abs/10.1111/eva.12367",
-    "citations": 929
+    "citations": 932
   },
   {
     "year": 2016,
@@ -357,7 +357,7 @@
     "authors": "Dan G Bock and Celine Caseys and Roger D Cousens and Min A Hahn and Sylvia M Heredia and Sariel Hübner and Kathryn G Turner and Kenneth D Whitney and Loren H Rieseberg",
     "venue": "",
     "url": "https://onlinelibrary.wiley.com/doi/abs/10.1002/9781119072799.ch20",
-    "citations": 537
+    "citations": 536
   },
   {
     "year": 2016,
@@ -365,14 +365,14 @@
     "authors": "Martin Mascher and Verena J Schuenemann and Uri Davidovich and Nimrod Marom and Axel Himmelbach and Sariel Hübner and Abraham Korol and Michal David and Ella Reiter and Simone Riehl and Mona Schreiber and Samuel H Vohr and Richard E Green and Ian K Dawson and Joanne Russell and Benjamin Kilian and Gary J Muehlbauer and Robbie Waugh and Tzion Fahima and Johannes Krause and Ehud Weiss and Nils Stein",
     "venue": "Nature Genetics",
     "url": "https://www.nature.com/articles/ng.3611",
-    "citations": 196
+    "citations": 195
   },
   {
     "year": 2016,
     "title": "Invasion genetics: the Baker and Stebbins legacy",
     "authors": "Spencer CH Barrett and Robert I Colautti and Katrina M Dlugosch and Loren H Rieseberg",
     "venue": "",
-    "url": "https://books.google.com/books?hl=en&lr=&id=AVSvDAAAQBAJ&oi=fnd&pg=PA13&dq=info:SHidAIJpmjoJ:scholar.google.com&ots=pS7NXm-LvT&sig=MUTPBEVqebuMOa1628A8WQUSHbE",
+    "url": "https://books.google.com/books?hl=en&lr=&id=AVSvDAAAQBAJ&oi=fnd&pg=PA13&dq=info:SHidAIJpmjoJ:scholar.google.com&ots=pS7NZr1MyP&sig=gAsmjwXbUlg1osUvttdyqIp89O8",
     "citations": 30
   },
   {
@@ -388,7 +388,7 @@
     "title": "WHAT WE STILL DON'T KNOW ABOUT INVASION GENETICS",
     "authors": "Min A Hahn and Sylvia M Heredia and Sariel Hübner and Kathryn G Turner and Kenneth D Whitney and Loren H Rieseberg",
     "venue": "Invasion Genetics: The Baker and Stebbins Legacy",
-    "url": "https://books.google.com/books?hl=en&lr=&id=AVSvDAAAQBAJ&oi=fnd&pg=PA346&dq=info:ZOj1zZlAjLQJ:scholar.google.com&ots=pS7NXm-MvV&sig=70JgaPfa4F6P3RqLvhq2-zeO748",
+    "url": "https://books.google.com/books?hl=en&lr=&id=AVSvDAAAQBAJ&oi=fnd&pg=PA346&dq=info:ZOj1zZlAjLQJ:scholar.google.com&ots=pS7NZr1NyO&sig=97eU3B_on9QoM0A1y6aQyABKrys",
     "citations": 0
   },
   {
