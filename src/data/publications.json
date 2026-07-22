@@ -5,6 +5,14 @@
     "authors": "Yael Lev-Mirom and Nimrod Ashkenazy and Valentyna Klymiuk and Jennifer Ens and Krysta Wiebe and Verena J Schuenemann and Tamar Eilam and Sharon Kulikovsky and Bar A Lavi and Torsten Günther and Tamar Krugman and Hanan Sela and Eitan Klein and Amir Ganor and Uri Davidovich and Roi Porat and Erez Ben-Yosef and Michal David and Sivan Frankin and Roi Ben-David and Emile Cavalet-Giorsa and Simon G Krattinger and Abraham Korol and Martin Mascher and Axel Himmelbach and Nils Stein and Johannes Krause and Assaf Distelfeld and Ehud Weiss and Tzion Fahima and Curtis J Pozniak and Sariel Hübner",
     "venue": "Nature plants",
     "url": "https://www.nature.com/articles/s41477-026-02283-y",
+    "citations": 2
+  },
+  {
+    "year": 2026,
+    "title": "Intraspecific genome size variation is attributed to adaptive silencing of transposable elements in Hordeum species",
+    "authors": "Evgenii Potapenko and Bar Shermeister and Tali Mandel and Sariel Hübner",
+    "venue": "Molecular Biology and Evolution",
+    "url": "https://academic.oup.com/mbe/article-pdf/doi/10.1093/molbev/msag051/67287342/msag051.pdf",
     "citations": 1
   },
   {
@@ -25,10 +33,10 @@
   },
   {
     "year": 2026,
-    "title": "Intraspecific genome size variation is attributed to adaptive silencing of transposable elements in Hordeum species",
-    "authors": "Evgenii Potapenko and Bar Shermeister and Tali Mandel and Sariel Hübner",
-    "venue": "Molecular Biology and Evolution",
-    "url": "https://academic.oup.com/mbe/article-pdf/doi/10.1093/molbev/msag051/67287342/msag051.pdf",
+    "title": "The transposable elements syndrome of wheat domestication",
+    "authors": "S Hübner",
+    "venue": "",
+    "url": "https://europepmc.org/article/ppr/ppr1226752",
     "citations": 0
   },
   {
@@ -125,7 +133,7 @@
     "authors": "Yang Dong and Shengchang Duan and Qiuju Xia and Zhenchang Liang and Xiao Dong and Kristine Margaryan and Mirza Musayev and Svitlana Goryslavets and Goran Zdunić and Pierre-François Bert and Thierry Lacombe and Erika Maul and Peter Nick and Kakha Bitskinashvili and György Dénes Bisztray and Elyashiv Drori and Gabriella De Lorenzis and Jorge Cunha and Carmen Florentina Popescu and Rosa Arroyo-Garcia and Claire Arnold and Ali Ergül and Yifan Zhu and Chao Ma and Shufen Wang and Siqi Liu and Liu Tang and Chunping Wang and Dawei Li and Yunbing Pan and Jingxian Li and Ling Yang and Xuzhen Li and Guisheng Xiang and Zijiang Yang and Baozheng Chen and Zhanwu Dai and Yi Wang and Arsen Arakelyan and Varis Kuliyev and Gennady Spotar and Nabil Girollet and Serge Delrot and Nathalie Ollat and Patrice This and Cécile Marchal and Gautier Sarah and Valérie Laucou and Roberto Bacilieri and Franco Röckel and Pingyin Guan and Andreas Jung and Michael Riemann and Levan Ujmajuridze and Tekle Zakalashvili and David Maghradze and Maria Höhn and Gizella Jahnke and Erzsébet Kiss and Tamás Deák and Oshrit Rahimi and Sariel Hübner and Fabrizio Grassi and Francesco Mercati and Francesco Sunseri and José Eiras-Dias and Anamaria Mirabela Dumitru and David Carrasco and Alberto Rodriguez-Izquierdo and Gregorio Muñoz and Tamer Uysal and Cengiz Özer and Kemal Kazan and Meilong Xu and Yunyue Wang and Shusheng Zhu and Jiang Lu and Maoxiang Zhao and Lei Wang and Songtao Jiu and Ying Zhang and Lei Sun and Huanming Yang and Ehud Weiss and Shiping Wang and Youyong Zhu and Shaohua Li and Jun Sheng and Wei Chen",
     "venue": "Science",
     "url": "https://www.science.org/doi/abs/10.1126/science.add8655",
-    "citations": 338
+    "citations": 347
   },
   {
     "year": 2023,
@@ -133,7 +141,7 @@
     "authors": "Kaichi Huang and Mojtaba Jahani and Jérôme Gouzy and Alexandra Legendre and Sébastien Carrere and José Miguel Lázaro-Guevara and Eric Gerardo González Segovia and Marco Todesco and Baptiste Mayjonade and Nathalie Rodde and Stephane Cauet and Isabelle Dufau and S Evan Staton and Nicolas Pouilly and Marie-Claude Boniface and Camille Tapy and Brigitte Mangin and Alexandra Duhnen and Veronique Gautier and Charles Poncet and Cecile Donnadieu and Tali Mandel and Sariel Hübner and John M Burke and Sonia Vautrin and Arnaud Bellec and Gregory L Owens and Nicolas Langlade and Stephane Munos and Loren H Rieseberg",
     "venue": "Proceedings of the National Academy of Sciences",
     "url": "https://www.pnas.org/doi/abs/10.1073/pnas.2205783119",
-    "citations": 80
+    "citations": 82
   },
   {
     "year": 2023,
@@ -149,7 +157,7 @@
     "authors": "Valentyna Klymiuk and Teketel Haile and Jennifer Ens and Krystalee Wiebe and Amidou N’Diaye and Andrii Fatiukha and Tamar Krugman and Roi Ben-David and Sariel Hübner and Sylvie Cloutier and Curtis J Pozniak",
     "venue": "Frontiers in Plant Science",
     "url": "https://www.frontiersin.org/journals/plant-science/articles/10.3389/fpls.2023.1145371/full",
-    "citations": 10
+    "citations": 11
   },
   {
     "year": 2023,
@@ -284,7 +292,7 @@
     "title": "Data from: Genomic analysis of a migratory divide reveals candidate genes for migration and implicates selective sweeps in generating islands of differentiation",
     "authors": "Kira E Delmore and Sariel Hübner and Nolan C Kane and Richard Schuster and Rose L Andrew and Francisco Câmara and Roderic Guigo and Darren E Irwin",
     "venue": "",
-    "url": "https://scholar.google.com/scholar?cluster=10250171717828118896&hl=en&oi=scholarr",
+    "url": "https://borealisdata.ca/dataset.xhtml?persistentId=doi:10.5683/SP2/QTSUZP",
     "citations": 0
   },
   {
@@ -309,7 +317,7 @@
     "authors": "Sariel Hübner and Natalia Bercovich and Marco Todesco and Jennifer R Mandel and Jens Odenheimer and Emanuel Ziegler and Joon S Lee and Gregory J Baute and Gregory L Owens and Christopher J Grassa and Daniel P Ebert and Katherine L Ostevik and Brook T Moyers and Sarah Yakimowski and Rishi R Masalia and Lexuan Gao and Irina Ćalić and John E Bowers and Nolan C Kane and Dirk ZH Swanevelder and Timo Kubach and Stephane Muños and Nicolas B Langlade and John M Burke and Loren H Rieseberg",
     "venue": "Nature plants",
     "url": "https://www.nature.com/articles/s41477-018-0329-0",
-    "citations": 302
+    "citations": 303
   },
   {
     "year": 2019,
@@ -341,7 +349,7 @@
     "authors": "Hélène Badouin and Jérôme Gouzy and Christopher J Grassa and Florent Murat and S Evan Staton and Ludovic Cottret and Christine Lelandais-Brière and Gregory L Owens and Sébastien Carrère and Baptiste Mayjonade and Ludovic Legrand and Navdeep Gill and Nolan C Kane and John E Bowers and Sariel Hubner and Arnaud Bellec and Aurélie Bérard and Hélène Bergès and Nicolas Blanchet and Marie-Claude Boniface and Dominique Brunel and Olivier Catrice and Nadia Chaidir and Clotilde Claudel and Cecile Donnadieu and Thomas Faraut and Ghislain Fievet and Nicolas Helmstetter and Matthew King and Steven J Knapp and Zhao Lai and Marie-Christine Le Paslier and Yannick Lippi and Lolita Lorenzon and Jennifer R Mandel and Gwenola Marage and Gwenaëlle Marchand and Elodie Marquand and Emmanuelle Bret-Mestries and Evan Morien and Savithri Nambeesan and Thuy Nguyen and Prune Pegot-Espagnet and Nicolas Pouilly and Frances Raftis and Erika Sallet and Thomas Schiex and Justine Thomas and Céline Vandecasteele and Didier Vares and Felicity Vear and Sonia Vautrin and Martin Crespi and Brigitte Mangin and John M Burke and Jerome Salse and Stéphane Muños and Patrick Vincourt and Loren H Rieseberg and Nicolas B Langlade",
     "venue": "Nature",
     "url": "https://www.nature.com/articles/nature22380",
-    "citations": 898
+    "citations": 901
   },
   {
     "year": 2016,
@@ -349,7 +357,7 @@
     "authors": "Marco Todesco and Mariana A Pascual and Gregory L Owens and Katherine L Ostevik and Brook T Moyers and Sariel Hübner and Sylvia M Heredia and Min A Hahn and Celine Caseys and Dan G Bock and Loren H Rieseberg",
     "venue": "",
     "url": "https://onlinelibrary.wiley.com/doi/abs/10.1111/eva.12367",
-    "citations": 940
+    "citations": 943
   },
   {
     "year": 2016,
@@ -357,7 +365,7 @@
     "authors": "Dan G Bock and Celine Caseys and Roger D Cousens and Min A Hahn and Sylvia M Heredia and Sariel Hübner and Kathryn G Turner and Kenneth D Whitney and Loren H Rieseberg",
     "venue": "",
     "url": "https://onlinelibrary.wiley.com/doi/abs/10.1002/9781119072799.ch20",
-    "citations": 540
+    "citations": 542
   },
   {
     "year": 2016,
@@ -365,14 +373,14 @@
     "authors": "Martin Mascher and Verena J Schuenemann and Uri Davidovich and Nimrod Marom and Axel Himmelbach and Sariel Hübner and Abraham Korol and Michal David and Ella Reiter and Simone Riehl and Mona Schreiber and Samuel H Vohr and Richard E Green and Ian K Dawson and Joanne Russell and Benjamin Kilian and Gary J Muehlbauer and Robbie Waugh and Tzion Fahima and Johannes Krause and Ehud Weiss and Nils Stein",
     "venue": "Nature Genetics",
     "url": "https://www.nature.com/articles/ng.3611",
-    "citations": 194
+    "citations": 195
   },
   {
     "year": 2016,
     "title": "Invasion genetics: the Baker and Stebbins legacy",
     "authors": "Spencer CH Barrett and Robert I Colautti and Katrina M Dlugosch and Loren H Rieseberg",
     "venue": "",
-    "url": "https://books.google.com/books?hl=en&lr=&id=AVSvDAAAQBAJ&oi=fnd&pg=PA13&dq=info:SHidAIJpmjoJ:scholar.google.com&ots=pS7P_o_EuV&sig=CN-mkdIyAnwMifmYnXwyB36WPak",
+    "url": "https://books.google.com/books?hl=en&lr=&id=AVSvDAAAQBAJ&oi=fnd&pg=PA13&dq=info:SHidAIJpmjoJ:scholar.google.com&ots=pS7QYu2LtN&sig=K2_iOcnJ7Nidx0FL8En0tpSQ2Iw",
     "citations": 31
   },
   {
@@ -388,7 +396,7 @@
     "title": "WHAT WE STILL DON'T KNOW ABOUT INVASION GENETICS",
     "authors": "Min A Hahn and Sylvia M Heredia and Sariel Hübner and Kathryn G Turner and Kenneth D Whitney and Loren H Rieseberg",
     "venue": "Invasion Genetics: The Baker and Stebbins Legacy",
-    "url": "https://books.google.com/books?hl=en&lr=&id=AVSvDAAAQBAJ&oi=fnd&pg=PA346&dq=info:ZOj1zZlAjLQJ:scholar.google.com&ots=pS7P_o_FuW&sig=V3IKoEy7aE08cIr7LRYiTFv__Mc",
+    "url": "https://books.google.com/books?hl=en&lr=&id=AVSvDAAAQBAJ&oi=fnd&pg=PA346&dq=info:ZOj1zZlAjLQJ:scholar.google.com&ots=pS7QYu2MtO&sig=Giym3-TieHT51ZvGJHR9R4vCZXI",
     "citations": 0
   },
   {
@@ -501,7 +509,7 @@
     "authors": "S Hübner and M Höffken and E Oren and G Haseneyer and N Stein and A Graner and K Schmid and E Fridman",
     "venue": "Molecular ecology",
     "url": "https://onlinelibrary.wiley.com/doi/abs/10.1111/j.1365-294X.2009.04106.x",
-    "citations": 151
+    "citations": 153
   },
   {
     "year": 0,
