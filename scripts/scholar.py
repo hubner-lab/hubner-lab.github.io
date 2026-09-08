@@ -19,6 +19,16 @@ OUTPUT = Path(__file__).parent.parent / "src" / "data" / "publications.json"
 TIMEOUT = 30  # seconds per request
 
 
+def annotate(level, message):
+    """Emit a GitHub Actions annotation so a blocked run is visibly distinct
+    from a real fetch — both exit 0, so the run status alone tells you nothing."""
+    print(f"::{level}::{message}")
+    summary = os.environ.get("GITHUB_STEP_SUMMARY")
+    if summary:
+        with open(summary, "a", encoding="utf-8") as fh:
+            fh.write(f"- **{level}** — {message}\n")
+
+
 def fetch_publications():
     try:
         from scholarly import scholarly
@@ -58,11 +68,16 @@ def main():
     try:
         pubs = fetch_publications()
     except Exception as e:
+        # Google Scholar blocks datacenter IPs and rejects roughly two runs in
+        # three. Existing JSON stays valid, so this must not fail the deploy —
+        # but it must not look like a successful fetch either.
+        annotate("warning", f"Google Scholar fetch blocked, publications not refreshed — {e}")
         print(f"ERROR: could not fetch publications — {e}", file=sys.stderr)
         print("Leaving existing JSON intact.", file=sys.stderr)
         sys.exit(0)  # don't break the deploy
 
     if not pubs:
+        annotate("warning", "Google Scholar returned 0 publications, publications not refreshed")
         print("WARNING: got 0 publications, leaving existing JSON intact.", file=sys.stderr)
         sys.exit(0)
 
@@ -70,6 +85,7 @@ def main():
 
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
     OUTPUT.write_text(json.dumps(pubs, indent=2, ensure_ascii=False))
+    annotate("notice", f"Fetched {len(pubs)} publications from Google Scholar")
     print(f"Wrote {len(pubs)} publications to {OUTPUT}")
 
 

@@ -2,7 +2,10 @@ name: Update publications from Google Scholar
 
 on:
   schedule:
-    - cron: '0 6 * * *'   # daily at 06:00 UTC
+    # Google Scholar blocks the runner on roughly two attempts in three, and
+    # a blocked attempt leaves the data untouched. Six attempts a day makes a
+    # same-day refresh ~91% likely instead of 33%. Free: public repo.
+    - cron: '0 */4 * * *'   # every 4 hours
   workflow_dispatch:        # manual trigger for testing
 
 permissions:
