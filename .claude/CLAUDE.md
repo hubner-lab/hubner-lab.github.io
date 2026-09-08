@@ -7,7 +7,7 @@
 
 ## Active Obsidian Project
 - Project: HubnerLabWebSite
-- File: ~/Orthidian/projects/HubnerLabWebSite.md
+- File: ~/Orthidian/projects/HubnerLabWebSite/HubnerLabWebSite.md
 
 ## Browser / Playwright Hygiene
 - Always run `playwright-cli close` after every task that uses it.
