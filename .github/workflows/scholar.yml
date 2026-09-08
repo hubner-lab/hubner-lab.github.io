@@ -12,6 +12,11 @@ jobs:
   update:
     name: Fetch & commit
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    outputs:
+      changed: ${{ steps.commit.outputs.changes_detected }}
+      sha: ${{ steps.commit.outputs.commit_hash }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -21,16 +26,32 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Install scholarly
-        run: pip install scholarly
+      - name: Install dependencies
+        run: pip install -r scripts/requirements.txt
 
       - name: Run scraper
         run: python scripts/scholar.py
 
       - name: Commit if changed
+        id: commit
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: 'chore: update publications.json from Google Scholar'
           file_pattern: src/data/publications.json
           commit_user_name: github-actions[bot]
           commit_user_email: github-actions[bot]@users.noreply.github.com
+
+  # git-auto-commit pushes with GITHUB_TOKEN, and GitHub does not fire workflows
+  # from GITHUB_TOKEN-authored pushes, so deploy.yml's `on: push` never runs for
+  # these commits. Call it directly instead, passing the new commit SHA — inside
+  # a reusable workflow github.sha is the caller's pre-commit tree.
+  deploy:
+    needs: update
+    if: needs.update.outputs.changed == 'true'
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    uses: ./.github/workflows/deploy.yml
+    with:
+      ref: ${{ needs.update.outputs.sha }}

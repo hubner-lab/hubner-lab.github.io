@@ -1,0 +1,5 @@
+# Pinned because unpinned installs broke the workflow on 2026-09-08:
+# bibtexparser 2.0.0 (a v1-incompatible rewrite) shipped that day and
+# scholarly 1.7.11 still imports the v1 API (bibtexparser.bibdatabase).
+scholarly==1.7.11
+bibtexparser<2

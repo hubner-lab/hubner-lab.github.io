@@ -11,6 +11,7 @@ import json
 import os
 import sys
 import time
+import traceback
 from pathlib import Path
 
 SCHOLAR_ID = "yqB4jesAAAAJ"
@@ -21,8 +22,11 @@ TIMEOUT = 30  # seconds per request
 def fetch_publications():
     try:
         from scholarly import scholarly
-    except ImportError:
-        print("ERROR: scholarly not installed. Run: pip install scholarly", file=sys.stderr)
+    except ImportError as e:
+        # Not necessarily "missing" — a broken transitive import inside scholarly
+        # raises ImportError here too, so print what actually failed.
+        print(f"ERROR: cannot import scholarly — {e!r}", file=sys.stderr)
+        traceback.print_exc()
         sys.exit(1)
 
     print(f"Fetching author {SCHOLAR_ID}…")
