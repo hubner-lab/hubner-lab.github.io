@@ -42,14 +42,6 @@
   {
     "year": 2026,
     "title": "The transposable elements syndrome of wheat domestication",
-    "authors": "S Hübner",
-    "venue": "",
-    "url": "https://europepmc.org/article/ppr/ppr1226752",
-    "citations": 0
-  },
-  {
-    "year": 2026,
-    "title": "The transposable elements syndrome of wheat domestication",
     "authors": "Guy Ben Zvi and Sariel Hübner",
     "venue": "bioRxiv",
     "url": "https://www.biorxiv.org/content/10.64898/2026.01.28.702265.abstract",
@@ -96,28 +88,12 @@
     "citations": 4
   },
   {
-    "year": 2025,
-    "title": "Genome size variation is attributed to adaptive purging of transposable elements",
-    "authors": "Evgenii Potapenko and Bar Shermeister and Tali Mandel and Sariel Hübner",
-    "venue": "bioRxiv",
-    "url": "https://www.biorxiv.org/content/10.1101/2025.09.26.678839.abstract",
-    "citations": 1
-  },
-  {
     "year": 2024,
     "title": "Climate resilience conserved in global germplasm repositories: Picking the most promising parents for agile plant breeding",
     "authors": "Quinn Campbell and Nora Castaneda-Alvarez and Ryan Domingo and Eric Bishop-von Wettberg and Bryan Runck and Hervé Nandkangré and Anna McCormick and Nathan Fumia and Jeffrey Neyhart and Benjamin Kilian and Peterson Wambugu and Desterio Nyamongo and Sariel Hübner and Sidney Sitar and Addie Thompson and Loren Rieseberg and Michael A Gore and Michael Kantar",
     "venue": "bioRxiv",
     "url": "https://www.biorxiv.org/content/10.1101/2024.05.11.593573.abstract",
     "citations": 4
-  },
-  {
-    "year": 2024,
-    "title": "Back to the Future: Environmental genomic selection to take advantage of polygenic local adaptation",
-    "authors": "Anna Halpin-McCormick and Quinn Campbell and Sónia Negrão and Peter L Morrell and Sariel Hubner and Jeff Neyhart and Michael Kantar",
-    "venue": "bioRxiv",
-    "url": "https://www.biorxiv.org/content/10.1101/2024.10.09.617488.abstract",
-    "citations": 3
   },
   {
     "year": 2024,
@@ -401,14 +377,6 @@
   },
   {
     "year": 2016,
-    "title": "WHAT WE STILL DON'T KNOW ABOUT INVASION GENETICS",
-    "authors": "Min A Hahn and Sylvia M Heredia and Sariel Hübner and Kathryn G Turner and Kenneth D Whitney and Loren H Rieseberg",
-    "venue": "Invasion Genetics: The Baker and Stebbins Legacy",
-    "url": "https://books.google.com/books?hl=en&lr=&id=AVSvDAAAQBAJ&oi=fnd&pg=PA346&dq=info:ZOj1zZlAjLQJ:scholar.google.com&ots=pS7UZr5NsQ&sig=u5kvTI7nq6w6UqH5kCOBr4zcHFY",
-    "citations": 0
-  },
-  {
-    "year": 2016,
     "title": "Broadening the genetic basis for crop improvement: Interspecific hybridization within and between ploidy levels in Helianthus",
     "authors": "Michael B. Kantar and Sariel Hubner and Loren Rieseberg",
     "venue": "",
@@ -446,14 +414,6 @@
     "venue": "BMC genomics",
     "url": "https://link.springer.com/article/10.1186/s12864-015-1996-0",
     "citations": 20
-  },
-  {
-    "year": 2015,
-    "title": "Transcriptome profiling of wheat glumes in wild emmer, hulled landraces and modern cultivars.",
-    "authors": "Zou HongDa Zou HongDa and R Tzarfati and S Hübner and T Krugman and T Fahima and S Abbo and Y Saranga and AB Korol",
-    "venue": "",
-    "url": "https://www.cabidigitallibrary.org/doi/full/10.5555/20153392433",
-    "citations": 0
   },
   {
     "year": 2014,
@@ -518,13 +478,5 @@
     "venue": "Molecular ecology",
     "url": "https://onlinelibrary.wiley.com/doi/abs/10.1111/j.1365-294X.2009.04106.x",
     "citations": 156
-  },
-  {
-    "year": 0,
-    "title": "Sunflower Domestication in Space and Time",
-    "authors": "Nathan Wales and Melis Akman and Ray HB Watson and Sariel Hubner and Fátima Sánchez Barreiro and Bruce D Smith and Kristen J Gremillion and Loren H Rieseberg and M Thomas P Gilbert and Benjamin K Blackman",
-    "venue": "",
-    "url": "https://scholar.google.com/scholar?cluster=8000455445847107189&hl=en&oi=scholarr",
-    "citations": 0
   }
 ]
