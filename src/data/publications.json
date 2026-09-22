@@ -1,18 +1,18 @@
 [
   {
     "year": 2026,
-    "title": "Ancient grains illuminate the mosaic origin of domesticated wheat",
-    "authors": "Yael Lev-Mirom and Nimrod Ashkenazy and Valentyna Klymiuk and Jennifer Ens and Krysta Wiebe and Verena J Schuenemann and Tamar Eilam and Sharon Kulikovsky and Bar A Lavi and Torsten Günther and Tamar Krugman and Hanan Sela and Eitan Klein and Amir Ganor and Uri Davidovich and Roi Porat and Erez Ben-Yosef and Michal David and Sivan Frankin and Roi Ben-David and Emile Cavalet-Giorsa and Simon G Krattinger and Abraham Korol and Martin Mascher and Axel Himmelbach and Nils Stein and Johannes Krause and Assaf Distelfeld and Ehud Weiss and Tzion Fahima and Curtis J Pozniak and Sariel Hübner",
-    "venue": "Nature plants",
-    "url": "https://www.nature.com/articles/s41477-026-02283-y",
-    "citations": 2
-  },
-  {
-    "year": 2026,
     "title": "Intraspecific genome size variation is attributed to adaptive silencing of transposable elements in Hordeum species",
     "authors": "Evgenii Potapenko and Bar Shermeister and Tali Mandel and Sariel Hübner",
     "venue": "Molecular Biology and Evolution",
     "url": "https://academic.oup.com/mbe/article-pdf/doi/10.1093/molbev/msag051/67287342/msag051.pdf",
+    "citations": 3
+  },
+  {
+    "year": 2026,
+    "title": "Ancient grains illuminate the mosaic origin of domesticated wheat",
+    "authors": "Yael Lev-Mirom and Nimrod Ashkenazy and Valentyna Klymiuk and Jennifer Ens and Krysta Wiebe and Verena J Schuenemann and Tamar Eilam and Sharon Kulikovsky and Bar A Lavi and Torsten Günther and Tamar Krugman and Hanan Sela and Eitan Klein and Amir Ganor and Uri Davidovich and Roi Porat and Erez Ben-Yosef and Michal David and Sivan Frankin and Roi Ben-David and Emile Cavalet-Giorsa and Simon G Krattinger and Abraham Korol and Martin Mascher and Axel Himmelbach and Nils Stein and Johannes Krause and Assaf Distelfeld and Ehud Weiss and Tzion Fahima and Curtis J Pozniak and Sariel Hübner",
+    "venue": "Nature plants",
+    "url": "https://www.nature.com/articles/s41477-026-02283-y",
     "citations": 2
   },
   {
@@ -49,19 +49,19 @@
   },
   {
     "year": 2025,
+    "title": "Prioritizing parents from global genebanks to breed climate-resilient crops",
+    "authors": "Quinn Campbell and Nora Castañeda-Álvarez and Ryan Domingo and Eric Bishop-von Wettberg and Bryan Runck and Hervé Nandkangré and Anna Halpin-McCormick and Nathan Fumia and Jeffrey Neyhart and Benjamin Kilian and Peterson Wambugu and Desterio Nyamongo and Sariel Hübner and Sidney Sitar and Addie Thompson and Loren Rieseberg and Michael A Gore and Michael B Kantar",
+    "venue": "Nature Climate Change",
+    "url": "https://www.nature.com/articles/s41558-025-02333-x",
+    "citations": 19
+  },
+  {
+    "year": 2025,
     "title": "Environmental genomic selection to leverage polygenic local adaptation in barley landraces",
     "authors": "Anna Halpin-McCormick and Quinn Campbell and Sónia Negrão and Peter L Morrell and Sariel Hübner and Jeffrey L Neyhart and Michael B Kantar",
     "venue": "Communications biology",
     "url": "https://www.nature.com/articles/s42003-025-08045-4",
     "citations": 18
-  },
-  {
-    "year": 2025,
-    "title": "Prioritizing parents from global genebanks to breed climate-resilient crops",
-    "authors": "Quinn Campbell and Nora Castañeda-Álvarez and Ryan Domingo and Eric Bishop-von Wettberg and Bryan Runck and Hervé Nandkangré and Anna Halpin-McCormick and Nathan Fumia and Jeffrey Neyhart and Benjamin Kilian and Peterson Wambugu and Desterio Nyamongo and Sariel Hübner and Sidney Sitar and Addie Thompson and Loren Rieseberg and Michael A Gore and Michael B Kantar",
-    "venue": "Nature Climate Change",
-    "url": "https://www.nature.com/articles/s41558-025-02333-x",
-    "citations": 17
   },
   {
     "year": 2025,
@@ -117,7 +117,7 @@
     "authors": "Yang Dong and Shengchang Duan and Qiuju Xia and Zhenchang Liang and Xiao Dong and Kristine Margaryan and Mirza Musayev and Svitlana Goryslavets and Goran Zdunić and Pierre-François Bert and Thierry Lacombe and Erika Maul and Peter Nick and Kakha Bitskinashvili and György Dénes Bisztray and Elyashiv Drori and Gabriella De Lorenzis and Jorge Cunha and Carmen Florentina Popescu and Rosa Arroyo-Garcia and Claire Arnold and Ali Ergül and Yifan Zhu and Chao Ma and Shufen Wang and Siqi Liu and Liu Tang and Chunping Wang and Dawei Li and Yunbing Pan and Jingxian Li and Ling Yang and Xuzhen Li and Guisheng Xiang and Zijiang Yang and Baozheng Chen and Zhanwu Dai and Yi Wang and Arsen Arakelyan and Varis Kuliyev and Gennady Spotar and Nabil Girollet and Serge Delrot and Nathalie Ollat and Patrice This and Cécile Marchal and Gautier Sarah and Valérie Laucou and Roberto Bacilieri and Franco Röckel and Pingyin Guan and Andreas Jung and Michael Riemann and Levan Ujmajuridze and Tekle Zakalashvili and David Maghradze and Maria Höhn and Gizella Jahnke and Erzsébet Kiss and Tamás Deák and Oshrit Rahimi and Sariel Hübner and Fabrizio Grassi and Francesco Mercati and Francesco Sunseri and José Eiras-Dias and Anamaria Mirabela Dumitru and David Carrasco and Alberto Rodriguez-Izquierdo and Gregorio Muñoz and Tamer Uysal and Cengiz Özer and Kemal Kazan and Meilong Xu and Yunyue Wang and Shusheng Zhu and Jiang Lu and Maoxiang Zhao and Lei Wang and Songtao Jiu and Ying Zhang and Lei Sun and Huanming Yang and Ehud Weiss and Shiping Wang and Youyong Zhu and Shaohua Li and Jun Sheng and Wei Chen",
     "venue": "Science",
     "url": "https://www.science.org/doi/abs/10.1126/science.add8655",
-    "citations": 376
+    "citations": 377
   },
   {
     "year": 2023,
@@ -237,7 +237,7 @@
     "authors": "Aviad Sivan and Oshrit Rahimi and Bar Lavi and Mali Salmon‐Divon and Ehud Weiss and Elyashiv Drori and Sariel Hübner",
     "venue": "Plants, People, Planet",
     "url": "https://nph.onlinelibrary.wiley.com/doi/abs/10.1002/ppp3.10197",
-    "citations": 32
+    "citations": 33
   },
   {
     "year": 2021,
@@ -333,7 +333,7 @@
     "authors": "Hélène Badouin and Jérôme Gouzy and Christopher J Grassa and Florent Murat and S Evan Staton and Ludovic Cottret and Christine Lelandais-Brière and Gregory L Owens and Sébastien Carrère and Baptiste Mayjonade and Ludovic Legrand and Navdeep Gill and Nolan C Kane and John E Bowers and Sariel Hubner and Arnaud Bellec and Aurélie Bérard and Helene Berges and Nicolas Blanchet and Marie-Claude Boniface and Dominique Brunel and Olivier Catrice and Nadia Chaidir and Clotilde Claudel and Cecile Donnadieu and Thomas Faraut and Ghislain Fievet and Nicolas Helmstetter and Matthew King and Steven J Knapp and Zhao Lai and Marie-Christine Le Paslier and Yannick Lippi and Lolita Lorenzon and Jennifer R Mandel and Gwenola Marage and Gwenaëlle Marchand and Elodie Marquand and Emmanuelle Bret-Mestries and Evan Morien and Savithri Nambeesan and Thuy Nguyen and Prune Pegot-Espagnet and Nicolas Pouilly and Frances Raftis and Erika Sallet and Thomas Schiex and Justine Thomas and Céline Vandecasteele and Didier Vares and Felicity Vear and Sonia Vautrin and Martin Crespi and Brigitte Mangin and John M Burke and Jerome Salse and Stéphane Muños and Patrick Vincourt and Loren H Rieseberg and Nicolas B Langlade",
     "venue": "Nature",
     "url": "https://www.nature.com/articles/nature22380",
-    "citations": 925
+    "citations": 926
   },
   {
     "year": 2016,
@@ -341,7 +341,7 @@
     "authors": "Marco Todesco and Mariana A Pascual and Gregory L Owens and Katherine L Ostevik and Brook T Moyers and Sariel Hübner and Sylvia M Heredia and Min A Hahn and Celine Caseys and Dan G Bock and Loren H Rieseberg",
     "venue": "",
     "url": "https://onlinelibrary.wiley.com/doi/abs/10.1111/eva.12367",
-    "citations": 976
+    "citations": 977
   },
   {
     "year": 2016,
@@ -364,7 +364,7 @@
     "title": "Invasion genetics: the Baker and Stebbins legacy",
     "authors": "Spencer CH Barrett and Robert I Colautti and Katrina M Dlugosch and Loren H Rieseberg",
     "venue": "",
-    "url": "https://books.google.com/books?hl=en&lr=&id=AVSvDAAAQBAJ&oi=fnd&pg=PA13&dq=info:SHidAIJpmjoJ:scholar.google.com&ots=pS7V_q2HvR&sig=JbiquLqXNNfmkjQbCF9FiaODltU",
+    "url": "https://books.google.com/books?hl=en&lr=&id=AVSvDAAAQBAJ&oi=fnd&pg=PA13&dq=info:SHidAIJpmjoJ:scholar.google.com&ots=pS8MSn5LBS&sig=U_L7Opt4I4CgADsHoVZoG0xYC8I",
     "citations": 32
   },
   {
