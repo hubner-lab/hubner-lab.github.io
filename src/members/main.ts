@@ -31,6 +31,10 @@ function show(panel: Panel) {
 
 function messageFor(e: unknown): string | null {
   const code = (e as { code?: string })?.code ?? '';
+  // Firestore Lite reports a request that never reached the server as `unknown`.
+  if (code === 'unknown' && /failed to fetch|networkerror|load failed/i.test(String((e as { message?: unknown })?.message ?? ''))) {
+    return 'The server could not be reached. Check your connection and try again.';
+  }
   switch (code) {
     case 'auth/popup-closed-by-user':
     case 'auth/cancelled-popup-request':
@@ -64,7 +68,11 @@ function showError(e: unknown) {
   const msg = messageFor(e);
   box.textContent = msg ?? '';
   box.toggleAttribute('hidden', msg === null);
-  if (msg !== null) console.error(e);
+  if (msg === null) return;
+  console.error(e);
+  // The box is at the top of the page; the button that failed may be far below it. Centred, so
+  // the fixed site header does not cover it.
+  box.scrollIntoView({ block: 'center' });
 }
 const clearError = () => $('m-error').setAttribute('hidden', '');
 
@@ -178,6 +186,7 @@ function markDirty() {
 }
 
 const SYNC_URL = `${import.meta.env.BASE_URL}members/synced.json`.replace('//', '/');
+const HANDWRITTEN_URL = `${import.meta.env.BASE_URL}members/handwritten.json`.replace('//', '/');
 
 async function renderStatus() {
   const box = $('m-status');
@@ -229,7 +238,9 @@ async function loadMember(user: User) {
 // ---------------------------------------------------------------- admin tab
 
 let adminFor: string | null = null;
-let adminApi: { refresh: () => Promise<void> } | null = null;
+let adminApi: ReturnType<typeof mountAdmin> | null = null;
+/** Input that is not stored yet: in the member's own form, or in a form of the admin tab. */
+const unsavedInput = () => dirty || adminApi?.hasUnsaved() === true;
 
 function selectTab(tab: 'card' | 'admin') {
   $('m-member').toggleAttribute('hidden', tab !== 'card');
@@ -248,7 +259,9 @@ async function setupAdmin(user: User) {
   // A successful getDoc of config/access is how the page learns it faces an admin.
   if (!(await isAdminSession(backend!.db))) return;
   adminFor = user.uid;
-  adminApi = mountAdmin($('m-admin'), { db: backend!.db, syncedUrl: SYNC_URL, onError: showError });
+  adminApi = mountAdmin($('m-admin'), {
+    db: backend!.db, syncedUrl: SYNC_URL, handwrittenUrl: HANDWRITTEN_URL, onError: showError, describe: messageFor,
+  });
   $('m-tabs').removeAttribute('hidden');
 }
 
@@ -309,7 +322,7 @@ function wire(be: { auth: Auth; db: Firestore }) {
   });
 
   $('m-signout').addEventListener('click', async () => {
-    if (dirty && !confirm('You have unsaved changes. Sign out anyway?')) return;
+    if (unsavedInput() && !confirm('You have unsaved changes. Sign out anyway?')) return;
     dirty = false;
     await signOut(be.auth);
   });
@@ -388,7 +401,7 @@ function wire(be: { auth: Auth; db: Firestore }) {
   });
 
   window.addEventListener('beforeunload', (e) => {
-    if (dirty) e.preventDefault();
+    if (unsavedInput()) e.preventDefault();
   });
 
   onAuthStateChanged(be.auth, (user) => {

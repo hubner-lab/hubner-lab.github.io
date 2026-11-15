@@ -72,6 +72,51 @@ export function valuesFromHandwritten(h: Handwritten): CardValues {
   };
 }
 
+/** What the admin tab holds per card; `Row` of adminCards.ts has this shape. */
+export interface RowLike {
+  uid: string;
+  card: Record<string, unknown>;
+  published: Record<string, unknown> | null;
+}
+
+const text = (v: unknown) => (typeof v === 'string' ? v : '');
+
+/**
+ * Every file name a card or a record holds or is about to hold: the slug fixed on the card, the
+ * slug it is published under, and the slug in the id of a kept record.
+ */
+export function fileNamesInUse(rows: ReadonlyArray<RowLike>): Set<string> {
+  const out = new Set<string>();
+  for (const r of rows) {
+    for (const s of [text(r.card.slug), text(r.published?.slug)]) if (s) out.add(s);
+    if (isManagedId(r.uid)) out.add(r.uid.slice(MANAGED_PREFIX.length));
+  }
+  return out;
+}
+
+/**
+ * The hand-written entries no card and no record has taken over. The fetched list changes only
+ * when the site is rebuilt, so an entry adopted a minute ago is still in it: it is left out here.
+ */
+export function stillHandwritten(list: ReadonlyArray<Handwritten>, rows: ReadonlyArray<RowLike>): Handwritten[] {
+  const used = fileNamesInUse(rows);
+  return list.filter((h) => !used.has(h.slug));
+}
+
+/**
+ * The kept record that stands in the way of a member's card: the one under the slug this card is
+ * about to be published with, which is its own fixed slug or else `slugOfName`. Approving must
+ * replace that record, or the person is listed twice. Null for a card that is published already
+ * (its slug is its own), for a kept record itself, and when no record is kept under that slug.
+ */
+export function recordInTheWay<R extends RowLike>(row: RowLike, slugOfName: string, rows: ReadonlyArray<R>): R | null {
+  if (isManagedCard(row.card) || row.published) return null;
+  const slug = text(row.card.slug) || slugOfName;
+  if (!slug) return null;
+  const id = managedId(slug);
+  return rows.find((r) => r.uid === id && isManagedCard(r.card)) ?? null;
+}
+
 /** The well-formed items of a fetched list. The file is static and ours, but its shape is still checked. */
 export function parseHandwritten(json: unknown): Handwritten[] {
   if (!Array.isArray(json)) return [];

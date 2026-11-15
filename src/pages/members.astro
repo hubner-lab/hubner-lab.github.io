@@ -237,6 +237,7 @@ const currentYear = new Date().getFullYear();
   .m-rowhead { display: flex; width: 100%; justify-content: space-between; gap: 1rem; align-items: center; padding: .85rem 1rem;
     background: none; border: 0; font: inherit; color: var(--color-ink); cursor: pointer; text-align: left; }
   .m-rowname { font-weight: 600; }
+  @media (max-width: 640px) { .m-rowname .m-req { display: block; } }
   .m-rowbody { padding: 0 1rem 1rem; }
   .m-badge { font-size: .72rem; padding: .15rem .5rem; border-radius: 999px; border: 1px solid color-mix(in srgb, var(--color-soil) 40%, transparent); white-space: nowrap; }
   .m-pending { background: color-mix(in srgb, var(--color-wheat) 30%, transparent); }
@@ -248,8 +249,22 @@ const currentYear = new Date().getFullYear();
   .m-new { color: var(--color-ink); }
   .m-thumb { width: 96px; height: 96px; border-radius: 999px; object-fit: cover; }
   .m-edit { border-top: 1px solid color-mix(in srgb, var(--color-soil) 25%, transparent); padding-top: 1rem; }
-  #m-file { max-width: 100%; }
-  #m-canvas { width: 100%; max-width: 20rem; aspect-ratio: 1; border-radius: .5rem; cursor: grab; touch-action: none;
+  /* Admin tab: the two groups, and the form of a record kept for a person without an account */
+  .m-group { margin-bottom: 2.75rem; }
+  .m-grouphead { font-size: 1.3rem; margin-bottom: .6rem; }
+  .m-group > .m-small, .m-hw > .m-small { margin-bottom: 1rem; }
+  .m-subhead { font-size: 1.05rem; font-weight: 600; margin: 1.75rem 0 .5rem; }
+  .m-add { margin-top: 1rem; }
+  .m-add > .m-row { margin-top: .75rem; }
+  .m-formtitle { margin-top: 1rem; }
+  .m-hwhead { cursor: default; }
+  .m-flash { margin: 0 1rem .85rem; padding: .45rem .75rem; border-radius: .5rem; font-size: .85rem; color: var(--color-ink);
+    background: color-mix(in srgb, var(--color-leaf) 22%, transparent); }
+  .m-more { border-top: 1px solid color-mix(in srgb, var(--color-soil) 25%, transparent); padding-top: .85rem; }
+  .m-more > summary { cursor: pointer; font-size: .9rem; font-weight: 500; color: var(--color-ink); }
+  #m-file, .m-file { max-width: 100%; }
+  .m-file { font-size: .9rem; }
+  #m-canvas, .m-canvas { width: 100%; max-width: 20rem; aspect-ratio: 1; border-radius: .5rem; cursor: grab; touch-action: none;
     background: color-mix(in srgb, var(--color-soil) 20%, var(--color-paper)); }
   #m-preview { position: sticky; top: 6rem; }
 </style>
