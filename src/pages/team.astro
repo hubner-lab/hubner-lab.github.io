@@ -2,7 +2,7 @@
 import Base from '../layouts/Base.astro';
 import TeamCard from '../components/TeamCard.astro';
 import { getCollection } from 'astro:content';
-import { buildTeam } from '../lib/team';
+import { alumniLine, buildTeam } from '../lib/team';
 
 const { pis, current, alumni } = buildTeam(await getCollection('team'));
 ---
@@ -49,7 +49,7 @@ const { pis, current, alumni } = buildTeam(await getCollection('team'));
               <li class="text-sm" style="color: color-mix(in srgb, var(--color-soil) 70%, transparent);">
                 <span class="font-medium" style="color: var(--color-ink);">{a.name}</span>
                 <span class="mx-2" style="color: color-mix(in srgb, var(--color-soil) 40%, transparent);">—</span>
-                {a.role}
+                {a.role}{alumniLine(a)}
               </li>
             ))}
           </ul>

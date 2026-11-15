@@ -1,7 +1,7 @@
 // node tests/team/model.test.mjs  (Node 24 strips the TypeScript types itself)
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { buildTeam } from '../../src/lib/team.ts';
+import { alumniLine, buildTeam } from '../../src/lib/team.ts';
 
 const e = (id, data, body = '') => ({
   id, body, collection: 'team',
@@ -63,4 +63,18 @@ test('bio is data.bio when present, else the Markdown body', () => {
   assert.equal(by.a, 'from frontmatter');
   assert.equal(by.b, 'body only');
   assert.equal(by.c, undefined);
+});
+
+test('alumni line: years and current position follow the role only when they are filled', () => {
+  assert.equal(alumniLine({}), '');
+  assert.equal(alumniLine({ currentPosition: '   ' }), '');
+  assert.equal(alumniLine({ yearJoined: 2019, yearLeft: 2022 }), ', 2019–2022');
+  assert.equal(alumniLine({ yearLeft: 2022 }), ', until 2022');
+  assert.equal(alumniLine({ yearJoined: 2019 }), ', from 2019');
+  assert.equal(alumniLine({ yearJoined: 2022, yearLeft: 2022 }), ', 2022');
+  assert.equal(alumniLine({ currentPosition: 'Postdoc, Example University' }), ' · now: Postdoc, Example University');
+  assert.equal(
+    alumniLine({ yearJoined: 2019, yearLeft: 2022, currentPosition: ' Postdoc, Example University ' }),
+    ', 2019–2022 · now: Postdoc, Example University',
+  );
 });

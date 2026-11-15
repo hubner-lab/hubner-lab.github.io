@@ -39,6 +39,21 @@ function toPerson(entry: TeamEntry): Person {
   };
 }
 
+/**
+ * What follows the role in the alumni list, e.g. ", 2019–2022 · now: Postdoc, Example University".
+ * Empty when no year and no current position is filled, so an entry without them reads as before.
+ */
+export function alumniLine(p: Pick<Person, 'yearJoined' | 'yearLeft' | 'currentPosition'>): string {
+  const { yearJoined: from, yearLeft: to } = p;
+  const years =
+    from !== undefined && to !== undefined ? (from === to ? `${to}` : `${from}–${to}`)
+    : to !== undefined ? `until ${to}`
+    : from !== undefined ? `from ${from}`
+    : '';
+  const now = p.currentPosition?.trim();
+  return (years ? `, ${years}` : '') + (now ? ` · now: ${now}` : '');
+}
+
 export function buildTeam(entries: TeamEntry[]): Team {
   const people = entries.map(toPerson);
 
