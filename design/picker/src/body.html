@@ -1,0 +1,20 @@
+<div id="app" class="app" data-view="pick">
+  <header class="topbar">
+    <a class="brand" href="#pick"><span class="brand-mark" aria-hidden="true"></span><span class="brand-name">Hübner Lab</span><span class="brand-sub">Design Picker</span></a>
+    <nav class="tabs" aria-label="Views"><a id="tab-pick" href="#pick">Pick</a><a id="tab-preview" href="#preview">Preview</a></nav>
+    <div class="tools">
+      <div class="seg" role="group" aria-label="Mock-up colour mode"><button type="button" id="mode-dark">Dark</button><button type="button" id="mode-light">Light</button></div>
+      <span id="savestate" class="savestate" role="status" aria-live="polite">Loading</span>
+      <button type="button" id="btn-rail" class="btn btn-rail" aria-expanded="false" aria-controls="rail">Choices</button>
+      <button type="button" id="btn-copy" class="btn">Copy choices</button>
+    </div>
+  </header>
+  <div class="layout">
+    <aside class="rail" id="rail" aria-label="Choices"></aside>
+    <main class="main">
+      <section id="view-pick" aria-label="Pick"></section>
+      <section id="view-preview" aria-label="Preview" hidden></section>
+    </main>
+  </div>
+  <div id="toast" class="toast" role="status" hidden></div>
+</div>
