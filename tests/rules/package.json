@@ -1,0 +1,14 @@
+{
+  "name": "members-rules-tests",
+  "private": true,
+  "type": "module",
+  "main": "rules.test.mjs",
+  "engines": { "node": ">=24" },
+  "scripts": {
+    "test": "node --test rules.test.mjs"
+  },
+  "dependencies": {
+    "@firebase/rules-unit-testing": "^6.0.0",
+    "firebase": "^13.0.0"
+  }
+}

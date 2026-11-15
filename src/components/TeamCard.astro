@@ -1,54 +1,120 @@
 ---
+import { Image } from 'astro:assets';
+
 interface Props {
   name: string;
   role: string;
+  group?: string;
+  alumni?: boolean;
   bio?: string;
+  interests?: string[];
   email?: string;
   orcid?: string;
   scholar?: string;
-  photo?: string;
+  github?: string;
+  linkedin?: string;
+  website?: string;
+  yearJoined?: number;
+  yearLeft?: number;
+  currentPosition?: string;
+  photo?: ImageMetadata;
+  /** `feature` is the large card used for the principal investigator. */
+  variant?: 'card' | 'feature';
+  /**
+   * Portal preview: every text slot is rendered (hidden while empty) so a script can fill the
+   * `data-f` hooks. Pages never set this.
+   */
+  preview?: boolean;
 }
 
-const { name, role, bio, email, orcid, scholar, photo } = Astro.props;
-const base = import.meta.env.BASE_URL;
+const { name, role, bio, email, orcid, scholar, photo, variant = 'card', preview = false } = Astro.props;
+const feature = variant === 'feature';
 ---
 
-<article
-  class="section-enter flex gap-4 p-5 rounded-xl border transition-colors"
-  style="border-color: color-mix(in srgb, var(--color-soil) 15%, transparent); background-color: var(--color-surface);"
-  onmouseover="this.style.borderColor='color-mix(in srgb, var(--color-soil) 35%, transparent)'"
-  onmouseout="this.style.borderColor='color-mix(in srgb, var(--color-soil) 15%, transparent)'"
->
-  <!-- Avatar -->
+{feature ? (
   <div
-    class="shrink-0 w-16 h-16 rounded-full overflow-hidden"
-    style="background-color: color-mix(in srgb, var(--color-wheat) 20%, var(--color-paper));"
+    class="section-enter flex gap-6 p-6 rounded-xl border mb-12 max-w-2xl"
+    style="border-color: color-mix(in srgb, var(--color-wheat) 35%, transparent); background-color: var(--color-surface);"
   >
-    {photo
-      ? <img src={`${base}team/${photo}`} alt={name} class="w-full h-full object-cover" loading="lazy" />
-      : <div class="w-full h-full flex items-center justify-center text-xl font-semibold" style="color: var(--color-wheat); font-family: var(--font-display);">
-          {name.charAt(0)}
-        </div>
-    }
-  </div>
+    <!-- Avatar -->
+    <div
+      data-f="photo"
+      class:list={['shrink-0 w-20 h-20 rounded-full flex items-center justify-center text-2xl font-semibold', { 'overflow-hidden': !!photo }]}
+      style="background-color: color-mix(in srgb, var(--color-wheat) 25%, var(--color-paper)); color: var(--color-wheat); font-family: var(--font-display);"
+    >
+      {photo
+        ? <Image src={photo} alt={name} width={160} height={160} class="w-full h-full object-cover" />
+        : <span data-f="initial">{name.charAt(0)}</span>
+      }
+    </div>
 
-  <!-- Info -->
-  <div class="flex-1 min-w-0">
-    <h3 class="text-base font-semibold leading-tight mb-0.5" style="font-family: var(--font-display); color: var(--color-ink);">
-      {name}
-    </h3>
-    <p class="caption mb-2">{role}</p>
-    {bio && <p class="text-sm leading-relaxed mb-2" style="color: var(--color-soil);">{bio}</p>}
-    <div class="flex flex-wrap gap-3 text-xs">
-      {email && (
-        <a href={`mailto:${email}`} style="color: var(--color-data);">Email</a>
+    <!-- Info -->
+    <div class="flex-1 min-w-0">
+      <h2 data-f="name" class="text-2xl font-semibold mb-0.5" style="font-family: var(--font-display); color: var(--color-ink);">
+        {name}
+      </h2>
+      <p data-f="role" class="caption mb-3">{role}</p>
+      {(bio || preview) && (
+        <p data-f="bio" hidden={!bio} class="text-sm leading-relaxed mb-3" style="color: var(--color-soil);">{bio}</p>
       )}
-      {orcid && (
-        <a href={`https://orcid.org/${orcid}`} target="_blank" rel="noopener noreferrer" style="color: var(--color-data);">ORCID</a>
-      )}
-      {scholar && (
-        <a href={`https://scholar.google.com/citations?user=${scholar}`} target="_blank" rel="noopener noreferrer" style="color: var(--color-data);">Scholar</a>
-      )}
+      <div class="flex flex-wrap gap-4 text-sm">
+        {(email || preview) && (
+          <a data-f="email" hidden={!email} href={email ? `mailto:${email}` : undefined} style="color: var(--color-data);">Email</a>
+        )}
+        {(scholar || preview) && (
+          <a
+            data-f="scholar"
+            hidden={!scholar}
+            href={scholar ? `https://scholar.google.com/citations?user=${scholar}` : undefined}
+            target="_blank"
+            rel="noopener noreferrer"
+            style="color: var(--color-data);"
+          >
+            Google Scholar
+          </a>
+        )}
+      </div>
     </div>
   </div>
-</article>
+) : (
+  <article
+    class="section-enter flex gap-4 p-5 rounded-xl border transition-colors"
+    style="border-color: color-mix(in srgb, var(--color-soil) 15%, transparent); background-color: var(--color-surface);"
+    onmouseover="this.style.borderColor='color-mix(in srgb, var(--color-soil) 35%, transparent)'"
+    onmouseout="this.style.borderColor='color-mix(in srgb, var(--color-soil) 15%, transparent)'"
+  >
+    <!-- Avatar -->
+    <div
+      data-f="photo"
+      class="shrink-0 w-16 h-16 rounded-full overflow-hidden"
+      style="background-color: color-mix(in srgb, var(--color-wheat) 20%, var(--color-paper));"
+    >
+      {photo
+        ? <Image src={photo} alt={name} width={128} height={128} class="w-full h-full object-cover" />
+        : <div class="w-full h-full flex items-center justify-center text-xl font-semibold" style="color: var(--color-wheat); font-family: var(--font-display);">
+            <span data-f="initial">{name.charAt(0)}</span>
+          </div>
+      }
+    </div>
+
+    <!-- Info -->
+    <div class="flex-1 min-w-0">
+      <h3 data-f="name" class="text-base font-semibold leading-tight mb-0.5" style="font-family: var(--font-display); color: var(--color-ink);">
+        {name}
+      </h3>
+      <p data-f="role" class="caption mb-2">{role}</p>
+      {(bio || preview) && <p data-f="bio" hidden={!bio} class="text-sm leading-relaxed mb-2" style="color: var(--color-soil);">{bio}</p>}
+      <div class="flex flex-wrap gap-3 text-xs">
+        {(email || preview) && (
+          <a data-f="email" hidden={!email} href={email ? `mailto:${email}` : undefined} style="color: var(--color-data);">Email</a>
+        )}
+        {(orcid || preview) && (
+          <a data-f="orcid" hidden={!orcid} href={orcid ? `https://orcid.org/${orcid}` : undefined} target="_blank" rel="noopener noreferrer" style="color: var(--color-data);">ORCID</a>
+        )}
+        {(scholar || preview) && (
+          <a data-f="scholar" hidden={!scholar} href={scholar ? `https://scholar.google.com/citations?user=${scholar}` : undefined} target="_blank" rel="noopener noreferrer" style="color: var(--color-data);">Scholar</a>
+        )}
+      </div>
+    </div>
+  </article>
+)}

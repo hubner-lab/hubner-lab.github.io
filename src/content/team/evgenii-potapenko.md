@@ -1,6 +1,7 @@
 ---
 name: Evgenii Potapenko
 role: PhD Student
+group: phd
 order: 4
 alumni: false
 ---

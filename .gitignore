@@ -23,3 +23,6 @@ assets/*.webp
 assets/*.mp4
 assets/*.mov
 assets/*.webm
+
+# Firebase emulator logs
+*-debug.log

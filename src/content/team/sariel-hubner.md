@@ -1,6 +1,7 @@
 ---
 name: Sariel Hübner
 role: Principal Investigator
+group: pi
 order: 1
 alumni: false
 email: sarielh@migal.org.il

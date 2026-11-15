@@ -1,6 +1,7 @@
 ---
 name: Yael Lev-Mirom
 role: PhD Student
+group: phd
 order: 5
 alumni: false
 ---

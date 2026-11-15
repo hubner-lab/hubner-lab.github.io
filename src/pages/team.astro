@@ -2,23 +2,9 @@
 import Base from '../layouts/Base.astro';
 import TeamCard from '../components/TeamCard.astro';
 import { getCollection } from 'astro:content';
+import { buildTeam } from '../lib/team';
 
-const all = await getCollection('team');
-
-const people = all.map((m) => ({
-  ...m.data,
-  bio: m.body?.trim() || undefined,
-  order: m.data.order ?? 99,
-  isAlumni: m.data.alumni ?? false,
-}));
-
-const pi      = people.find((p) => p.order === 1)!;
-const current = people
-  .filter((p) => !p.isAlumni && p.order !== 1)
-  .sort((a, b) => a.order - b.order);
-const alumni  = people
-  .filter((p) => p.isAlumni)
-  .sort((a, b) => a.order - b.order);
+const { pis, current, alumni } = buildTeam(await getCollection('team'));
 ---
 
 <Base title="Team" description="Meet the Hübner Lab team at Tel-Hai College and Migal.">
@@ -39,60 +25,17 @@ const alumni  = people
         </p>
       </div>
 
-      <!-- PI feature card -->
-      <div
-        class="section-enter flex gap-6 p-6 rounded-xl border mb-12 max-w-2xl"
-        style="border-color: color-mix(in srgb, var(--color-wheat) 35%, transparent); background-color: var(--color-surface);"
-      >
-        <!-- Avatar -->
-        <div
-          class="shrink-0 w-20 h-20 rounded-full flex items-center justify-center text-2xl font-semibold"
-          style="background-color: color-mix(in srgb, var(--color-wheat) 25%, var(--color-paper)); color: var(--color-wheat); font-family: var(--font-display);"
-        >
-          {pi.name.charAt(0)}
-        </div>
-
-        <!-- Info -->
-        <div class="flex-1 min-w-0">
-          <h2 class="text-2xl font-semibold mb-0.5" style="font-family: var(--font-display); color: var(--color-ink);">
-            {pi.name}
-          </h2>
-          <p class="caption mb-3">{pi.role}</p>
-          {pi.bio && (
-            <p class="text-sm leading-relaxed mb-3" style="color: var(--color-soil);">{pi.bio}</p>
-          )}
-          <div class="flex flex-wrap gap-4 text-sm">
-            {pi.email && (
-              <a href={`mailto:${pi.email}`} style="color: var(--color-data);">Email</a>
-            )}
-            {pi.scholar && (
-              <a
-                href={`https://scholar.google.com/citations?user=${pi.scholar}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                style="color: var(--color-data);"
-              >
-                Google Scholar
-              </a>
-            )}
-          </div>
-        </div>
-      </div>
+      <!-- PI feature card(s) -->
+      {pis.map((p) => (
+        <TeamCard {...p} variant="feature" />
+      ))}
 
       <!-- Current members grid -->
       <div class="section-enter mb-16">
         <p class="caption mb-6">Lab members</p>
         <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {current.map((m) => (
-            <TeamCard
-              name={m.name}
-              role={m.role}
-              bio={m.bio}
-              email={m.email}
-              orcid={m.orcid}
-              scholar={m.scholar}
-              photo={m.photo}
-            />
+            <TeamCard {...m} />
           ))}
         </div>
       </div>

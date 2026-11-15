@@ -1,0 +1,130 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isOwner(uid) { return request.auth != null && request.auth.uid == uid; }
+    function isAdmin() {
+      return request.auth != null
+        && request.auth.token.email_verified == true
+        && request.auth.token.email.lower()
+             in get(/databases/$(database)/documents/config/access).data.admins;
+    }
+
+    function str(v, min, max) { return v is string && v.size() >= min && v.size() <= max; }
+    function optMatch(v, max, re) { return v is string && v.size() <= max && (v == '' || v.matches(re)); }
+    function optYear(v)  { return v == null || (v is int && v >= 1950 && v <= request.time.year() + 1); }
+    function optOrder(v) { return v == null || (v is number && v >= 0 && v <= 9999); }
+    function isRev(v)    { return v is string && v.matches('^[0-9a-f]{16}$'); }
+    function isSlug(v)   { return v is string && v.size() <= 48 && v.matches('^[a-z0-9]+(-[a-z0-9]+)*$'); }
+
+    function contentKeys() {
+      return ['name','role','group','alumni','bio','interests','email','orcid','scholar','github',
+              'website','linkedin','yearJoined','yearLeft','currentPosition','photoRev'];
+    }
+    function memberMetaKeys() { return ['status','updatedAt','submittedAt','accountEmail','emailVerified','provider']; }
+    function requiredMeta()   { return ['status','updatedAt','accountEmail','emailVerified','provider']; }
+    function adminKeys()      { return ['order','slug','adminNote','reviewedAt']; }
+
+    // Shared by cards and published, so a published copy is valid by construction.
+    function validContent(d, piAllowed) {
+      return str(d.name, 1, 80)
+        && str(d.role, 1, 80)
+        && (d.group in ['postdoc','phd','msc','undergrad','staff','visitor'] || (piAllowed && d.group == 'pi'))
+        && d.alumni is bool
+        && str(d.bio, 0, 600)
+        && str(d.interests, 0, 200)
+        && optMatch(d.email, 120, '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+[.][A-Za-z]{2,}$')
+        && optMatch(d.orcid, 19, '^[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{3}[0-9X]$')
+        && optMatch(d.scholar, 20, '^[A-Za-z0-9_-]{8,20}$')
+        && optMatch(d.github, 39, '^[A-Za-z0-9]([A-Za-z0-9-]{0,37}[A-Za-z0-9])?$')
+        && optMatch(d.website, 200, '^https://[A-Za-z0-9.-]+[.][A-Za-z]{2,}(/[A-Za-z0-9._~:/?#@!&()*+,;=%-]*)?$')
+        && optMatch(d.linkedin, 100, '^[A-Za-z0-9_%-]{3,100}$')
+        && optYear(d.yearJoined) && optYear(d.yearLeft)
+        && str(d.currentPosition, 0, 120)
+        && optMatch(d.photoRev, 16, '^[0-9a-f]{16}$');
+    }
+    function ownerMeta(d) {
+      return d.status in ['draft','pending']            // a member can never write approved / changes_requested
+        && d.updatedAt == request.time
+        && (d.status != 'pending' || d.submittedAt is timestamp)
+        && d.accountEmail == request.auth.token.email   // rule-enforced, so the admin queue can trust it
+        && d.emailVerified == request.auth.token.email_verified
+        && d.provider == request.auth.token.firebase.sign_in_provider;
+    }
+    function adminMeta(d) {
+      return d.status in ['draft','pending','changes_requested','approved']
+        && d.updatedAt is timestamp
+        && d.accountEmail is string && d.emailVerified is bool && d.provider is string
+        && optOrder(d.get('order', null))
+        && (!('slug' in d) || isSlug(d.slug))
+        && str(d.get('adminNote', ''), 0, 500)
+        && d.get('reviewedAt', request.time) is timestamp
+        && (d.status != 'changes_requested' || d.get('adminNote', '').size() > 0)
+        && (d.status != 'approved' || 'slug' in d);
+    }
+    function validPhoto(d) {
+      return d.keys().hasOnly(['data','rev','w','h','updatedAt'])
+        && d.keys().hasAll(['data','rev','w','h','updatedAt'])
+        && d.data is bytes && d.data.size() >= 2000 && d.data.size() <= 262144
+        && isRev(d.rev)
+        && d.w is int && d.w >= 256 && d.w <= 1024 && d.h == d.w
+        && d.updatedAt == request.time;
+    }
+    function validPublished(d) {
+      return d.keys().hasOnly(contentKeys().concat(['v','slug','rev','order','publishedAt']))
+        && d.keys().hasAll(contentKeys().concat(['v','slug','rev','order','publishedAt']))
+        && d.v == 1 && isSlug(d.slug) && isRev(d.rev) && optOrder(d.order)
+        && d.publishedAt == request.time
+        && validContent(d, true);
+    }
+
+    match /config/access {            // no write rule: console only
+      allow get: if isAdmin();        // a successful get is how the page learns it faces an admin
+    }
+
+    match /cards/{uid} {
+      allow get:  if isOwner(uid) || isAdmin();
+      allow list: if isAdmin();
+
+      allow create: if isOwner(uid)
+        && request.resource.data.keys().hasOnly(contentKeys().concat(memberMetaKeys()))
+        && request.resource.data.keys().hasAll(contentKeys().concat(requiredMeta()))
+        && validContent(request.resource.data, false)
+        && ownerMeta(request.resource.data);
+
+      allow update: if isOwner(uid)
+        && request.resource.data.diff(resource.data).affectedKeys()
+             .hasOnly(contentKeys().concat(memberMetaKeys()))
+        && validContent(request.resource.data,
+                        request.resource.data.group == resource.data.group)  // may stay pi, may not become pi
+        && ownerMeta(request.resource.data);
+
+      allow create, update: if isAdmin()
+        && request.resource.data.keys().hasOnly(contentKeys().concat(memberMetaKeys()).concat(adminKeys()))
+        && request.resource.data.keys().hasAll(contentKeys().concat(requiredMeta()))
+        && validContent(request.resource.data, true)
+        && adminMeta(request.resource.data);
+
+      allow delete: if (isOwner(uid) && !exists(/databases/$(database)/documents/published/$(uid)))
+                    || isAdmin();
+    }
+
+    match /photos/{uid} {
+      allow get: if isOwner(uid) || isAdmin();
+      allow create, update: if (isOwner(uid) || isAdmin()) && validPhoto(request.resource.data);
+      allow delete: if isOwner(uid) || isAdmin();
+    }
+
+    match /published/{uid} {
+      allow read: if true;
+      allow create, update: if isAdmin() && validPublished(request.resource.data);
+      allow delete: if isAdmin() || isOwner(uid);   // a member may take their own card down
+    }
+    match /published_photos/{uid} {
+      allow get: if true;
+      allow list: if isAdmin();
+      allow create, update: if isAdmin() && validPhoto(request.resource.data);
+      allow delete: if isAdmin() || isOwner(uid);
+    }
+  }
+}

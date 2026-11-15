@@ -1,6 +1,7 @@
 ---
 name: Guy Ben Zvi
 role: Graduate Student
+group: grad
 order: 2
 alumni: false
 ---

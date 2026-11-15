@@ -1,6 +1,7 @@
 ---
 name: Roy Friedlander
 role: Research Programmer
+group: staff
 order: 6
 alumni: false
 ---

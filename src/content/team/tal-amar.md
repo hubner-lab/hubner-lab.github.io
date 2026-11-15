@@ -1,6 +1,7 @@
 ---
 name: Tal Amar
 role: Undergraduate Student
+group: undergrad
 order: 7
 alumni: false
 ---

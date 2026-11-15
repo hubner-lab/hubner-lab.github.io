@@ -1,6 +1,7 @@
 ---
 name: Dana Sisou
 role: PhD Student
+group: phd
 order: 3
 alumni: false
 ---
