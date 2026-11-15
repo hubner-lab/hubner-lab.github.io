@@ -155,6 +155,16 @@
   html:not(.js) [data-js-only] {
     display: none !important;
   }
+
+  /* A visitor who asked for reduced motion gets every change at once: no component has to
+     remember it. The scroll reveal below and the canvases switch themselves off as well. */
+  @media (prefers-reduced-motion: reduce) {
+    *, ::before, ::after {
+      transition-duration: 0s !important;
+      animation-duration: 0s !important;
+      scroll-behavior: auto !important;
+    }
+  }
 }
 
 @layer components {
