@@ -1,34 +1,160 @@
 ---
+// One paper of the list: the title, the authors with lab members in bold, then the venue, the
+// citations and the link to the paper.
+// A long author list is folded into a <details>: the short line is its summary, the whole list
+// opens under it, without a script. Names are written as text, never as markup.
+// `data-year` and `data-type` are what the filter reads; `data-search` marks the text the search
+// reads (src/scripts/publications.ts).
+import Icon from './ui/Icon.astro';
+import { citationsLabel, type Author, type Paper, type ShownAuthor } from '../lib/publications';
+
 interface Props {
-  title: string;
-  authors: string;
-  venue: string;
-  year: number;
-  url?: string;
-  citations?: number;
+  paper: Paper;
 }
 
-const { title, authors, venue, year, url, citations } = Astro.props;
+const { paper } = Astro.props;
+const { authors } = paper;
+const cites = citationsLabel(paper.citations);
 
-// Bold "Hübner, S" / "Hubner, S" in author string
-const boldedAuthors = authors
-  .replace(/(H[uü]bner,?\s*S\.?)/gi, '<strong>$1</strong>');
+// A line of names as pieces of text: a comma between two names, and "…" where the short line
+// leaves names out between them. A lab member's piece is set in bold.
+type Piece = { text: string; lab: boolean };
+const pieces = (list: (Author | ShownAuthor)[]): Piece[] =>
+  list.flatMap((author, i) => [
+    ...(i > 0 ? [{ text: 'gap' in author && author.gap ? ', … ' : ', ', lab: false }] : []),
+    { text: author.name, lab: author.lab },
+  ]);
 ---
 
-<article class="py-4 border-b" style="border-color: color-mix(in srgb, var(--color-soil) 15%, transparent);">
-  <p class="font-medium leading-snug mb-1" style="color: var(--color-ink);">
-    {url
-      ? <a href={url} target="_blank" rel="noopener noreferrer" style="color: var(--color-ink); text-decoration: none;" class="hover:underline">{title}</a>
-      : title
-    }
-  </p>
-  <p
-    class="text-sm mb-0.5"
-    style="color: var(--color-soil);"
-    set:html={boldedAuthors}
-  />
-  <p class="text-sm" style="color: color-mix(in srgb, var(--color-soil) 70%, transparent);">
-    <em>{venue}</em>
-    {citations ? <span class="ml-2 font-mono text-xs" style="color: var(--color-wheat);">↑{citations}</span> : null}
-  </p>
-</article>
+<li class="pub" data-pub data-year={paper.year} data-type={paper.type}>
+  <p class="title" data-search>{paper.title}</p>
+
+  {authors.more > 0 ? (
+    <details class="authors">
+      <summary>
+        <span class="short">{pieces(authors.shown).map((p) => (p.lab ? <b>{p.text}</b> : p.text))}</span>
+        <span class="fold fold--more">+{authors.more} more</span>
+        <span class="fold fold--less">Show fewer authors</span>
+      </summary>
+      <p class="all" data-search>{pieces(authors.all).map((p) => (p.lab ? <b>{p.text}</b> : p.text))}</p>
+    </details>
+  ) : (
+    <p class="authors" data-search>{pieces(authors.all).map((p) => (p.lab ? <b>{p.text}</b> : p.text))}</p>
+  )}
+
+  {(paper.venue || cites || paper.link) && (
+    <p class="meta">
+      {paper.venue && <cite class="venue" data-search>{paper.venue}</cite>}
+      {paper.venue && cites && <span aria-hidden="true">·</span>}
+      {cites && <span class="cites">{cites}</span>}
+      {paper.link && (
+        <a
+          class="read"
+          href={paper.link.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={`Read paper: ${paper.title} (opens in a new tab)`}
+        >Read paper<Icon name="external" size={11} /></a>
+      )}
+    </p>
+  )}
+</li>
+
+<style>
+  .pub {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding-block: 16px;
+    border-bottom: 1px solid var(--color-line);   /* the rule above the first one is the list's */
+  }
+
+  .title {
+    font-weight: 500;
+    line-height: 1.4;
+    color: var(--color-ink);
+  }
+
+  .authors {
+    font-size: var(--text-meta);
+    line-height: 1.5;
+    color: var(--color-muted);
+  }
+  .authors b {
+    font-weight: 600;
+    color: var(--color-ink);
+  }
+  summary {
+    /* 2px more to press on each side, without moving the lines around it */
+    margin-block: -2px;
+    padding-block: 2px;
+    list-style: none;
+    cursor: pointer;
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
+  .fold {
+    margin-left: 0.35em;
+    font-size: 0.75rem;
+    white-space: nowrap;
+    color: var(--color-link);
+    border-bottom: 1px dotted currentColor;
+  }
+  summary:hover .fold {
+    border-bottom-style: solid;
+  }
+  .fold--less,
+  .authors[open] .short,
+  .authors[open] .fold--more {
+    display: none;
+  }
+  .authors[open] .fold--less {
+    display: inline;
+    margin-left: 0;
+  }
+  .all {
+    margin-top: 2px;
+  }
+
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px;
+    font-size: var(--text-meta);
+    color: var(--color-muted);
+  }
+  .venue {
+    font-style: italic;
+  }
+  .cites {
+    font: 500 0.75rem var(--font-mono);
+    white-space: nowrap;
+    color: var(--color-accent);
+  }
+  .read {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-left: auto;
+    padding: 2px 9px;
+    font: 500 0.6875rem/1.5 var(--font-mono);
+    white-space: nowrap;
+    color: var(--color-muted);
+    text-decoration: none;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-chip);
+    transition: color 150ms ease-out, border-color 150ms ease-out;
+  }
+  .read::before {   /* more to press than the small pill shows */
+    content: "";
+    position: absolute;
+    inset: -8px -4px;
+  }
+  .read:hover {
+    color: var(--color-ink);
+    border-color: var(--color-muted);
+  }
+</style>

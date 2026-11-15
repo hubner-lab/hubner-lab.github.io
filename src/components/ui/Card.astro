@@ -1,0 +1,33 @@
+---
+// A surface that stands off the page: the card colour, a hairline, round corners, a soft shadow.
+//   as     the element; a <div> when left out
+//   flat   no shadow
+//   pill   the round ends of a control, for a field such as a search box
+// Any other attribute goes to the element. Astro also passes the scope of the caller's <style>,
+// so the caller can lay the card out through the class it gives.
+import type { HTMLTag, Polymorphic } from 'astro/types';
+
+type Props<Tag extends HTMLTag = 'div'> = Polymorphic<{ as: Tag }> & {
+  flat?: boolean;
+  pill?: boolean;
+};
+
+const { as: Tag = 'div', flat = false, pill = false, class: className, ...rest } = Astro.props;
+---
+
+<Tag class:list={['card', flat && 'card--flat', pill && 'card--pill', className]} {...rest}><slot /></Tag>
+
+<style>
+  .card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card);
+  }
+  .card--flat {
+    box-shadow: none;
+  }
+  .card--pill {
+    border-radius: var(--radius-control);
+  }
+</style>

@@ -1,0 +1,31 @@
+---
+// A chip: a short label on a tint of the leaf colour, or of the accent with `tone="accent"`.
+// Any other attribute goes to the element. Astro also passes the scope of the caller's <style>,
+// so the caller can restyle the chip through the class it gives (a selected filter, a larger pill).
+import type { HTMLAttributes } from 'astro/types';
+
+type Props = {
+  tone?: 'leaf' | 'accent';
+  class?: string;
+} & Omit<HTMLAttributes<'span'>, 'class'>;
+
+const { tone = 'leaf', class: className, ...rest } = Astro.props;
+---
+
+<span class:list={['tag', tone === 'accent' && 'tag--accent', className]} {...rest}><slot /></span>
+
+<style>
+  .tag {
+    display: inline-block;
+    padding: 3px 11px;
+    font-size: 0.75rem;
+    line-height: 1.5;
+    border-radius: var(--radius-chip);
+    background: var(--color-leaf-tint);
+    color: var(--color-on-leaf-tint);
+  }
+  .tag--accent {
+    background: var(--color-accent-tint);
+    color: var(--color-on-accent-tint);
+  }
+</style>
