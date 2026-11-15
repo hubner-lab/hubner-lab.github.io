@@ -44,7 +44,8 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v7
         with:
           commit_message: 'chore: update publications.json from Google Scholar'
-          file_pattern: src/data/publications.json
+          # The list, and the day each paper was first seen (scripts/scholar.py, stamp_seen).
+          file_pattern: src/data/publications.json src/data/publications-seen.json
           commit_user_name: github-actions[bot]
           commit_user_email: github-actions[bot]@users.noreply.github.com
 
