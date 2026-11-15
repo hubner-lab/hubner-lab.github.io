@@ -17,15 +17,19 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    # Shared with members-sync.yml, so the two bots never push to main at the
+    # same moment. A run that arrives while the other holds the group waits.
+    concurrency:
+      group: main-writer
+      cancel-in-progress: false
     outputs:
       changed: ${{ steps.commit.outputs.changes_detected }}
-      sha: ${{ steps.commit.outputs.commit_hash }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Setup Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
           python-version: '3.12'
 
@@ -37,7 +41,7 @@ jobs:
 
       - name: Commit if changed
         id: commit
-        uses: stefanzweifel/git-auto-commit-action@v5
+        uses: stefanzweifel/git-auto-commit-action@v7
         with:
           commit_message: 'chore: update publications.json from Google Scholar'
           file_pattern: src/data/publications.json
@@ -46,8 +50,9 @@ jobs:
 
   # git-auto-commit pushes with GITHUB_TOKEN, and GitHub does not fire workflows
   # from GITHUB_TOKEN-authored pushes, so deploy.yml's `on: push` never runs for
-  # these commits. Call it directly instead, passing the new commit SHA — inside
-  # a reusable workflow github.sha is the caller's pre-commit tree.
+  # these commits. Call it directly instead. It deploys the branch tip, never a
+  # pinned commit: members-sync.yml also commits to main, and a pinned SHA could
+  # publish a tree that lacks the other bot's newer commit.
   deploy:
     needs: update
     if: needs.update.outputs.changed == 'true'
@@ -57,4 +62,4 @@ jobs:
       id-token: write
     uses: ./.github/workflows/deploy.yml
     with:
-      ref: ${{ needs.update.outputs.sha }}
+      ref: main
