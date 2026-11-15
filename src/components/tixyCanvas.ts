@@ -71,6 +71,15 @@ interface WordMask {
  * Rasterize one word centered at (xRatio, yRatio) of the high-res canvas,
  * then downsample to the cols×rows grid by averaging pixel alpha per cell.
  */
+/**
+ * The font of the wordmark: the site's display typeface, read from the `--font-display` token,
+ * so the dots follow the typeface the pages use.
+ */
+function wordFont(px: number): string {
+  const family = getComputedStyle(document.documentElement).getPropertyValue('--font-display').trim();
+  return `700 ${px}px ${family || 'Georgia, serif'}`;
+}
+
 async function buildWordMask(
   word: string,
   cols: number,
@@ -91,7 +100,7 @@ async function buildWordMask(
   const mctx = offscreen.getContext('2d', { willReadFrequently: true })!;
   mctx.clearRect(0, 0, W, H);
 
-  mctx.font = `700 ${fontSize}px "Fraunces Variable", Georgia, serif`;
+  mctx.font = wordFont(fontSize);
   mctx.textAlign    = 'center';
   mctx.textBaseline = 'middle';
   mctx.fillStyle    = 'white';
@@ -152,10 +161,10 @@ async function prepareWordMasks(
   // ── Stacked layout (mobile: portrait phones) ────────────────────────────
   if (canvasW < 640) {
     let fontSize = Math.floor(canvasH * 0.30); // two lines → smaller per-line budget
-    await document.fonts.load(`700 ${fontSize}px "Fraunces Variable"`);
+    await document.fonts.load(wordFont(fontSize), 'Hübner Lab');
 
     const tmp = document.createElement('canvas').getContext('2d')!;
-    tmp.font = `700 ${fontSize}px "Fraunces Variable", Georgia, serif`;
+    tmp.font = wordFont(fontSize);
     let wHub     = tmp.measureText('Hübner').width;
     let wLab     = tmp.measureText('Lab').width;
     const wWidest = Math.max(wHub, wLab);
@@ -164,7 +173,7 @@ async function prepareWordMasks(
     const maxWidth = canvasW * 0.90;
     if (wWidest > maxWidth) {
       fontSize = Math.floor(fontSize * (maxWidth / wWidest));
-      tmp.font = `700 ${fontSize}px "Fraunces Variable", Georgia, serif`;
+      tmp.font = wordFont(fontSize);
       wHub = tmp.measureText('Hübner').width; // re-measure (for consistency)
     }
 
@@ -182,11 +191,11 @@ async function prepareWordMasks(
 
   // ── Side-by-side layout (desktop / landscape) ───────────────────────────
   let fontSize = Math.floor(canvasH * 0.40);
-  await document.fonts.load(`700 ${fontSize}px "Fraunces Variable"`);
+  await document.fonts.load(wordFont(fontSize), 'Hübner Lab');
 
   // Measure each word to compute natural x positions
   const tmp = document.createElement('canvas').getContext('2d')!;
-  tmp.font = `700 ${fontSize}px "Fraunces Variable", Georgia, serif`;
+  tmp.font = wordFont(fontSize);
   let wHub = tmp.measureText('Hübner').width;
   let wLab = tmp.measureText('Lab').width;
   let gap  = fontSize * 0.35;
@@ -199,7 +208,7 @@ async function prepareWordMasks(
   const maxWidth = canvasW * 0.86;
   if (total > maxWidth) {
     fontSize = Math.floor(fontSize * (maxWidth / total));
-    tmp.font = `700 ${fontSize}px "Fraunces Variable", Georgia, serif`;
+    tmp.font = wordFont(fontSize);
     wHub  = tmp.measureText('Hübner').width;
     wLab  = tmp.measureText('Lab').width;
     gap   = fontSize * 0.35;

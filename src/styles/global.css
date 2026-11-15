@@ -1,126 +1,208 @@
-/* Fontsource variable fonts */
-@import '@fontsource-variable/fraunces';
-@import '@fontsource-variable/inter';
+/* The two typefaces, eight faces */
+@import './fonts.css';
 
-@import "tailwindcss";
+/* Tailwind reads class names from src/ only: the path is relative to this file. */
+@import "tailwindcss" source("..");
 
+/* `light:` utilities follow the theme attribute, like the tokens below. */
+@custom-variant light (&:where([data-theme="light"], [data-theme="light"] *));
+
+/* Tailwind's own palette is off: every colour on the site is one of the tokens below. */
 @theme {
-  /* Palette — Field & Data (light defaults) */
-  --color-paper:   #F7F6F1;
-  --color-surface: #F7F6F1;  /* card/elevated surface — same as paper in light */
-  --color-glow:    #FFFFFF;   /* top "lit-from-above" highlight */
-  --color-ink:     #0B0F14;
-  --color-soil:    #3A2E1F;
-  --color-data:    #1E5FBF;
-  --color-wheat:     #C9A24B;
-  --color-leaf:      #3E6B4A;
-  --color-stem:      #2D5016;
-  --color-barley:    #7A9E2E;
-  --color-sunflower: #E8B923;
-
-  /* Typography */
-  --font-display: 'Fraunces Variable', Georgia, serif;
-  --font-body:    'Inter Variable', system-ui, sans-serif;
-  --font-mono:    ui-monospace, 'Cascadia Code', 'Fira Mono', monospace;
-
-  /* Fluid type scale */
-  --text-display: clamp(3rem, 6vw, 5.5rem);
-  --text-h1:      clamp(2rem, 4vw, 3.25rem);
-  --text-h2:      1.75rem;
-  --text-body:    1.0625rem;
-  --text-caption: 0.8125rem;
-
-  /* Spacing */
-  --spacing-section: clamp(4rem, 8vw, 8rem);
+  --color-*: initial;
 }
 
-/* Base reset + typography */
-*, *::before, *::after {
-  box-sizing: border-box;
-}
-
-/* ─── Dark theme override ──────────────────────────────────────────────────── */
-:root[data-theme="dark"] {
+/* The tokens. Dark is the default set; the light values are in the base layer below.
+   `static` keeps a token in the build when no utility uses it: components read them with var(). */
+@theme static {
+  /* Palette "Soil" */
   --color-paper:   #221208;
   --color-surface: #2E1A0E;
-  --color-glow:    #3A2010;
   --color-ink:     #ECE6DA;
-  --color-soil:    #A99D8B;
-  --color-data:    #7FB0E8;
-  --color-wheat:   #D4B05E;
+  --color-muted:   #A99D8B;
+  --color-link:    #7FB0E8;
+  --color-accent:  #D4B05E;
   --color-leaf:    #6FAE7C;
-  color-scheme: dark;
+
+  /* Derived */
+  --color-line:           color-mix(in srgb, var(--color-ink) 16%, transparent);
+  --color-accent-ink:     var(--color-paper);   /* text on an accent fill */
+  --color-leaf-tint:      color-mix(in srgb, var(--color-leaf) 14%, transparent);
+  --color-on-leaf-tint:   var(--color-leaf);    /* chip text on the leaf tint */
+  --color-accent-tint:    color-mix(in srgb, var(--color-accent) 14%, transparent);
+  --color-on-accent-tint: var(--color-accent);  /* chip text on the accent tint */
+
+  /* The same in both themes */
+  --color-on-media: #F6F1E6;                    /* text over the hero video */
+  --color-plate:    #EFEADF;                    /* the even plate behind the pillar images */
+
+  /* Corners and elevation */
+  --radius-control: 999px;
+  --radius-card:    20px;
+  --radius-chip:    999px;
+  --shadow-card:    0 2px 12px rgba(0, 0, 0, 0.16);
+
+  /* Typefaces */
+  --font-display: 'Source Serif 4 Variable', Georgia, 'Times New Roman', serif;
+  --font-body:    'Source Sans 3 Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono:    ui-monospace, 'SF Mono', Menlo, Consolas, monospace;   /* the system's own: no third family */
+  --display-weight: 600;
+
+  /* Type scale. Phone sizes here; the wider steps are in the base layer below. */
+  --text-hero:  2.875rem;   /* 46px, 56px from 640px, 80px from 901px */
+  --text-h1:    2.375rem;   /* 38px, 52px from 640px */
+  --text-h2:    1.75rem;    /* 28px, 34px from 640px */
+  --text-h3:    1.375rem;   /* 22px */
+  --text-lead:  1.125rem;   /* 18px */
+  --text-body:  1.0625rem;  /* 17px */
+  --text-small: 0.9375rem;  /* 15px */
+  --text-meta:  0.8125rem;  /* 13px */
+
+  /* Vertical room of a page section: 52px, 72px from 640px */
+  --spacing-section: 3.25rem;
 }
 
-html {
-  background-color: var(--color-paper);
-  /* Whisper focal gradient: barely perceptible lit-from-above warmth */
-  background-image: radial-gradient(
-    ellipse 120% 60% at 50% 0%,
-    color-mix(in srgb, var(--color-paper) 96%, var(--color-glow)) 0%,
-    var(--color-paper) 65%
-  );
-  background-attachment: fixed;
-  color: var(--color-ink);
-  font-family: var(--font-body);
-  font-size: var(--text-body);
-  line-height: 1.7;
-  -webkit-font-smoothing: antialiased;
-}
+@layer base {
+  :root {
+    color-scheme: dark;
 
-h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-display);
-  line-height: 1.15;
-  color: var(--color-ink);
-}
+    /* Old token names, for the pages that are not rebuilt yet. They go when the last use does:
+       tests/site/tokens.test.mjs counts the uses, and the count may only fall. */
+    --color-soil:  var(--color-muted);
+    --color-data:  var(--color-link);
+    --color-wheat: var(--color-accent);
+  }
 
-h1 { font-size: var(--text-h1); font-weight: 600; font-variation-settings: 'opsz' 72; }
-h2 { font-size: var(--text-h2); font-weight: 600; font-variation-settings: 'opsz' 36; }
+  :root[data-theme="light"] {
+    color-scheme: light;
+    --color-paper:   #F7F6F1;
+    --color-surface: #FFFFFF;
+    --color-ink:     #0B0F14;
+    --color-muted:   #4A3E2F;
+    --color-link:    #1E5FBF;
+    --color-accent:  #8C6A16;
+    --color-leaf:    #3E6B4A;
+    /* The derived tokens, written out: a browser without color-mix() takes its fallback from
+       the dark values above. tests/site/contrast.test.mjs holds them to the formulas. */
+    --color-line:        #0B0F1429;   /* ink at 16% */
+    --color-leaf-tint:   #3E6B4A24;   /* leaf at 14% */
+    --color-accent-tint: #8C6A1624;   /* accent at 14% */
+    /* The accent on its own tint reads 3.9:1 on light paper, under the 4.5:1 the site keeps:
+       here the chip text is the accent darkened with 20% ink. */
+    --color-on-accent-tint: #725816;
+  }
 
-a {
-  color: var(--color-data);
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-a:hover { opacity: 0.8; }
+  @media (width >= 40rem) {
+    :root {
+      --text-hero: 3.5rem;
+      --text-h1: 3.25rem;
+      --text-h2: 2.125rem;
+      --spacing-section: 4.5rem;
+    }
+  }
+  @media (width >= 56.3125rem) {
+    :root {
+      --text-hero: 5rem;
+    }
+  }
 
-/* Section entry animation */
-.section-enter {
-  opacity: 0;
-  transform: translateY(12px);
-  transition: opacity 400ms ease-out, transform 400ms ease-out;
-}
-.section-enter.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
+  html {
+    font-size: 100%;
+    scroll-padding-top: 5rem;   /* a target of a link lands below the bar that stays at the top */
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-body);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
 
-@media (prefers-reduced-motion: reduce) {
-  .section-enter {
-    opacity: 1;
-    transform: none;
-    transition: none;
+  body {
+    background-color: var(--color-paper);
+    font-size: var(--text-body);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    font-weight: var(--display-weight);
+    letter-spacing: -0.012em;
+    line-height: 1.12;
+    color: var(--color-ink);
+    text-wrap: balance;
+  }
+  h1 { font-size: var(--text-h1); }
+  h2 { font-size: var(--text-h2); }
+  h3 { font-size: var(--text-h3); line-height: 1.25; }
+
+  /* A link with no class is a text link. One with a class styles itself. */
+  a:not([class]) {
+    color: var(--color-link);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+  }
+  a:not([class]):hover {
+    text-decoration-thickness: 2px;
+  }
+
+  /* One focus ring for everything the keyboard can reach. */
+  :focus-visible {
+    outline: 2px solid var(--color-link);
+    outline-offset: 2px;
+  }
+
+  /* A control that works only with a script is marked `data-js-only`. The head script adds
+     `js` to <html>; until then, and without JavaScript, the control is not shown. */
+  html:not(.js) [data-js-only] {
+    display: none !important;
   }
 }
 
-/* Caption utility */
-.caption {
-  font-family: var(--font-body);
-  font-size: var(--text-caption);
-  font-weight: 500;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--color-soil);
+@layer components {
+  /* Small uppercase label */
+  .caption {
+    font-family: var(--font-body);
+    font-size: var(--text-meta);
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+
+  /* Scroll reveal: an element with `reveal` fades up when it enters the viewport.
+     Nothing is hidden unless the head script has put `js-reveal` on <html>, which it does only
+     when it can also show the element again; so a page without JavaScript, a printed page and a
+     visitor who asked for reduced motion all get the content as it is. It is an animation, not
+     a transition, so a transition utility on the same element leaves it alone. `--i` on an
+     element delays it by that many steps. The script marks a finished element `is-done`, so it
+     does not play again when it is hidden and shown later. `.section-enter` is the older name
+     of `.reveal`. */
+  @media screen and (prefers-reduced-motion: no-preference) {
+    .js-reveal :is(.reveal, .section-enter):not(.is-in) {
+      opacity: 0;
+    }
+    .js-reveal :is(.reveal, .section-enter).is-in:not(.is-done) {
+      animation: reveal-rise 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
+      animation-delay: calc(var(--i, 0) * 110ms);
+    }
+  }
 }
 
-/* Hide scrollbar while keeping scroll functionality */
-.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-.no-scrollbar::-webkit-scrollbar { display: none; }
+@keyframes reveal-rise {
+  from { opacity: 0; transform: translateY(18px); }
+}
 
-/* Max-width container */
-.container {
+/* The page wrapper: a 1104px column with side room of 20px on a phone up to 48px. */
+@utility wrap {
+  --wrap-pad: clamp(1.25rem, 4vw, 3rem);
   width: 100%;
-  max-width: 1240px;
+  max-width: calc(69rem + 2 * var(--wrap-pad));
   margin-inline: auto;
-  padding-inline: clamp(1rem, 4vw, 2rem);
+  padding-inline: var(--wrap-pad);
+}
+
+/* Old page wrapper, an alias of `wrap` for the pages that are not rebuilt yet (counted by
+   tests/site/tokens.test.mjs). It stays outside the layers because the class name also switches
+   on Tailwind's own `container` utility, which it has to beat. */
+.container {
+  @apply wrap;
 }

@@ -34,7 +34,7 @@ const currentYear = new Date().getFullYear();
       <div class="max-w-2xl mb-10">
         <p class="caption mb-4">Members</p>
         <h1 style="font-size: var(--text-h1);">Your card</h1>
-        <p class="mt-4 leading-relaxed" style="color: var(--color-soil);">
+        <p class="mt-4 leading-relaxed" style="color: var(--color-muted);">
           Write the card that appears on the Team page. It stays invisible until an admin approves it,
           and each later change is approved again while the live card stays as it is.
         </p>
@@ -67,7 +67,7 @@ const currentYear = new Date().getFullYear();
           </label>
           <button type="submit" class="m-btn w-full">Sign in</button>
         </form>
-        <p class="mt-4 text-sm" style="color: var(--color-soil);">
+        <p class="mt-4 text-sm" style="color: var(--color-muted);">
           Accounts are created by the lab; there is no sign-up here.
         </p>
         {emulator && (
@@ -80,7 +80,7 @@ const currentYear = new Date().getFullYear();
 
       <!-- Editor -->
       <div id="m-app" hidden>
-        <div class="flex flex-wrap items-center gap-3 mb-6 text-sm" style="color: var(--color-soil);">
+        <div class="flex flex-wrap items-center gap-3 mb-6 text-sm" style="color: var(--color-muted);">
           <span>Signed in as <strong id="m-who" style="color: var(--color-ink);"></strong></span>
           <button type="button" id="m-signout" class="m-link">Sign out</button>
         </div>
@@ -206,49 +206,49 @@ const currentYear = new Date().getFullYear();
 
 <style is:global>
   .m-note { display: flex; flex-direction: column; gap: .25rem; max-width: 42rem; padding: 1rem 1.25rem; margin-bottom: 1.5rem;
-    border: 1px solid color-mix(in srgb, var(--color-wheat) 35%, transparent); border-radius: .75rem;
-    background: var(--color-surface); color: var(--color-soil); font-size: .95rem; }
+    border: 1px solid color-mix(in srgb, var(--color-accent) 35%, transparent); border-radius: .75rem;
+    background: var(--color-surface); color: var(--color-muted); font-size: .95rem; }
   .m-note strong { color: var(--color-ink); }
   .m-error { border-color: color-mix(in srgb, #c0392b 60%, transparent); color: var(--color-ink); }
-  .m-small { font-size: .85rem; color: var(--color-soil); max-width: 36rem; }
+  .m-small { font-size: .85rem; color: var(--color-muted); max-width: 36rem; }
   .m-label { display: flex; flex-direction: column; gap: .35rem; font-size: .9rem; font-weight: 500; color: var(--color-ink); }
-  .m-req { font-weight: 400; font-size: .75rem; color: var(--color-soil); }
-  .m-hint, .m-count { font-size: .78rem; font-weight: 400; color: var(--color-soil); }
+  .m-req { font-weight: 400; font-size: .75rem; color: var(--color-muted); }
+  .m-hint, .m-count { font-size: .78rem; font-weight: 400; color: var(--color-muted); }
   .m-count { align-self: flex-end; margin-top: -.2rem; }
-  .m-err { font-size: .82rem; font-weight: 500; color: #c0392b; }
-  :root[data-theme="dark"] .m-err { color: #ff8a7a; }
+  .m-err { font-size: .82rem; font-weight: 500; color: #ff8a7a; }
+  :root[data-theme="light"] .m-err { color: #c0392b; }
   .m-input { width: 100%; padding: .55rem .7rem; border-radius: .5rem; font: inherit; font-weight: 400; color: var(--color-ink);
-    background: var(--color-surface); border: 1px solid color-mix(in srgb, var(--color-soil) 35%, transparent); }
-  .m-input:focus-visible { outline: 2px solid var(--color-data); outline-offset: 1px; }
+    background: var(--color-surface); border: 1px solid color-mix(in srgb, var(--color-muted) 35%, transparent); }
+  .m-input:focus-visible { outline: 2px solid var(--color-link); outline-offset: 1px; }
   .m-input[aria-invalid="true"] { border-color: #c0392b; }
   .m-check { display: flex; gap: .6rem; align-items: center; font-size: .9rem; color: var(--color-ink); }
   .m-btn { padding: .6rem 1.1rem; border-radius: .5rem; font: inherit; font-size: .95rem; font-weight: 500; cursor: pointer;
-    color: var(--color-ink); background: var(--color-surface); border: 1px solid color-mix(in srgb, var(--color-soil) 40%, transparent); }
-  .m-btn:hover { border-color: var(--color-soil); }
+    color: var(--color-ink); background: var(--color-surface); border: 1px solid color-mix(in srgb, var(--color-muted) 40%, transparent); }
+  .m-btn:hover { border-color: var(--color-muted); }
   .m-btn:disabled { opacity: .55; cursor: wait; }
-  .m-btn-primary { background: var(--color-wheat); border-color: var(--color-wheat); color: #1a1208; }
-  .m-link { background: none; border: 0; padding: 0; font: inherit; font-size: .9rem; color: var(--color-data); text-decoration: underline; cursor: pointer; }
-  .m-photo { min-width: 0; border: 1px dashed color-mix(in srgb, var(--color-soil) 40%, transparent); border-radius: .75rem; padding: 1rem; }
-  .m-tab { padding: .45rem .9rem; border-radius: .5rem; font: inherit; font-size: .9rem; cursor: pointer; color: var(--color-soil);
+  .m-btn-primary { background: var(--color-accent); border-color: var(--color-accent); color: var(--color-accent-ink); }
+  .m-link { background: none; border: 0; padding: 0; font: inherit; font-size: .9rem; color: var(--color-link); text-decoration: underline; cursor: pointer; }
+  .m-photo { min-width: 0; border: 1px dashed color-mix(in srgb, var(--color-muted) 40%, transparent); border-radius: .75rem; padding: 1rem; }
+  .m-tab { padding: .45rem .9rem; border-radius: .5rem; font: inherit; font-size: .9rem; cursor: pointer; color: var(--color-muted);
     background: none; border: 1px solid transparent; }
-  .m-tab[aria-selected="true"] { color: var(--color-ink); border-color: color-mix(in srgb, var(--color-soil) 40%, transparent); background: var(--color-surface); }
-  .m-row { border: 1px solid color-mix(in srgb, var(--color-soil) 25%, transparent); border-radius: .75rem; margin-bottom: .75rem;
+  .m-tab[aria-selected="true"] { color: var(--color-ink); border-color: color-mix(in srgb, var(--color-muted) 40%, transparent); background: var(--color-surface); }
+  .m-row { border: 1px solid color-mix(in srgb, var(--color-muted) 25%, transparent); border-radius: .75rem; margin-bottom: .75rem;
     background: var(--color-surface); max-width: 48rem; }
   .m-rowhead { display: flex; width: 100%; justify-content: space-between; gap: 1rem; align-items: center; padding: .85rem 1rem;
     background: none; border: 0; font: inherit; color: var(--color-ink); cursor: pointer; text-align: left; }
   .m-rowname { font-weight: 600; }
   @media (max-width: 640px) { .m-rowname .m-req { display: block; } }
   .m-rowbody { padding: 0 1rem 1rem; }
-  .m-badge { font-size: .72rem; padding: .15rem .5rem; border-radius: 999px; border: 1px solid color-mix(in srgb, var(--color-soil) 40%, transparent); white-space: nowrap; }
-  .m-pending { background: color-mix(in srgb, var(--color-wheat) 30%, transparent); }
+  .m-badge { font-size: .72rem; padding: .15rem .5rem; border-radius: 999px; border: 1px solid color-mix(in srgb, var(--color-muted) 40%, transparent); white-space: nowrap; }
+  .m-pending { background: color-mix(in srgb, var(--color-accent) 30%, transparent); }
   .m-changes_requested { border-color: #c0392b; }
   .m-approved { background: color-mix(in srgb, var(--color-leaf) 30%, transparent); }
-  .m-diff { list-style: none; padding: 0; margin: 0; font-size: .88rem; color: var(--color-soil); display: flex; flex-direction: column; gap: .25rem; overflow-wrap: anywhere; }
+  .m-diff { list-style: none; padding: 0; margin: 0; font-size: .88rem; color: var(--color-muted); display: flex; flex-direction: column; gap: .25rem; overflow-wrap: anywhere; }
   .m-diff strong { color: var(--color-ink); font-weight: 600; }
-  .m-old { text-decoration: line-through; opacity: .75; }
+  .m-old { text-decoration: line-through; }
   .m-new { color: var(--color-ink); }
   .m-thumb { width: 96px; height: 96px; border-radius: 999px; object-fit: cover; }
-  .m-edit { border-top: 1px solid color-mix(in srgb, var(--color-soil) 25%, transparent); padding-top: 1rem; }
+  .m-edit { border-top: 1px solid color-mix(in srgb, var(--color-muted) 25%, transparent); padding-top: 1rem; }
   /* Admin tab: the two groups, and the form of a record kept for a person without an account */
   .m-group { margin-bottom: 2.75rem; }
   .m-grouphead { font-size: 1.3rem; margin-bottom: .6rem; }
@@ -260,11 +260,11 @@ const currentYear = new Date().getFullYear();
   .m-hwhead { cursor: default; }
   .m-flash { margin: 0 1rem .85rem; padding: .45rem .75rem; border-radius: .5rem; font-size: .85rem; color: var(--color-ink);
     background: color-mix(in srgb, var(--color-leaf) 22%, transparent); }
-  .m-more { border-top: 1px solid color-mix(in srgb, var(--color-soil) 25%, transparent); padding-top: .85rem; }
+  .m-more { border-top: 1px solid color-mix(in srgb, var(--color-muted) 25%, transparent); padding-top: .85rem; }
   .m-more > summary { cursor: pointer; font-size: .9rem; font-weight: 500; color: var(--color-ink); }
   #m-file, .m-file { max-width: 100%; }
   .m-file { font-size: .9rem; }
   #m-canvas, .m-canvas { width: 100%; max-width: 20rem; aspect-ratio: 1; border-radius: .5rem; cursor: grab; touch-action: none;
-    background: color-mix(in srgb, var(--color-soil) 20%, var(--color-paper)); }
+    background: color-mix(in srgb, var(--color-muted) 20%, var(--color-paper)); }
   #m-preview { position: sticky; top: 6rem; }
 </style>

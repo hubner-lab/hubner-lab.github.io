@@ -2,54 +2,125 @@
 import '../styles/global.css';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
+import { site } from '../site.config';
 
 interface Props {
-  title: string;
+  /** The page's own title; the lab's name is added after it. Leave it out on the home page. */
+  title?: string;
   description?: string;
   noindex?: boolean;
+  /** The "page not found" page: it stands in for any address, so it names no address of its own. */
+  notFound?: boolean;
 }
 
-const { title, description = 'Hübner Lab — evolutionary and landscape genomics at Tel-Hai College and Migal.', noindex = false } = Astro.props;
-const base = import.meta.env.BASE_URL;
+const { title, description = site.description, noindex = false, notFound = false } = Astro.props;
+const pageTitle = title ? `${title} | ${site.name}` : site.title;
+// Built pages are folders: their address ends with a slash, whatever the request looked like.
+const path = Astro.url.pathname.endsWith('/') ? Astro.url.pathname : `${Astro.url.pathname}/`;
+const canonical = notFound ? undefined : new URL(path, site.url).href;
+const socialImage = new URL(site.socialImage.path, site.url).href;
+
+// The markup below is complete without a script: `data-theme="dark"` is on <html>, and nothing
+// is hidden. The inline script in <head> runs before the first paint and does three things:
+//   1. adds the class `js`, so a control that needs a script (`data-js-only`) is shown;
+//   2. applies a stored light theme (key `hl-theme`; ThemeToggle writes it, and only on a press),
+//      and gives the browser's own bars the light colour too (the theme-color tag holds both);
+//   3. when the visitor allows motion, adds the class `js-reveal` and gives every `.reveal`
+//      element (and the older `.section-enter`) the class `is-in` once it enters the viewport,
+//      then `is-done` when its animation has ended, so that an element which is hidden and
+//      shown again later (a filter, a tab) does not play it a second time.
+//      global.css hides and animates only under `.js-reveal`; if the observer cannot be set up,
+//      the class is taken off again, so nothing stays hidden.
+// The script carries no comments: it is sent with every page.
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{pageTitle}</title>
     <meta name="description" content={description} />
     {noindex && <meta name="robots" content="noindex" />}
-    <link rel="icon" type="image/svg+xml" href={`${base}favicon.svg`} />
-    <title>{title} | Hübner Lab</title>
-    <!-- No-flash theme script: runs before first paint, defaults to dark -->
+    {canonical && <link rel="canonical" href={canonical} />}
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="theme-color" content={site.themeColor.dark} data-dark={site.themeColor.dark} data-light={site.themeColor.light} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    {canonical && <meta property="og:url" content={canonical} />}
+    <meta property="og:image" content={socialImage} />
+    <meta property="og:image:width" content={String(site.socialImage.width)} />
+    <meta property="og:image:height" content={String(site.socialImage.height)} />
+    <meta property="og:image:alt" content={site.socialImage.alt} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={socialImage} />
     <script is:inline>
-      (function() {
-        var t = localStorage.getItem('theme') || 'dark';
-        document.documentElement.dataset.theme = t;
+      (function () {
+        var root = document.documentElement;
+        root.classList.add('js');
+        try {
+          if (localStorage.getItem('hl-theme') === 'light') {
+            root.setAttribute('data-theme', 'light');
+            var bar = document.querySelector('meta[name="theme-color"]');
+            if (bar) bar.setAttribute('content', bar.getAttribute('data-light'));
+          }
+        } catch (e) {}
+        try {
+          if (!('IntersectionObserver' in window) || !matchMedia('(prefers-reduced-motion: no-preference)').matches) return;
+          root.classList.add('js-reveal');
+          var io = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+              if (!entry.isIntersecting) return;
+              entry.target.classList.add('is-in');
+              io.unobserve(entry.target);
+            });
+          }, { threshold: 0 });
+          document.addEventListener('animationend', function (e) {
+            if (e.animationName === 'reveal-rise') e.target.classList.add('is-done');
+          });
+          var start = function () {
+            document.querySelectorAll('.reveal, .section-enter').forEach(function (el) { io.observe(el); });
+          };
+          if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
+          else start();
+        } catch (e) {
+          root.classList.remove('js-reveal');
+        }
       })();
     </script>
   </head>
-  <body style="background-color: var(--color-paper);">
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
     <Nav />
-    <main>
+    <main id="main">
       <slot />
     </main>
     <Footer />
-    <script>
-      // Section entry animation via IntersectionObserver
-      const observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              entry.target.classList.add('visible');
-              observer.unobserve(entry.target);
-            }
-          });
-        },
-        { threshold: 0.1 }
-      );
-      document.querySelectorAll('.section-enter').forEach((el) => observer.observe(el));
-    </script>
   </body>
 </html>
+
+<style>
+  /* Off the page until the keyboard reaches it: the first Tab on any page. */
+  .skip-link {
+    position: absolute;
+    top: 8px;
+    left: 12px;
+    z-index: 100;
+    padding: 10px 16px;
+    font: 500 0.875rem/1 var(--font-body);
+    color: var(--color-paper);
+    background: var(--color-ink);
+    border-radius: var(--radius-control);
+    text-decoration: none;
+    transform: translateY(-300%);
+  }
+  .skip-link:focus {
+    transform: none;
+  }
+</style>

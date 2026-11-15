@@ -1,0 +1,42 @@
+---
+// The header of a page or of a section: a small label, the title, and an optional lead line.
+// A page starts with `as="h1"`; a section inside a page keeps the default h2.
+interface Props {
+  title: string;
+  eyebrow?: string;
+  lead?: string;
+  as?: 'h1' | 'h2';
+  class?: string;
+}
+
+const { title, eyebrow, lead, as: Tag = 'h2', class: className } = Astro.props;
+---
+
+<div class:list={['section-header', className]}>
+  {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+  <Tag class="title">{title}</Tag>
+  {lead && <p class="lead">{lead}</p>}
+  <slot />
+</div>
+
+<style>
+  .section-header {
+    display: flex;
+    flex-direction: column;
+  }
+  .eyebrow {
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    margin-bottom: 8px;
+  }
+  .lead {
+    margin-top: 14px;
+    max-width: 62ch;
+    font-size: var(--text-lead);
+    line-height: 1.6;
+    color: var(--color-muted);
+  }
+</style>

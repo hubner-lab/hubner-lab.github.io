@@ -1,0 +1,59 @@
+---
+// A button, or a link that looks like one when `href` is given.
+//   primary  filled with the text colour: the one main action of a block
+//   ghost    outlined: the second action beside it
+// Any other attribute (type, target, aria-*, data-*) goes to the element.
+import type { HTMLAttributes } from 'astro/types';
+
+type Props = {
+  href?: string;
+  variant?: 'primary' | 'ghost';
+  size?: 'md' | 'sm';
+  class?: string;
+} & Omit<HTMLAttributes<'a'> & HTMLAttributes<'button'>, 'href' | 'class'>;
+
+const { href, variant = 'primary', size = 'md', class: className, ...rest } = Astro.props;
+const classes = ['btn', `btn--${variant}`, size === 'sm' && 'btn--sm', className];
+---
+
+{href !== undefined
+  ? <a href={href} class:list={classes} {...rest}><slot /></a>
+  : <button type="button" class:list={classes} {...rest}><slot /></button>}
+
+<style>
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 20px;
+    white-space: nowrap;
+    font: 500 0.875rem/1 var(--font-body);
+    text-decoration: none;
+    border: 1px solid transparent;
+    border-radius: var(--radius-control);
+    cursor: pointer;
+    transition: background-color 150ms ease-out, border-color 150ms ease-out;
+  }
+  .btn--primary {
+    background: var(--color-ink);
+    color: var(--color-paper);
+    border-color: var(--color-ink);
+  }
+  .btn--primary:hover {
+    background: color-mix(in srgb, var(--color-ink) 86%, var(--color-paper));
+    border-color: color-mix(in srgb, var(--color-ink) 86%, var(--color-paper));
+  }
+  .btn--ghost {
+    background: transparent;
+    color: var(--color-ink);
+    border-color: var(--color-muted);
+  }
+  .btn--ghost:hover {
+    background: color-mix(in srgb, var(--color-ink) 8%, transparent);
+    border-color: var(--color-ink);
+  }
+  .btn--sm {
+    padding: 8px 15px;
+    font-size: var(--text-meta);
+  }
+</style>

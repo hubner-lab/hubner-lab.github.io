@@ -1,0 +1,51 @@
+---
+// GitHub Pages serves this page, with status 404, for every address that has no page.
+import Base from '../layouts/Base.astro';
+import SectionHeader from '../components/ui/SectionHeader.astro';
+import Button from '../components/ui/Button.astro';
+import { site } from '../site.config';
+---
+
+<Base title="Page not found" description="This address has no page on the Hübner Lab website." notFound>
+  <div class="wrap not-found">
+    <SectionHeader
+      as="h1"
+      eyebrow="404"
+      title="Page not found"
+      lead="This address has no page. It may have moved, or the link may be mistyped. These are the pages of the site:"
+    />
+    <ul class="pages">
+      {site.nav.map(({ href, label }) => (
+        <li><a href={href}>{label}</a></li>
+      ))}
+    </ul>
+    <Button href="/">Go to the home page</Button>
+  </div>
+</Base>
+
+<style>
+  .not-found {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 28px;
+    padding-block: var(--spacing-section);
+  }
+  .pages {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 28px;
+    list-style: none;
+    font-family: var(--font-display);
+    font-weight: var(--display-weight);
+    font-size: var(--text-h3);
+  }
+  .pages a {
+    color: var(--color-ink);
+    text-decoration: none;
+    border-bottom: 1px solid var(--color-line);
+  }
+  .pages a:hover {
+    border-bottom-color: var(--color-accent);
+  }
+</style>

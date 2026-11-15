@@ -30,8 +30,8 @@ const { pis, current, alumni } = buildTeam(await getCollection('team'));
         <TeamCard {...p} variant="feature" />
       ))}
 
-      <!-- Current members grid -->
-      <div class="section-enter mb-16">
+      <!-- Current members grid: each card reveals itself, so the block does not -->
+      <div class="mb-16">
         <p class="caption mb-6">Lab members</p>
         <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {current.map((m) => (
