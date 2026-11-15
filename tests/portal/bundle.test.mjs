@@ -2,6 +2,7 @@
 // 1. The Firebase SDK is only reachable from the /members page, never from another page.
 // 2. /members is noindex and says the portal is not configured (src/data/firebase-config.json is absent).
 // 3. The emulator branch is dead code in a normal build.
+// 4. /members/handwritten.json lists the entries still written by hand, for the admin tab to adopt.
 import { readdirSync, readFileSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
@@ -68,6 +69,26 @@ test_emulator_dead: {
       assert.ok(!text.get(f).includes(needle), `${path.relative(dist, f)} contains emulator code (${needle})`);
     }
   }
+}
+
+test_handwritten_list: {
+  const list = JSON.parse(readFileSync(path.join(dist, 'members/handwritten.json'), 'utf8'));
+  const synced = JSON.parse(readFileSync(path.join(dist, 'members/synced.json'), 'utf8'));
+  assert.ok(Array.isArray(list), '/members/handwritten.json is not a list');
+  const slugs = new Set();
+  for (const h of list) {
+    assert.match(h.slug, /^[a-z0-9]+(-[a-z0-9]+)*$/, `handwritten.json: bad slug ${JSON.stringify(h.slug)}`);
+    assert.ok(typeof h.name === 'string' && h.name.trim(), `handwritten.json: ${h.slug} has no name`);
+    assert.ok(typeof h.role === 'string', `handwritten.json: ${h.slug} has no role`);
+    assert.equal(typeof h.alumni, 'boolean', `handwritten.json: ${h.slug} alumni is not a boolean`);
+    assert.ok(!('uid' in h), `handwritten.json: ${h.slug} is a synced entry`);
+    assert.ok(!slugs.has(h.slug), `handwritten.json: ${h.slug} is listed twice`);
+    slugs.add(h.slug);
+  }
+  // Every person on the Team page is either hand-written or synced, never both and never neither.
+  const team = html('team/index.html').match(/<section\b[\s\S]*?<\/section>/)?.[0] ?? '';
+  const people = (team.match(/data-f="name"/g) ?? []).length + (team.match(/<li\b[^>]*>\s*<span\b/g) ?? []).length;
+  assert.equal(list.length + Object.keys(synced).length, people, 'handwritten.json and synced.json do not add up to the Team page');
 }
 
 console.log(`portal bundle ok: SDK in ${sdkFiles.length} file(s), all reachable only from /members`);

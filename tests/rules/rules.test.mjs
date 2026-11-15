@@ -434,6 +434,134 @@ describe('batched writes (the shape of Phase 4: approve and unpublish)', () => {
   });
 });
 
+// A record an admin keeps for a person without an account (src/members/managed.ts): a normal card
+// under the id `rec-<slug>` with `provider: 'admin'`. The rules need no clause of their own for it;
+// these tests pin that the existing ones give exactly this behaviour.
+describe('records without an account (kept by an admin)', () => {
+  const REC = 'rec-jane-doe';
+  const managedCard = (over = {}) => ({
+    ...content({ name: 'Jane Doe', role: 'MSc (Alumni)', group: 'msc', alumni: true, email: '',
+      yearJoined: 2019, yearLeft: 2022, currentPosition: 'Postdoc, Example University' }),
+    status: 'draft',
+    updatedAt: serverTimestamp(),
+    accountEmail: '',
+    emailVerified: false,
+    provider: 'admin',
+    slug: 'jane-doe',
+    adminNote: '',
+    ...over,
+  });
+  const storedManaged = (over = {}) => ({ ...managedCard(), updatedAt: Timestamp.now(), ...over });
+  const publishedManaged = (over = {}) => publishedDoc({
+    name: 'Jane Doe', role: 'MSc (Alumni)', group: 'msc', alumni: true, email: '',
+    yearJoined: 2019, yearLeft: 2022, currentPosition: 'Postdoc, Example University',
+    slug: 'jane-doe', order: null, ...over,
+  });
+
+  test('an admin creates the record, adds a photo and publishes it from draft', async () => {
+    const db = adminCtx(env);
+    await assertSucceeds(setDoc(doc(db, `cards/${REC}`), managedCard()));
+    await assertSucceeds(setDoc(doc(db, `photos/${REC}`), photoDoc()));
+    await assertSucceeds(setDoc(doc(db, `cards/${REC}`), { photoRev: '0123456789abcdef', updatedAt: serverTimestamp() }, { merge: true }));
+    const b = writeBatch(db);
+    b.set(doc(db, `published_photos/${REC}`), photoDoc());
+    b.set(doc(db, `published/${REC}`), publishedManaged({ photoRev: '0123456789abcdef' }));
+    b.set(doc(db, `cards/${REC}`), { status: 'approved', slug: 'jane-doe', adminNote: '', reviewedAt: serverTimestamp() }, { merge: true });
+    await assertSucceeds(b.commit());
+  });
+  test('an admin may keep the principal investigator and pin the order', async () => {
+    const db = adminCtx(env);
+    await assertSucceeds(setDoc(doc(db, 'cards/rec-the-pi'), managedCard({ group: 'pi', alumni: false, slug: 'the-pi', order: 1 })));
+  });
+  test('the record must still be a valid card', async () => {
+    const db = adminCtx(env);
+    await assertFails(setDoc(doc(db, `cards/${REC}`), managedCard({ group: 'grad' })));
+    await assertFails(setDoc(doc(db, `cards/${REC}`), managedCard({ name: '' })));
+    await assertFails(setDoc(doc(db, `cards/${REC}`), managedCard({ slug: 'Not A Slug' })));
+    await assertFails(setDoc(doc(db, `cards/${REC}`), managedCard({ managed: true })));
+    const noProvider = managedCard();
+    delete noProvider.provider;
+    await assertFails(setDoc(doc(db, `cards/${REC}`), noProvider));
+  });
+  test('a member can neither read, create, change nor delete the record or its photo', async () => {
+    const db = memberCtx(env);
+    await assertFails(setDoc(doc(db, `cards/${REC}`), managedCard()));
+    await assertFails(setDoc(doc(db, `cards/${REC}`), memberCard()));
+    await seed(env, `cards/${REC}`, storedManaged());
+    await seed(env, `photos/${REC}`, storedPhoto());
+    await assertFails(getDoc(doc(db, `cards/${REC}`)));
+    await assertFails(getDoc(doc(db, `photos/${REC}`)));
+    await assertFails(setDoc(doc(db, `cards/${REC}`), { name: 'Mallory', updatedAt: serverTimestamp() }, { merge: true }));
+    await assertFails(setDoc(doc(db, `photos/${REC}`), photoDoc()));
+    await assertFails(deleteDoc(doc(db, `cards/${REC}`)));
+    await assertFails(deleteDoc(doc(db, `photos/${REC}`)));
+  });
+  test('a member cannot take the published record down or overwrite it', async () => {
+    await seed(env, `published/${REC}`, { ...publishedManaged(), publishedAt: Timestamp.now() });
+    await seed(env, `published_photos/${REC}`, storedPhoto());
+    const db = memberCtx(env);
+    await assertFails(deleteDoc(doc(db, `published/${REC}`)));
+    await assertFails(deleteDoc(doc(db, `published_photos/${REC}`)));
+    await assertFails(setDoc(doc(db, `published/${REC}`), publishedManaged()));
+  });
+  test('a member cannot give their own card the marker of a kept record', async () => {
+    const db = memberCtx(env);
+    await assertFails(setDoc(doc(db, 'cards/alice'), memberCard({ provider: 'admin' })));
+    await assertFails(setDoc(doc(db, 'cards/alice'), memberCard({ accountEmail: '' })));
+    await assertSucceeds(setDoc(doc(db, 'cards/alice'), memberCard()));
+    await assertFails(setDoc(doc(db, 'cards/alice'), { provider: 'admin', updatedAt: serverTimestamp() }, { merge: true }));
+  });
+  test('signed out reads the published copy and nothing of the working copy', async () => {
+    await seed(env, `cards/${REC}`, storedManaged());
+    await seed(env, `photos/${REC}`, storedPhoto());
+    await seed(env, `published/${REC}`, { ...publishedManaged(), publishedAt: Timestamp.now() });
+    await seed(env, `published_photos/${REC}`, storedPhoto());
+    const db = anonCtx(env);
+    await assertSucceeds(getDoc(doc(db, `published/${REC}`)));
+    await assertSucceeds(getDoc(doc(db, `published_photos/${REC}`)));
+    await assertFails(getDoc(doc(db, `cards/${REC}`)));
+    await assertFails(getDoc(doc(db, `photos/${REC}`)));
+  });
+
+  // approve() with `replace`: the person signed in, so their own card takes the record's place.
+  const OLD = 'rec-alice-example';
+  const seedReplaceable = async () => {
+    await seed(env, `cards/${OLD}`, storedManaged({ status: 'approved', slug: 'alice-example' }));
+    await seed(env, `photos/${OLD}`, storedPhoto());
+    await seed(env, `published/${OLD}`, storedPublished());
+    await seed(env, `published_photos/${OLD}`, storedPhoto());
+    await seed(env, 'cards/alice', stored({ status: 'pending' }));
+    await seed(env, 'photos/alice', storedPhoto());
+  };
+  const replaceBatch = (db) => {
+    const b = writeBatch(db);
+    b.set(doc(db, 'published_photos/alice'), photoDoc());
+    b.set(doc(db, 'published/alice'), publishedDoc({ photoRev: '0123456789abcdef' }));
+    b.set(doc(db, 'cards/alice'), { status: 'approved', slug: 'alice-example', adminNote: '', reviewedAt: serverTimestamp() }, { merge: true });
+    for (const path of ['cards', 'photos', 'published', 'published_photos']) b.delete(doc(db, `${path}/${OLD}`));
+    return b;
+  };
+  test('an admin replaces the record with the member\'s own card in one batch', async () => {
+    await seedReplaceable();
+    await assertSucceeds(replaceBatch(adminCtx(env)).commit());
+    await env.withSecurityRulesDisabled(async (ctx) => {
+      for (const path of ['cards', 'photos', 'published', 'published_photos']) {
+        if ((await getDoc(doc(ctx.firestore(), `${path}/${OLD}`))).exists()) throw new Error(`${path}/${OLD} survived the replacement`);
+      }
+      const pub = await getDoc(doc(ctx.firestore(), 'published/alice'));
+      if (!pub.exists() || pub.data().slug !== 'alice-example') throw new Error('the member\'s card was not published under the record\'s slug');
+    });
+  });
+  test('the same batch from the member is refused and changes nothing', async () => {
+    await seedReplaceable();
+    await assertFails(replaceBatch(memberCtx(env)).commit());
+    await env.withSecurityRulesDisabled(async (ctx) => {
+      if (!(await getDoc(doc(ctx.firestore(), `published/${OLD}`))).exists()) throw new Error('a refused batch deleted the record');
+      if ((await getDoc(doc(ctx.firestore(), 'published/alice'))).exists()) throw new Error('a refused batch published the card');
+    });
+  });
+});
+
 describe('test context', () => {
   test('email_verified and firebase.sign_in_provider reach the rules', async () => {
     // provider mirror passes only if the test context really sets sign_in_provider

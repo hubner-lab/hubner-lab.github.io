@@ -6,6 +6,9 @@ import {
 } from 'firebase/firestore/lite';
 import { contentFields } from './cards';
 import { CONTENT_KEYS, isSlug, uniqueSlug, type CardValues } from './limits';
+import {
+  isManagedCard, isManagedId, managedId, MANAGED_PROVIDER, parseHandwritten, type Handwritten,
+} from './managed';
 import { revOf } from './photo';
 
 export type Doc = Record<string, unknown>;
@@ -61,12 +64,25 @@ export function otherSlugs(rows: Row[], uid: string): Set<string> {
   return new Set(rows.filter((r) => r.uid !== uid && typeof r.published?.slug === 'string').map((r) => r.published!.slug as string));
 }
 
+export interface ApproveOptions {
+  /**
+   * A record kept for a person without an account (`rec-<slug>`) that this member's own card
+   * replaces. Its four documents are deleted in the same transaction, so the person is never
+   * listed twice and never missing in between.
+   */
+  replace?: string;
+  /** The slug to publish under when the card has none yet: the replaced record's. */
+  slug?: string;
+}
+
 /**
  * Approve in one transaction: re-read the card and abort when it changed since the admin looked,
  * write the published copy (exactly the published keys), its photo, and mark the card approved.
  * The slug is derived from the name at first approval and never changed afterwards.
  */
-export async function approve(db: Firestore, uid: string, seen: Timestamp, taken: ReadonlySet<string>) {
+export async function approve(
+  db: Firestore, uid: string, seen: Timestamp, taken: ReadonlySet<string>, opts: ApproveOptions = {},
+) {
   await runTransaction(db, async (tx) => {
     const cardRef = doc(db, `cards/${uid}`);
     const pubRef = doc(db, `published/${uid}`);
@@ -75,9 +91,15 @@ export async function approve(db: Firestore, uid: string, seen: Timestamp, taken
     const card = cardSnap.data() as Doc;
     if (!(card.updatedAt instanceof Timestamp) || !card.updatedAt.isEqual(seen)) throw new StaleCardError();
     const pubSnap = await tx.get(pubRef);
+    if (opts.replace) {
+      // Only a record the admins keep may be replaced, never another member's card.
+      if (!isManagedId(opts.replace) || opts.replace === uid) throw new Error('bad-replace');
+      const old = await tx.get(doc(db, `cards/${opts.replace}`));
+      if (old.exists() && !isManagedCard(old.data() as Doc)) throw new Error('bad-replace');
+    }
 
     const existing = (card.slug as string | undefined) || (pubSnap.exists() ? (pubSnap.data().slug as string) : '');
-    const slug = existing || uniqueSlug(String(card.name), taken);
+    const slug = existing || opts.slug || uniqueSlug(String(card.name), taken);
     if (!isSlug(slug)) throw new Error('bad-slug');
     if (taken.has(slug)) throw new Error('slug-taken');
 
@@ -107,7 +129,52 @@ export async function approve(db: Firestore, uid: string, seen: Timestamp, taken
       publishedAt: serverTimestamp(),
     });
     tx.set(cardRef, { status: 'approved', slug, adminNote: '', reviewedAt: serverTimestamp() }, { merge: true });
+    if (opts.replace) {
+      for (const path of ['cards', 'photos', 'published', 'published_photos']) tx.delete(doc(db, `${path}/${opts.replace}`));
+    }
   });
+}
+
+/**
+ * A record for a person without an account, kept by the admins. It starts as a draft under
+ * `rec-<slug>`; the slug is fixed from here on. Refuses when a record for this slug exists.
+ */
+export async function createManaged(db: Firestore, slug: string, values: CardValues, order: number | null) {
+  if (!isSlug(slug)) throw new Error('bad-slug');
+  const uid = managedId(slug);
+  const ref = doc(db, `cards/${uid}`);
+  await runTransaction(db, async (tx) => {
+    if ((await tx.get(ref)).exists()) throw new Error('record-exists');
+    tx.set(ref, {
+      ...contentFields(values, ''),
+      status: 'draft',
+      updatedAt: serverTimestamp(),
+      accountEmail: '',
+      emailVerified: false,
+      provider: MANAGED_PROVIDER,
+      slug,
+      adminNote: '',
+      ...(order === null ? {} : { order }),
+    });
+  });
+  return uid;
+}
+
+/** `updatedAt` of a card as stored now: what `approve` must be given right after a save. */
+export async function cardUpdatedAt(db: Firestore, uid: string): Promise<Timestamp | null> {
+  const snap = await getDoc(doc(db, `cards/${uid}`));
+  const at = snap.exists() ? snap.data().updatedAt : null;
+  return at instanceof Timestamp ? at : null;
+}
+
+/** The team entries still written by hand (see pages/members/handwritten.json.ts). Null when unreadable. */
+export async function loadHandwritten(url: string): Promise<Handwritten[] | null> {
+  try {
+    const r = await fetch(url, { cache: 'no-store' });
+    return r.ok ? parseHandwritten(await r.json()) : null;
+  } catch {
+    return null;
+  }
 }
 
 export async function requestChanges(db: Firestore, uid: string, note: string) {

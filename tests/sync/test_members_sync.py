@@ -532,6 +532,48 @@ class TestOwnership(Base):
         self.assertEqual(code, 0, out)
         self.assertFalse((self.team / "legacy-member.md").exists())
 
+    def test_record_kept_by_an_admin_takes_over_a_hand_written_file(self):
+        # A record for a person without an account has the id rec-<slug> (src/members/managed.ts).
+        self.specs.append(mf.spec("rec-legacy-member", "legacy-member", "Legacy Member", "Lab Manager (Alumni)", "staff",
+                                  alumni=True, yearJoined=2015, yearLeft=2021, currentPosition="Analyst, Example Ltd"))
+        self.build()
+        code, out = self.sync()
+        self.assertEqual(code, 0, out)
+        self.assertEqual(self.skipped(), 0)
+        text = (self.team / "legacy-member.md").read_text(encoding="utf-8")
+        self.assertIn('uid: "rec-legacy-member"', text)
+        self.assertIn("alumni: true", text)
+        self.assertIn("yearJoined: 2015", text)
+        self.assertIn("yearLeft: 2021", text)
+        self.assertIn('currentPosition: "Analyst, Example Ltd"', text)
+        self.assertNotIn("A hand-written bio.", text)
+        # unchanged data gives an unchanged file
+        before = self.snapshot()
+        self.sync()
+        self.assertEqual(self.snapshot(), before)
+
+    def test_members_own_card_replaces_a_kept_record_in_place(self):
+        # The person signed in, and the admin replaced rec-<slug> by the member's card under the same slug.
+        self.specs = [mf.spec("rec-kim-park", "kim-park", "Kim Park", "MSc Student", "msc", photo=640)] + self.specs[:3]
+        self.build()
+        code, out = self.sync()
+        self.assertEqual(code, 0, out)
+        self.assertIn('uid: "rec-kim-park"', (self.team / "kim-park.md").read_text(encoding="utf-8"))
+        self.assertTrue((self.assets / "kim-park.jpg").is_file())
+
+        self.specs = [mf.spec("uidKim00000000000000000004", "kim-park", "Kim Park", "PhD Student", "phd")] + self.specs[1:]
+        self.build()
+        code, out = self.sync()
+        self.assertEqual(code, 0, out)
+        self.assertEqual(self.skipped(), 0)
+        text = (self.team / "kim-park.md").read_text(encoding="utf-8")
+        self.assertIn('uid: "uidKim00000000000000000004"', text)
+        self.assertIn('role: "PhD Student"', text)
+        self.assertNotIn("rec-kim-park", text)
+        self.assertFalse((self.assets / "kim-park.jpg").exists())  # the record's photo went with it
+        self.assertNotIn("deleted src/content/team/kim-park.md", out)  # rewritten in place, never missing
+        self.assertIn("1 updated, 1 removed", out)  # the record still counts as one removal for the shrink guard
+
     def test_nothing_outside_the_two_folders_is_touched(self):
         (self.repo / "src" / "data" / "publications.json").write_text("[]\n")
         (self.team / "notes.txt").write_text("keep\n")
