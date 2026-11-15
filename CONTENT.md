@@ -29,7 +29,27 @@ The `summary` line appears on the news index and on the home page teaser. Keep i
 
 ## Updating team members
 
-Each team member has a file in `src/content/team/`. Open an existing file to see the format.
+Team members write their own cards in the members portal: <https://hubner-lab.github.io/members>.
+
+1. The member signs in (Google, or an email and password account that an admin created), fills in
+   the card, adds a photo and presses **Submit for approval**.
+2. An admin opens the **Admin queue** tab on the same page and approves the card
+   (`docs/members-admin.md`).
+3. The job "Sync team cards from the members portal" copies the approved card into this repository
+   and the site rebuilds. **Publish now** in the admin queue starts that job at once.
+
+A file in `src/content/team/` with a `uid:` line belongs to the portal. Do not edit it by hand: the
+next sync overwrites the edit. Change the card in the portal instead. The same holds for the photos
+in `src/assets/team/`.
+
+**To mark someone as alumni:** the member (or an admin, with "Edit") ticks "I have left the lab" on
+the card. They move to the Alumni section after the next approval.
+
+### Hand-written entries
+
+A person who will not use the portal can still have a file written by hand. A file without `uid:`
+is never touched by the sync, unless a portal card with the same file name is approved later; that
+card then replaces it.
 
 **Example:** `src/content/team/jane-doe.md`
 
@@ -37,19 +57,23 @@ Each team member has a file in `src/content/team/`. Open an existing file to see
 ---
 name: Jane Doe
 role: PhD Student
-order: 3          # controls sort order (lower = shown first)
-alumni: false     # set to true when they leave the lab
-email: jane@migal.org.il
+group: phd        # pi, postdoc, phd, grad, msc, staff, undergrad or visitor
+alumni: false     # true moves the person to the Alumni section
+order: 3          # optional: pins the position inside the group (lower = first)
+email: jane@example.org
 orcid: 0000-0001-2345-6789
 scholar: GOOGLE_SCHOLAR_ID
-photo: jane-doe.jpg    # place the file in public/team/
+photo: ../../assets/team/jane-doe.jpg
 ---
 Short bio paragraph (1–3 sentences). Appears on the team card.
 ```
 
-**To add a photo:** place the image file in `public/team/` (JPG or PNG, ideally square, 300×300px minimum) and set `photo: filename.jpg` in the frontmatter.
+**To add a photo:** place a square JPG (640×640 px is what the portal produces) in
+`src/assets/team/` and point `photo:` at it as in the example. The old `public/team/` folder is no
+longer read.
 
-**To mark someone as alumni:** change `alumni: false` to `alumni: true`. They will move to the Alumni section.
+A key the site does not know, or a photo file that is missing, stops the build with an error, so a
+typo cannot go live unnoticed. The previous version of the site stays online until it is fixed.
 
 ---
 
@@ -78,8 +102,9 @@ editor by clicking the pencil icon on any file.
 | What | Where |
 |---|---|
 | News posts | `src/content/news/*.md` |
-| Team members | `src/content/team/*.md` |
-| Team photos | `public/team/*.jpg` |
+| Team members | the members portal; files in `src/content/team/*.md` |
+| Team photos | `src/assets/team/*.jpg` |
+| Portal and sync guides | `docs/members-admin.md`, `docs/members-sync.md` |
 | Publications (auto) | `src/data/publications.json` |
 | Research text | `src/pages/research.astro` |
 | Contact info | `src/pages/contact.astro` |
