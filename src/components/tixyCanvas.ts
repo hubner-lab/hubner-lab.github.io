@@ -4,17 +4,28 @@
  *   Larger dots masked to the text "Hübner Lab", deep botanical palette,
  *   orbital ripple + diagonal color sweep. Each word ("Hübner", "Lab")
  *   has its own phase offset so they pulse slightly out of sync. The
- *   canvas is transparent except the wordmark dots, so a static photo
- *   placed behind it (see TixyCanvas.astro `bgImage`) shows through.
+ *   canvas is transparent except the wordmark dots, so whatever is
+ *   placed behind it shows through.
+ *
+ *   Two layouts, chosen with `layout`:
+ *   - 'hero' (default): the two words large in the upper part of a canvas
+ *     that fills its box, on a soft dark plate.
+ *   - 'strip': one line of small dots. The canvas takes the size of the
+ *     line, never wider than its parent; the cells around the letters show
+ *     as faint dots, like an unlit display, and there is no plate.
+ *
+ *   A visitor who asked for reduced motion gets one still frame.
  */
 
 export interface TixyCanvasOptions {
   canvas: HTMLCanvasElement;
-  text?: string;         // (unused — words are split internally)
-  cols?: number;         // grid columns (default 120)
-  rows?: number;         // grid rows    (default 34)
-  wordSpeed?: number;    // wordmark time increment (default 0.003)
-  ambientSpeed?: number; // ambient time increment (default 0.0005)
+  text?: string;         // strip: the words, each on its own phase (default "Hübner Lab"); hero: unused
+  cols?: number;         // hero: most grid columns (default 140)
+  rows?: number;         // hero: most grid rows (default 40); strip: its height in cells (default 22)
+  wordSpeed?: number;    // wordmark time increment (default 0.012)
+  ambientSpeed?: number; // (unused)
+  cell?: number;         // size of one dot cell in CSS px (default 9)
+  layout?: 'hero' | 'strip';
 }
 
 // ── Palettes ────────────────────────────────────────────────────────────────
@@ -29,8 +40,10 @@ const WORDMARK_COLORS: [number, number, number][] = [
 ];
 
 // ── Responsive grid ──────────────────────────────────────────────────────────
-/** Target dot-cell size in CSS px — drives adaptive col/row count on resize. */
+/** Dot-cell size in CSS px when the caller gives none — drives adaptive col/row count on resize. */
 const TARGET_CELL_PX = 9;
+/** Glow around the dots in px, at the default cell size; it scales with the cell. */
+const GLOW_PX = 14;
 
 // ── Helpers ─────────────────────────────────────────────────────────────────
 function lerp(a: number, b: number, t: number): number {
@@ -90,6 +103,7 @@ async function buildWordMask(
   yRatio: number,
   fontSize: number,
   phase: number,
+  place: { align?: CanvasTextAlign; baseline?: CanvasTextBaseline; stroke?: number } = {},
 ): Promise<WordMask> {
   const W = canvasW;
   const H = canvasH;
@@ -101,10 +115,17 @@ async function buildWordMask(
   mctx.clearRect(0, 0, W, H);
 
   mctx.font = wordFont(fontSize);
-  mctx.textAlign    = 'center';
-  mctx.textBaseline = 'middle';
+  mctx.textAlign    = place.align ?? 'center';
+  mctx.textBaseline = place.baseline ?? 'middle';
   mctx.fillStyle    = 'white';
   mctx.fillText(word, W * xRatio, H * yRatio);
+  if (place.stroke) {
+    // A thin outline keeps small letters from breaking up into too few dots.
+    mctx.lineWidth   = place.stroke;
+    mctx.lineJoin    = 'round';
+    mctx.strokeStyle = 'white';
+    mctx.strokeText(word, W * xRatio, H * yRatio);
+  }
 
   const imageData = mctx.getImageData(0, 0, W, H).data;
 
@@ -232,24 +253,74 @@ async function prepareWordMasks(
   return [hub, lab];
 }
 
+// ── Strip layout ────────────────────────────────────────────────────────────
+interface Strip {
+  cols: number;
+  rows: number;
+  fontPx: number;
+}
+
+/**
+ * One line of text as a strip of dots. The letters are as tall as `maxRows`
+ * cells allow, or smaller when the line would be wider than `room` px; two
+ * cells stay free on each side. Call it once the font is loaded.
+ */
+function stripGeometry(text: string, cell: number, maxRows: number, room: number): Strip {
+  const tmp = document.createElement('canvas').getContext('2d')!;
+  tmp.font = wordFont(100);
+  const w100 = tmp.measureText(text).width || 1;              // width of the line at 100 px
+  const fit  = (100 * (Math.floor(room / cell) - 4)) / w100;   // font size, in cells, that fits the room
+  const size = Math.max(4, Math.min(maxRows * 0.845, fit));    // font size in cells
+  return {
+    cols: Math.ceil((w100 * size) / 100) + 4,
+    rows: Math.ceil(size * 1.12) + 1,
+    fontPx: size * cell,
+  };
+}
+
+/** A mask per word of the line, each with its own phase, all on one baseline. */
+function prepareStripMasks(text: string, strip: Strip, cell: number): Promise<WordMask[]> {
+  const { cols, rows, fontPx } = strip;
+  const W = cols * cell;
+  const H = rows * cell;
+  const tmp = document.createElement('canvas').getContext('2d')!;
+  tmp.font = wordFont(fontPx);
+  const baseline = (fontPx * 0.9) / H;
+  const masks: Promise<WordMask>[] = [];
+  let at = 0;
+  for (const piece of text.split(/(\s+)/)) {   // the words and the spaces between them
+    if (piece.trim()) {
+      const x = 2 * cell + tmp.measureText(text.slice(0, at)).width;
+      masks.push(buildWordMask(piece, cols, rows, W, H, x / W, baseline, fontPx, masks.length * Math.PI,
+        { align: 'left', baseline: 'alphabetic', stroke: 0.12 * cell }));
+    }
+    at += piece.length;
+  }
+  return Promise.all(masks);
+}
+
 // ── Main ────────────────────────────────────────────────────────────────────
 export function startTixyCanvas(opts: TixyCanvasOptions): () => void {
   const {
     canvas,
     wordSpeed = 0.012,
   } = opts;
+  const cell  = opts.cell ?? TARGET_CELL_PX;
+  const strip = opts.layout === 'strip';
+  const text  = (opts.text ?? 'Hübner Lab').trim();
 
   // Grid caps — prop values become the upper bound; actual live values shrink
-  // on narrow viewports so dots stay visible (~TARGET_CELL_PX-sized cells).
+  // on narrow viewports so dots stay visible (cells of about `cell` px).
+  // In the strip layout `rows` is the height of the strip in cells.
   const maxCols = opts.cols ?? 140;
-  const maxRows = opts.rows ?? 40;
+  const maxRows = opts.rows ?? (strip ? 22 : 40);
   let cols = maxCols;
   let rows = maxRows;
 
-  /** Compute col/row counts giving ~TARGET_CELL_PX cells, capped at maxima. */
+  /** Compute col/row counts giving cells of about `cell` px, capped at maxima. */
   function computeGrid(W: number, H: number): { newCols: number; newRows: number } {
-    const newCols = Math.min(maxCols, Math.max(24, Math.round(W / TARGET_CELL_PX)));
-    const newRows = Math.min(maxRows, Math.max(8,  Math.round(H / TARGET_CELL_PX)));
+    const newCols = Math.min(maxCols, Math.max(24, Math.round(W / cell)));
+    const newRows = Math.min(maxRows, Math.max(8,  Math.round(H / cell)));
     return { newCols, newRows };
   }
 
@@ -312,6 +383,32 @@ export function startTixyCanvas(opts: TixyCanvasOptions): () => void {
     plateW = W; plateH = H; plateDpr = dpr; plateCols = cols; plateRows = rows;
   }
 
+  // ── Unlit layer (strip) ───────────────────────────────────────────────────
+  // The cells that belong to no letter, as faint dots in the colour of the text
+  // over the video (--color-on-media). They never change, so they are drawn once
+  // and kept in the same cache as the plate of the hero layout.
+  function buildUnlitLayer(masks: WordMask[], W: number, H: number, dpr: number): void {
+    const cellW = W / cols;
+    const cellH = H / rows;
+    const oc = document.createElement('canvas');
+    oc.width  = Math.max(1, Math.round(W * dpr));
+    oc.height = Math.max(1, Math.round(H * dpr));
+    const octx = oc.getContext('2d')!;
+    octx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    octx.fillStyle = 'rgba(246,241,230,0.16)';
+    const r = Math.max(0.8, Math.min(cellW, cellH) * 0.1);
+    for (let yi = 0; yi < rows; yi++) {
+      for (let xi = 0; xi < cols; xi++) {
+        if (masks.some((wm) => wm.mask[yi * cols + xi] >= 0.12)) continue;
+        octx.beginPath();
+        octx.arc((xi + 0.5) * cellW, (yi + 0.5) * cellH, r, 0, Math.PI * 2);
+        octx.fill();
+      }
+    }
+    plateCanvas = oc;
+    plateW = W; plateH = H; plateDpr = dpr; plateCols = cols; plateRows = rows;
+  }
+
   // ── Resize ────────────────────────────────────────────────────────────────
   let rebuildTimer = 0;
 
@@ -321,6 +418,7 @@ export function startTixyCanvas(opts: TixyCanvasOptions): () => void {
     canvas.width  = rect.width  * dpr;
     canvas.height = rect.height * dpr;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0); // reset + scale in one call
+    if (strip) return; // the strip sets its own grid, in layoutStrip()
 
     // Recompute adaptive grid from live canvas size.  If dimensions changed
     // AND masks already exist (not the first build), schedule a debounced
@@ -370,7 +468,8 @@ export function startTixyCanvas(opts: TixyCanvasOptions): () => void {
     // Plate blit happens BEFORE the glow is set so the plate itself is not glowed.
     const dpr = window.devicePixelRatio || 1;
     if (!plateCanvas || plateW !== W || plateH !== H || plateDpr !== dpr || plateCols !== cols || plateRows !== rows) {
-      buildShadowPlate(wordMasks, W, H, dpr);
+      if (strip) buildUnlitLayer(wordMasks, W, H, dpr);
+      else buildShadowPlate(wordMasks, W, H, dpr);
     }
     if (plateCanvas) ctx.drawImage(plateCanvas, 0, 0, W, H); // logical dest — DPR-safe
 
@@ -380,7 +479,7 @@ export function startTixyCanvas(opts: TixyCanvasOptions): () => void {
     // moving focal point and follow the rings — creates a "want to watch" quality.
     // Color drifts on an independent diagonal wave for decoupled visual rhythm.
     ctx.shadowColor = 'rgba(150, 200, 55, 0.42)'; // plant-green glow (matched to darker palette)
-    ctx.shadowBlur  = 14;
+    ctx.shadowBlur  = (GLOW_PX * cell) / TARGET_CELL_PX;
     const ringK = Math.max(0.75, maxR * 0.18); // dark contour ring width
 
     for (const wm of wordMasks) {
@@ -436,32 +535,77 @@ export function startTixyCanvas(opts: TixyCanvasOptions): () => void {
   }
 
   // ── Frame loop ────────────────────────────────────────────────────────────
+  // Nothing is drawn while the canvas is out of sight.
+  let visible = true;
+  const io = 'IntersectionObserver' in window
+    ? new IntersectionObserver((entries) => { visible = entries[entries.length - 1].isIntersecting; })
+    : null;
+  io?.observe(canvas);
+
   function frame() {
-    tWord += wordSpeed;
-    draw();
+    if (visible) {
+      tWord += wordSpeed;
+      draw();
+    }
     raf = requestAnimationFrame(frame);
   }
 
-  // ── Init ──────────────────────────────────────────────────────────────────
-  resize();
-  draw(); // ambient-only first frame while masks build
-
-  const rect0 = canvas.getBoundingClientRect();
-  prepareWordMasks(cols, rows, rect0.width || 1280, rect0.height || 520)
-    .then((masks) => {
-      wordMasks = masks;
-      draw();
-      if (!reduced) raf = requestAnimationFrame(frame);
-    });
-
-  const ro = new ResizeObserver(() => {
-    resize();
+  /** The masks are in: draw, and move unless the visitor asked for stillness. */
+  function begin(masks: WordMask[]) {
+    wordMasks = masks;
     draw();
-  });
-  ro.observe(canvas);
+    canvas.dataset.tixyState = reduced ? 'still' : 'running'; // for whoever checks the page
+    if (!reduced && !raf) raf = requestAnimationFrame(frame);
+  }
+
+  // ── Strip: the canvas takes the size of the line ──────────────────────────
+  let stripRun = 0;
+  async function layoutStrip() {
+    const run = ++stripRun;
+    await document.fonts.load(wordFont(100), text);
+    const room = canvas.parentElement?.clientWidth ?? 0;
+    if (run !== stripRun || room <= 0) return;
+    const next = stripGeometry(text, cell, maxRows, room);
+    if (wordMasks && next.cols === cols && next.rows === rows) return; // same grid as before
+    cols = next.cols;
+    rows = next.rows;
+    canvas.style.width  = `${cols * cell}px`;
+    canvas.style.height = `${rows * cell}px`;
+    wordMasks = null;
+    plateCanvas = null;
+    resize();
+    const masks = await prepareStripMasks(text, next, cell);
+    if (run === stripRun) begin(masks);
+  }
+
+  // ── Init ──────────────────────────────────────────────────────────────────
+  let ro: ResizeObserver;
+  if (strip) {
+    layoutStrip();
+    // The room for the line is the parent's width: lay the line out again when it changes.
+    ro = new ResizeObserver(() => {
+      clearTimeout(rebuildTimer);
+      rebuildTimer = window.setTimeout(layoutStrip, 200);
+    });
+    if (canvas.parentElement) ro.observe(canvas.parentElement);
+  } else {
+    resize();
+    draw(); // ambient-only first frame while masks build
+
+    const rect0 = canvas.getBoundingClientRect();
+    prepareWordMasks(cols, rows, rect0.width || 1280, rect0.height || 520).then(begin);
+
+    ro = new ResizeObserver(() => {
+      resize();
+      draw();
+    });
+    ro.observe(canvas);
+  }
 
   return () => {
     cancelAnimationFrame(raf);
+    clearTimeout(rebuildTimer);
     ro.disconnect();
+    io?.disconnect();
   };
 }

@@ -1,6 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
-import TixyCanvas from '../components/TixyCanvas.astro';
+import Hero from '../components/Hero.astro';
 import NewsCard from '../components/NewsCard.astro';
 import { getCollection } from 'astro:content';
 
@@ -14,46 +14,7 @@ const latestNews = allNews
 ---
 
 <Base>
-  <!-- Hero -->
-  <section class="relative">
-    <TixyCanvas id="hero-tixy" height="clamp(520px, 72vh, 680px)" bgVideo={`${base}botanical/wheat_hero.mp4`} />
-
-    <!-- sr-only wordmark for SEO/a11y — visually the dot grid spells the name -->
-    <h1 class="sr-only">Hübner Lab — Evolutionary and Landscape Genomics</h1>
-
-    <!-- Top-left eyebrow caption -->
-    <div class="absolute top-8 left-0 right-0 px-8 md:px-12 pointer-events-none">
-      <p class="caption" style="color: var(--color-leaf);">Evolutionary &amp; Landscape Genomics</p>
-    </div>
-
-    <!-- Bottom-left: subtitle + CTAs — editorial asymmetric column -->
-    <div class="absolute bottom-10 left-0 right-0 px-8 md:px-12">
-      <div class="max-w-[520px]">
-        <p class="text-lg leading-relaxed mb-5" style="color: var(--color-soil);">
-          Decoding the genomic basis of plant adaptation, speciation,
-          and domestication — from wild barley to sunflower.
-        </p>
-        <div class="flex gap-3 flex-wrap">
-          <a
-            href={`${base}research`}
-            class="cursor-pointer px-5 py-2.5 rounded-full font-medium text-sm no-underline shadow-sm hover:shadow-md transition-all duration-200 hover:opacity-90"
-            style="background-color: var(--color-ink); color: var(--color-paper);"
-          >
-            Our Research
-          </a>
-          <a
-            href={`${base}publications`}
-            class="cursor-pointer px-5 py-2.5 rounded-full font-medium text-sm no-underline border transition-colors duration-200"
-            onmouseover="this.style.backgroundColor='color-mix(in srgb, var(--color-ink) 8%, transparent)'"
-            onmouseout="this.style.backgroundColor=''"
-            style="border-color: var(--color-soil); color: var(--color-soil);"
-          >
-            Publications
-          </a>
-        </div>
-      </div>
-    </div>
-  </section>
+  <Hero />
 
   <!-- Mission -->
   <section class="container section-enter mt-24">

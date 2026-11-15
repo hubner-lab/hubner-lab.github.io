@@ -1,0 +1,255 @@
+---
+// The home page hero: the wheat field video behind a scrim, the lab's name as a strip of dots,
+// then the affiliations, the title, the tagline and two buttons.
+//
+// What loads. The poster image, always. The video only when the visitor allows motion and has
+// not asked to save data: the script below adds its sources and plays it then. The markup holds
+// no source and no autoplay, so without a script the poster is all there is.
+//
+// What keeps the text readable. The text stands on a scrim of its own (`.foot::before`) that
+// starts above the first line and follows the text block wherever the layout puts it. Its least
+// opacity under the text is `--scrim-under-text`; with that the text reads 4.5:1 or better on
+// any frame of the video, pure white included (tests/site/contrast.test.mjs). No line of the
+// text is wider than `--text-col`, and beside that column the scrim thins out, so that a wide
+// window still shows the field.
+import { Image } from 'astro:assets';
+import TixyCanvas from './TixyCanvas.astro';
+import Button from './ui/Button.astro';
+import poster from '../assets/hero/poster.jpg';
+import { site } from '../site.config';
+
+const affiliations = site.affiliations.map((a) => a.name).join(' · ');
+---
+
+<section class="hero">
+  <div class="media" aria-hidden="true">
+    <Image class="poster" src={poster} alt="" format="avif" widths={[640, 960, 1280]} sizes="100vw" priority />
+    <video
+      class="video"
+      muted
+      loop
+      playsinline
+      preload="none"
+      data-hero-video
+      data-webm="/botanical/wheat_hero.webm"
+      data-mp4="/botanical/wheat_hero.mp4"
+    ></video>
+  </div>
+  <div class="shade" aria-hidden="true"></div>
+
+  <div class="inner wrap">
+    <div class="dots" data-js-only>
+      <TixyCanvas text="HÜBNER LAB" layout="strip" cell={4} rows={22} />
+    </div>
+
+    <div class="foot">
+      <p class="eyebrow">{affiliations}</p>
+      <h1 class="title">Evolutionary and landscape genomics</h1>
+      <p class="tag">
+        Decoding the genomic basis of plant adaptation, speciation,
+        and domestication — from wild barley to sunflower.
+      </p>
+      <div class="actions">
+        <Button href="/research/">Our research</Button>
+        <Button href="/publications/" variant="ghost">Publications</Button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // The video is fetched and played only for a visitor who allows motion and has not asked to
+  // save data. Until it plays, and if it never does (autoplay refused, as on a phone in low
+  // power mode), the poster shows.
+  const video = document.querySelector<HTMLVideoElement>('[data-hero-video]');
+  const connection = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection;
+  const still = matchMedia('(prefers-reduced-motion: reduce)').matches || connection?.saveData === true;
+
+  if (video && !still) {
+    const add = (src: string | undefined, type: string) => {
+      if (!src) return;
+      const source = document.createElement('source');
+      source.src = src;
+      source.type = type;
+      video.append(source);
+    };
+    add(video.dataset.webm, 'video/webm; codecs="av01.0.05M.08"'); // AV1 first: the smaller one where it plays
+    add(video.dataset.mp4, 'video/mp4');
+
+    video.addEventListener('playing', () => video.classList.add('is-playing'), { once: true });
+    const play = () => {
+      video.play().catch(() => {
+        // Refused: the poster stays.
+      });
+    };
+    // Play while the hero is in sight, pause when it is not.
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver((entries) => {
+        if (entries[entries.length - 1].isIntersecting) play();
+        else video.pause();
+      }).observe(video);
+    } else {
+      play();
+    }
+  }
+</script>
+
+<style>
+  .hero {
+    --scrim: 12 9 5;            /* the dark of the scrim, as r g b */
+    --scrim-under-text: 0.6;    /* its least opacity under the text */
+    --pad-top: 36px;
+    --pad-bottom: 44px;
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    display: flex;
+    min-height: 600px;
+    color: var(--color-on-media);
+    background: #1b120a;        /* until the poster has loaded */
+  }
+
+  .media,
+  .shade {
+    position: absolute;
+    inset: 0;
+  }
+  .media {
+    z-index: -2;
+  }
+  .poster,
+  .video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .video {
+    opacity: 0;
+    transition: opacity 600ms ease-out;
+  }
+  .video.is-playing {   /* set by the script when the first frame is on screen */
+    opacity: 1;
+  }
+  /* Over the whole hero: dark at the top, behind the dots, then light. */
+  .shade {
+    z-index: -1;
+    background: linear-gradient(180deg, rgb(var(--scrim) / 0.58) 0%, rgb(var(--scrim) / 0.22) 42%, rgb(var(--scrim) / 0.22) 100%);
+  }
+
+  .inner {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    padding-block: var(--pad-top) var(--pad-bottom);
+  }
+  .dots {
+    min-height: 88px;   /* the height of the strip, kept free before it is drawn */
+  }
+
+  .foot {
+    --fade: 96px;       /* how far above the text its scrim starts */
+    --text-col: 36rem;  /* the widest a line of the text may be */
+    --beside: 0.25;     /* what is left of the scrim away from the text column */
+    margin-top: auto;   /* at the bottom of the hero, with or without the dots above it */
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 22px;
+  }
+  .foot > * {
+    max-width: min(100%, var(--text-col));
+  }
+  /* The scrim of the text. Downwards: from nothing, `--fade` above the first line, to
+     `--scrim-under-text` at the first line, then darker to the bottom edge of the hero.
+     Sideways: it reaches a window's width past both ends of the text block (the hero clips it),
+     so the left edge of the text is at 100vw in the mask below; the mask keeps the scrim whole
+     across the text column and thins it to `--beside` on either side. A browser without masks
+     shows the scrim whole everywhere. */
+  .foot::before {
+    --mask: linear-gradient(
+      90deg,
+      rgb(0 0 0 / var(--beside)) calc(100vw - 16rem),
+      #000 calc(100vw - 2rem),
+      #000 calc(100vw + var(--text-col) + 2rem),
+      rgb(0 0 0 / var(--beside)) calc(100vw + var(--text-col) + 24rem)
+    );
+    content: "";
+    position: absolute;
+    z-index: -1;
+    top: calc(-1 * var(--fade));
+    bottom: calc(-1 * var(--pad-bottom) - 2px);   /* past the bottom edge: no bare line of video */
+    left: -100vw;
+    right: -100vw;
+    background: linear-gradient(
+      180deg,
+      rgb(var(--scrim) / 0) 0,
+      rgb(var(--scrim) / var(--scrim-under-text)) var(--fade),
+      rgb(var(--scrim) / 0.7) 100%
+    );
+    -webkit-mask-image: var(--mask);
+    mask-image: var(--mask);
+  }
+
+  .eyebrow {
+    font-size: 0.75rem;
+    font-weight: 500;
+    line-height: 1.6;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+  .foot > .title {
+    max-width: 13ch;
+    font-size: var(--text-hero);
+    line-height: 1.04;
+    letter-spacing: -0.02em;
+    color: inherit;
+  }
+  .foot > .tag {
+    max-width: 36ch;
+    font-size: var(--text-lead);
+    line-height: 1.55;
+  }
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+  }
+  /* The buttons over the video are the same in both themes: light on dark. */
+  .actions :global(.btn--primary) {
+    background: var(--color-on-media);
+    color: #1b120a;
+    border-color: var(--color-on-media);
+  }
+  .actions :global(.btn--primary:hover) {
+    background: #fffaf0;
+    border-color: #fffaf0;
+  }
+  .actions :global(.btn--ghost) {
+    color: var(--color-on-media);
+    border-color: rgb(246 241 230 / 0.75);
+  }
+  .actions :global(.btn--ghost:hover) {
+    background: rgb(246 241 230 / 0.14);
+    border-color: var(--color-on-media);
+  }
+  /* The focus ring of the light theme is a dark blue: over the video it is drawn light. */
+  .actions :global(.btn:focus-visible) {
+    outline-color: var(--color-on-media);
+  }
+
+  @media (width < 40rem) {
+    .hero {
+      --pad-top: 24px;
+      --pad-bottom: 28px;
+      min-height: 540px;
+    }
+    .dots { min-height: 72px; }
+    .tag { font-size: 1rem; }
+  }
+</style>
