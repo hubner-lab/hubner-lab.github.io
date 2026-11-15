@@ -45,11 +45,19 @@ in `src/assets/team/`.
 **To mark someone as alumni:** the member (or an admin, with "Edit") ticks "I have left the lab" on
 the card. They move to the Alumni section after the next approval.
 
+### People who will not use the portal
+
+Alumni, and anyone else who does not keep their own card, are kept by an admin in the portal: the
+group **People without an account** of the **Admin queue** tab. The admin adopts an existing
+hand-written entry or adds a person, fills in the record (with "Left the lab", the years and the
+current position for alumni, and a photo if wanted) and publishes it. The record reaches the site
+like a member's card. See "People without an account" in `docs/members-admin.md`.
+
 ### Hand-written entries
 
-A person who will not use the portal can still have a file written by hand. A file without `uid:`
-is never touched by the sync, unless a portal card with the same file name is approved later; that
-card then replaces it.
+A file written by hand stays possible, for someone nobody keeps in the portal. A file without `uid:`
+is never touched by the sync, unless a portal card or record with the same file name is published
+later; that card then replaces it.
 
 **Example:** `src/content/team/jane-doe.md`
 
