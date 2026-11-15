@@ -528,8 +528,11 @@ def run(source, tree, allow_shrink, dry_run, today_year):
     synced = [(slug, uid) for slug, uid in existing if uid]
 
     # 3. Guards, all before the first write.
-    if not published_ids and synced:
-        annotate("error", f"Firestore returned 0 published cards while {len(synced)} synced file(s) exist; refusing to delete them")
+    # An empty collection is what a wrong project or an emptied database looks
+    # like, so it never empties the roster by itself. It is also what the take
+    # down of the last card looks like: only an explicit --allow-shrink accepts it.
+    if not published_ids and synced and not allow_shrink:
+        annotate("error", f"Firestore returned 0 published cards while {len(synced)} synced file(s) exist; refusing to delete them (rerun with --allow-shrink if the last card was taken down on purpose)")
         return 1
     removals = [(slug, uid) for slug, uid in synced if uid not in published_ids]
     if len(removals) > MAX_REMOVALS and not allow_shrink:
@@ -642,7 +645,7 @@ def main(argv=None):
     ap.add_argument("--dry-run", action="store_true", help="report what would change, write nothing")
     ap.add_argument("--fixture", metavar="DIR", help="read saved REST responses from DIR instead of the network")
     ap.add_argument("--base-url", default=DEFAULT_BASE_URL, help="replace the Firestore host (e.g. the emulator)")
-    ap.add_argument("--allow-shrink", action="store_true", help=f"accept the removal of more than {MAX_REMOVALS} cards")
+    ap.add_argument("--allow-shrink", action="store_true", help=f"accept the removal of more than {MAX_REMOVALS} cards, or of the last one")
     ap.add_argument("--repo", default=str(Path(__file__).resolve().parent.parent), help="repo root (default: the repo this script sits in)")
     args = ap.parse_args(argv)
 

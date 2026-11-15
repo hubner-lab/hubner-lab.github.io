@@ -252,7 +252,26 @@ class TestGuards(Base):
         code, out = self.sync()
         self.assertEqual(code, 1)
         self.assertIn("::error::", out)
+        self.assertIn("--allow-shrink", out)
         self.assertEqual(self.snapshot(), before)
+        # --dry-run is refused the same way, it is a guard, not a write
+        code, _ = self.sync("--dry-run")
+        self.assertEqual(code, 1)
+
+    def test_zero_documents_accepted_with_allow_shrink(self):
+        # The last card taken down on purpose: only the explicit flag empties the roster,
+        # and the hand-written file stays.
+        self.sync()
+        self.build(specs=[], pages=[[]])
+        code, out = self.sync("--allow-shrink", "--dry-run")
+        self.assertEqual(code, 0, out)
+        self.assertIn("would delete src/content/team/jane-doe.md", out)
+        code, out = self.sync("--allow-shrink")
+        self.assertEqual(code, 0, out)
+        self.assertIn("::notice::Fetched 0 published card(s)", out)
+        self.assertEqual(sorted(self.snapshot()), ["src/content/team/legacy-member.md"])
+        code, out = self.sync()
+        self.assertEqual(code, 0, out)  # nothing synced is left, so an empty collection is fine again
 
     def test_zero_documents_fine_without_synced_files(self):
         self.build(specs=[], pages=[[]])

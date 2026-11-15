@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       dry_run:      { description: 'Report only, write nothing', type: boolean, default: false }
-      allow_shrink: { description: 'Accept removal of more than 2 cards', type: boolean, default: false }
+      allow_shrink: { description: 'Accept removal of more than 2 cards, or of the last one', type: boolean, default: false }
 
 permissions:
   contents: read
@@ -37,6 +37,9 @@ jobs:
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # git add stops on a path that matches nothing, and src/assets/team
+          # does not exist until the first card with a photo has been synced.
+          mkdir -p src/content/team src/assets/team
           git add --all -- src/content/team src/assets/team
           if git diff --cached --quiet; then echo "changed=false" >> "$GITHUB_OUTPUT"; exit 0; fi
           git commit -m "chore: sync team cards from members portal"
