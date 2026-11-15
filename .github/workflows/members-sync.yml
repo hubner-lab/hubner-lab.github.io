@@ -1,0 +1,60 @@
+name: Sync team cards from the members portal
+
+# Manual trigger only. The hourly schedule is added at go-live, after the first
+# manual run on the real Firebase project is green (see docs/members-sync.md).
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:      { description: 'Report only, write nothing', type: boolean, default: false }
+      allow_shrink: { description: 'Accept removal of more than 2 cards', type: boolean, default: false }
+
+permissions:
+  contents: read
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions: { contents: write }
+    concurrency: { group: main-writer, cancel-in-progress: false }
+    outputs:
+      changed: ${{ steps.commit.outputs.changed }}
+      skipped: ${{ steps.sync.outputs.skipped }}
+    steps:
+      - uses: actions/checkout@v7
+        with: { ref: main }
+      - id: sync
+        env:
+          DRY_RUN: ${{ inputs.dry_run }}
+          ALLOW_SHRINK: ${{ inputs.allow_shrink }}
+        run: |
+          args=()
+          [ "$DRY_RUN" = "true" ] && args+=(--dry-run)
+          [ "$ALLOW_SHRINK" = "true" ] && args+=(--allow-shrink)
+          python3 scripts/members_sync.py "${args[@]}"
+      - id: commit
+        if: ${{ inputs.dry_run != true }}
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add --all -- src/content/team src/assets/team
+          if git diff --cached --quiet; then echo "changed=false" >> "$GITHUB_OUTPUT"; exit 0; fi
+          git commit -m "chore: sync team cards from members portal"
+          git push origin HEAD:main || { git pull --rebase origin main && git push origin HEAD:main; }
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+
+  deploy:
+    needs: sync
+    if: needs.sync.outputs.changed == 'true'
+    permissions: { contents: read, pages: write, id-token: write }
+    uses: ./.github/workflows/deploy.yml
+    with: { ref: main }
+
+  flag-skipped:
+    needs: [sync, deploy]
+    if: ${{ always() && needs.sync.result == 'success' && needs.sync.outputs.skipped != '' && needs.sync.outputs.skipped != '0' }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo "::error::${{ needs.sync.outputs.skipped }} card(s) skipped as invalid; see the sync job summary"
+          exit 1

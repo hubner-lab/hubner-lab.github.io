@@ -1,0 +1,144 @@
+{
+  "documents": [
+    {
+      "name": "projects/demo-members/databases/(default)/documents/published/uidAna00000000000000000003",
+      "fields": {
+        "name": {
+          "stringValue": "Ana López"
+        },
+        "role": {
+          "stringValue": "Postdoc"
+        },
+        "group": {
+          "stringValue": "postdoc"
+        },
+        "alumni": {
+          "booleanValue": false
+        },
+        "bio": {
+          "stringValue": ""
+        },
+        "interests": {
+          "stringValue": ""
+        },
+        "email": {
+          "stringValue": ""
+        },
+        "orcid": {
+          "stringValue": ""
+        },
+        "scholar": {
+          "stringValue": ""
+        },
+        "github": {
+          "stringValue": ""
+        },
+        "linkedin": {
+          "stringValue": ""
+        },
+        "website": {
+          "stringValue": ""
+        },
+        "yearJoined": {
+          "integerValue": "2024"
+        },
+        "yearLeft": {
+          "nullValue": null
+        },
+        "currentPosition": {
+          "stringValue": ""
+        },
+        "photoRev": {
+          "stringValue": "4ecb182cf473b3cd"
+        },
+        "v": {
+          "integerValue": "1"
+        },
+        "slug": {
+          "stringValue": "ana-lopez"
+        },
+        "rev": {
+          "stringValue": "d29a11716b015b3d"
+        },
+        "order": {
+          "nullValue": null
+        },
+        "publishedAt": {
+          "nullValue": null
+        }
+      },
+      "createTime": "2026-11-01T10:00:00Z",
+      "updateTime": "2026-11-01T10:00:00Z"
+    },
+    {
+      "name": "projects/demo-members/databases/(default)/documents/published/uidKim00000000000000000004",
+      "fields": {
+        "name": {
+          "stringValue": "Kim Park"
+        },
+        "role": {
+          "stringValue": "MSc Student"
+        },
+        "group": {
+          "stringValue": "msc"
+        },
+        "alumni": {
+          "booleanValue": false
+        },
+        "bio": {
+          "stringValue": ""
+        },
+        "interests": {
+          "stringValue": " soil ,, microbes "
+        },
+        "email": {
+          "stringValue": ""
+        },
+        "orcid": {
+          "stringValue": ""
+        },
+        "scholar": {
+          "stringValue": ""
+        },
+        "github": {
+          "stringValue": ""
+        },
+        "linkedin": {
+          "stringValue": ""
+        },
+        "website": {
+          "stringValue": ""
+        },
+        "yearJoined": {
+          "nullValue": null
+        },
+        "yearLeft": {
+          "nullValue": null
+        },
+        "currentPosition": {
+          "stringValue": ""
+        },
+        "photoRev": {
+          "stringValue": ""
+        },
+        "v": {
+          "integerValue": "1"
+        },
+        "slug": {
+          "stringValue": "kim-park"
+        },
+        "rev": {
+          "stringValue": "8ac98da9a41b3951"
+        },
+        "order": {
+          "nullValue": null
+        },
+        "publishedAt": {
+          "nullValue": null
+        }
+      },
+      "createTime": "2026-11-01T10:00:00Z",
+      "updateTime": "2026-11-01T10:00:00Z"
+    }
+  ]
+}

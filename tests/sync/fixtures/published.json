@@ -1,0 +1,145 @@
+{
+  "documents": [
+    {
+      "name": "projects/demo-members/databases/(default)/documents/published/uidJane0000000000000000001",
+      "fields": {
+        "name": {
+          "stringValue": "Jane Doe"
+        },
+        "role": {
+          "stringValue": "PhD Student"
+        },
+        "group": {
+          "stringValue": "phd"
+        },
+        "alumni": {
+          "booleanValue": false
+        },
+        "bio": {
+          "stringValue": "Studies wild barley."
+        },
+        "interests": {
+          "stringValue": "wild barley, local adaptation"
+        },
+        "email": {
+          "stringValue": "jane@example.org"
+        },
+        "orcid": {
+          "stringValue": "0000-0001-2345-6789"
+        },
+        "scholar": {
+          "stringValue": "AbCdEfGhIjKl"
+        },
+        "github": {
+          "stringValue": "janedoe"
+        },
+        "linkedin": {
+          "stringValue": "jane-doe"
+        },
+        "website": {
+          "stringValue": "https://example.org/jane"
+        },
+        "yearJoined": {
+          "integerValue": "2023"
+        },
+        "yearLeft": {
+          "nullValue": null
+        },
+        "currentPosition": {
+          "stringValue": ""
+        },
+        "photoRev": {
+          "stringValue": "c539040cef570806"
+        },
+        "v": {
+          "integerValue": "1"
+        },
+        "slug": {
+          "stringValue": "jane-doe"
+        },
+        "rev": {
+          "stringValue": "bdfa88cf0741a709"
+        },
+        "order": {
+          "integerValue": "3"
+        },
+        "publishedAt": {
+          "nullValue": null
+        }
+      },
+      "createTime": "2026-11-01T10:00:00Z",
+      "updateTime": "2026-11-01T10:00:00Z"
+    },
+    {
+      "name": "projects/demo-members/databases/(default)/documents/published/uidJohn0000000000000000002",
+      "fields": {
+        "name": {
+          "stringValue": "John Roe"
+        },
+        "role": {
+          "stringValue": "Research Assistant"
+        },
+        "group": {
+          "stringValue": "staff"
+        },
+        "alumni": {
+          "booleanValue": true
+        },
+        "bio": {
+          "stringValue": ""
+        },
+        "interests": {
+          "stringValue": ""
+        },
+        "email": {
+          "stringValue": ""
+        },
+        "orcid": {
+          "stringValue": ""
+        },
+        "scholar": {
+          "stringValue": ""
+        },
+        "github": {
+          "stringValue": ""
+        },
+        "linkedin": {
+          "stringValue": ""
+        },
+        "website": {
+          "stringValue": ""
+        },
+        "yearJoined": {
+          "integerValue": "2018"
+        },
+        "yearLeft": {
+          "integerValue": "2022"
+        },
+        "currentPosition": {
+          "stringValue": "Analyst, Example Ltd"
+        },
+        "photoRev": {
+          "stringValue": ""
+        },
+        "v": {
+          "integerValue": "1"
+        },
+        "slug": {
+          "stringValue": "john-roe"
+        },
+        "rev": {
+          "stringValue": "2bf5060fe24e948d"
+        },
+        "order": {
+          "nullValue": null
+        },
+        "publishedAt": {
+          "nullValue": null
+        }
+      },
+      "createTime": "2026-11-01T10:00:00Z",
+      "updateTime": "2026-11-01T10:00:00Z"
+    }
+  ],
+  "nextPageToken": "page2"
+}
