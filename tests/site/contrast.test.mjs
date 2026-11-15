@@ -1,7 +1,7 @@
 // node --test tests/site/contrast.test.mjs
 // Reads the colour tokens of both themes from src/styles/global.css and holds every text colour
 // to 4.5:1 (WCAG AA for body text) on the two backgrounds a page can have, paper and surface.
-// Also: the text on an accent fill, and the chip text on its tint.
+// Also: the text on an accent fill, the chip text on its tint, and the text over the hero video.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
@@ -171,4 +171,65 @@ test('the colours of the browser bars in site.config.ts are the paper colours', 
   const same = (a, b) => a.toLowerCase() === b.toLowerCase();
   assert.ok(same(site.themeColor.dark, DARK['--color-paper']), `themeColor.dark is ${site.themeColor.dark}, --color-paper is ${DARK['--color-paper']}`);
   assert.ok(same(site.themeColor.light, LIGHT_OVERRIDES['--color-paper']), `themeColor.light is ${site.themeColor.light}, the light --color-paper is ${LIGHT_OVERRIDES['--color-paper']}`);
+});
+
+// ---------------------------------------------------------------- the text over the hero video
+// The hero text stands on a scrim of its own (src/components/Hero.astro, `.foot::before`). The
+// video behind it can show anything, so the scrim is held to the worst case: with its least
+// opacity under the text, the text must read 4.5:1 over pure white. The rest is what makes that
+// opacity hold for every line: the scrim does not get lighter below the first line, no line is
+// wider than the column the scrim covers whole, and no text is dimmed.
+
+const HERO = readFileSync(fileURLToPath(new URL('../../src/components/Hero.astro', import.meta.url)), 'utf8');
+const HERO_CSS = (/<style>([\s\S]*?)<\/style>/.exec(HERO)?.[1] ?? '').replace(/\/\*[\s\S]*?\*\//g, '');
+const heroRule = (selector) => {
+  const at = HERO_CSS.indexOf(`${selector} {`);
+  assert.ok(at >= 0, `Hero.astro has no rule "${selector}"`);
+  let depth = 0;
+  for (let i = HERO_CSS.indexOf('{', at); i < HERO_CSS.length; i++) {
+    if (HERO_CSS[i] === '{') depth++;
+    else if (HERO_CSS[i] === '}' && --depth === 0) return HERO_CSS.slice(HERO_CSS.indexOf('{', at) + 1, i);
+  }
+  assert.fail(`unbalanced braces after "${selector}"`);
+};
+const heroVar = (name) => {
+  const m = new RegExp(`${name}\\s*:\\s*([^;]+);`).exec(HERO_CSS);
+  assert.ok(m, `Hero.astro does not set ${name}`);
+  return m[1].trim();
+};
+
+test('hero: the text reads 4.5:1 on its scrim even over a white frame of the video', (t) => {
+  const [r, g, b] = heroVar('--scrim').split(/\s+/).map(Number);
+  const least = Number(heroVar('--scrim-under-text'));
+  assert.ok([r, g, b].every((v) => Number.isInteger(v) && v >= 0 && v <= 255), '--scrim must be "r g b"');
+  assert.ok(least > 0 && least <= 1, '--scrim-under-text must be an opacity');
+  const text = colour(DARK['--color-on-media'], DARK);
+  const white = { r: 255, g: 255, b: 255, a: 1 };
+  const got = ratio(text, { r, g, b, a: least }, white);
+  assert.ok(got >= MIN, `--color-on-media on the scrim at ${least} over white is ${got.toFixed(2)}:1, under ${MIN}:1`);
+  t.diagnostic(`hero: text on the scrim at ${least} over white ${got.toFixed(2)}:1`);
+
+  // the scrim reaches that opacity at the first line and is not lighter at the bottom
+  const scrim = heroRule('.foot::before');
+  const stops = /background:\s*linear-gradient\(\s*180deg,([\s\S]*?)\);/.exec(scrim)?.[1];
+  assert.ok(stops, 'the scrim of the text is no longer a top-to-bottom gradient');
+  const parts = splitTop(stops);
+  assert.equal(parts.length, 3, 'the scrim of the text has three stops: nothing, the first line, the bottom');
+  assert.match(parts[1], /^rgb\(var\(--scrim\) \/ var\(--scrim-under-text\)\) var\(--fade\)$/, 'the stop at the first line');
+  const bottom = Number(/^rgb\(var\(--scrim\) \/ ([\d.]+)\) 100%$/.exec(parts[2])?.[1]);
+  assert.ok(bottom >= least, `the scrim is ${bottom} at the bottom, lighter than ${least} at the first line`);
+  assert.match(scrim, /top:\s*calc\(-1 \* var\(--fade\)\)/, 'the scrim must start --fade above the text, where the gradient reaches the opacity');
+});
+
+test('hero: no line of the text leaves the column that the scrim covers whole, and no text is dimmed', () => {
+  assert.match(heroRule('.foot > *'), /max-width:\s*min\(100%, var\(--text-col\)\)/, 'every line of the text is held to --text-col');
+  const mask = /--mask:\s*linear-gradient\(([\s\S]*?)\);/.exec(heroRule('.foot::before'))?.[1];
+  assert.ok(mask, 'the scrim has no --mask');
+  const whole = splitTop(mask).filter((p) => p.startsWith('#000 '));
+  assert.deepEqual(whole, ['#000 calc(100vw - 2rem)', '#000 calc(100vw + var(--text-col) + 2rem)'],
+    'the mask must be whole from just before the text column to just after it');
+  assert.match(heroRule('.foot::before'), /left:\s*-100vw/, 'the left edge of the text is 100vw into the scrim: the mask counts from there');
+  for (const selector of ['.foot', '.eyebrow', '.foot > .title', '.foot > .tag', '.actions']) {
+    assert.ok(!/\bopacity\s*:/.test(heroRule(selector)), `${selector} is dimmed with opacity: its contrast is no longer what the test above holds`);
+  }
 });

@@ -5,7 +5,10 @@
 //      `.js-reveal`, which the head script adds, and only on screen with motion allowed;
 //   2. no page carries `js` or `js-reveal` in its markup, and every page says `data-theme="dark"`,
 //      so the state without a script is the complete dark page;
-//   3. a control marked `data-js-only` is hidden until the script has run.
+//   3. a control marked `data-js-only` is hidden until the script has run;
+//   4. one rule cuts every transition and animation to nothing when reduced motion is asked for;
+//   5. the hero video is in the markup without a source and without autoplay: only a script
+//      adds them, and it does so only when motion is allowed and data saving is off.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readdirSync, readFileSync, existsSync } from 'node:fs';
@@ -115,4 +118,35 @@ test('no page is marked as scripted in its markup, and every page starts dark', 
 test('a control that needs a script is hidden until the script has run', () => {
   const rule = all.find((r) => /:not\(\.js\)/.test(r.selector) && /\[data-js-only\]/.test(r.selector) && /display\s*:\s*none/.test(r.body));
   assert.ok(rule, 'no rule hides [data-js-only] under html:not(.js)');
+});
+
+test('with reduced motion every transition and animation is cut to nothing', () => {
+  const rule = all.find((r) =>
+    r.at.some((a) => /^@media\b.*prefers-reduced-motion\s*:\s*reduce/.test(a)) &&
+    splitSelectors(r.selector).includes('*') &&
+    /transition-duration\s*:\s*0s\s*!important/.test(r.body) &&
+    /animation-duration\s*:\s*0s\s*!important/.test(r.body));
+  assert.ok(rule, 'no rule under (prefers-reduced-motion: reduce) sets transition-duration and animation-duration to 0s !important on *');
+});
+
+test('the hero loads only its poster until a script decides otherwise', () => {
+  const html = readFileSync(path.join(dist, 'index.html'), 'utf8');
+  const video = /<video\b[^>]*data-hero-video[^>]*>([\s\S]*?)<\/video>/.exec(html);
+  assert.ok(video, 'the home page has no hero video');
+  const tag = /<video\b[^>]*>/.exec(video[0])[0];
+  for (const attr of ['autoplay', 'src', 'poster']) {
+    assert.ok(!new RegExp(`\\s${attr}(?=[\\s=>])`).test(tag), `the hero video carries "${attr}" in the markup: it would load or play without the script's checks`);
+  }
+  assert.match(tag, /\spreload="none"/, 'the hero video must not preload');
+  for (const attr of ['muted', 'loop', 'playsinline']) assert.match(tag, new RegExp(`\\s${attr}(?=[\\s=>])`), `the hero video lacks "${attr}"`);
+  assert.ok(!/<source\b/.test(video[1]), 'the hero video has a <source> in the markup');
+  for (const name of ['data-webm', 'data-mp4']) {
+    const file = new RegExp(`\\s${name}="/([^"]+)"`).exec(tag)?.[1];
+    assert.ok(file && existsSync(path.join(dist, file)), `${name} of the hero video names a file that is not in the build`);
+  }
+  // the poster is a real image of the page, and the dots, which only a script can draw, are marked
+  assert.match(html, /<img\b[^>]*\bfetchpriority="high"[^>]*\bclass="poster"|<img\b[^>]*\bclass="poster"[^>]*\bfetchpriority="high"/, 'the hero poster is not loaded first');
+  const dots = /<div\b[^>]*class="dots"[^>]*>/.exec(html)?.[0] ?? '';
+  assert.match(dots, /\sdata-js-only(?=[\s=>])/, 'the dot strip is empty without a script and must be marked data-js-only');
+  assert.equal([...html.matchAll(/<h1\b/g)].length, 1, 'the home page has exactly one h1, as real text');
 });

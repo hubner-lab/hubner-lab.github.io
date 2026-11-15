@@ -28,9 +28,6 @@ const LIMIT = { css: 10 * KB, js: 6 * KB, image: 80 * KB, video: 1.5 * KB * KB }
 // deleted as soon as its file is within the limit or no page names it any more: the test fails on
 // a stale entry, so this list can only get shorter.
 const PENDING = new Map([
-  ['botanical/wheat_hero.mp4', 'hero video, re-encoded with the new hero'],
-  ['botanical/wheat_hero.webm', 'hero video, re-encoded with the new hero'],
-  ['botanical/wheat_hero_poster.jpg', 'hero poster, replaced by an AVIF poster with the new hero'],
   ['botanical/adaptation_crop.png', 'pillar image, compressed with the new Research page'],
   ['botanical/map_migal.png', 'contact map, replaced with the new Contact page'],
 ]);
