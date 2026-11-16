@@ -1,95 +1,222 @@
 ---
+// The Research page: what the lab studies. A head with the page's own animation behind it (a
+// reaction-diffusion pattern, src/components/reactionDiffusion.ts), the three research areas as
+// cards, and the species the lab works with as pills.
+// Latin names are in <i> everywhere on the page (the element for a name of a species), and
+// nothing else is in italics.
+//
+// What keeps the head readable. The pattern draws light and dark filaments that no text colour
+// reads on, so no text stands on it. On a wide window the pattern lies behind the head with a
+// gap cut into it (the mask of `.window`): the column that holds the text, from side to side
+// and from top to bottom, shows the plain page, and the pattern shows beside it. Below 1100px
+// the text column takes most of the width, so there the pattern is a band of its own above the
+// head. tests/site/contrast.test.mjs holds both.
 import Base from '../layouts/Base.astro';
 import PillarCard from '../components/PillarCard.astro';
 import ReactionDiffusionCanvas from '../components/ReactionDiffusionCanvas.astro';
-const base = import.meta.env.BASE_URL;
+import SectionHeader from '../components/ui/SectionHeader.astro';
+import speciation from '../assets/research/speciation.png';
+import adaptation from '../assets/research/adaptation.png';
+import domestication from '../assets/research/domestication.png';
+
+/** The species the lab works with: the common name, and the Latin name where the lab gives one. */
+const systems: { name: string; latin?: string }[] = [
+  { name: 'Wild barley', latin: 'Hordeum spontaneum' },
+  { name: 'Barley', latin: 'Hordeum vulgare' },
+  { name: 'Wild emmer wheat' },
+  { name: 'Bread wheat', latin: 'Triticum aestivum' },
+  { name: 'Sunflower', latin: 'Helianthus annuus' },
+  { name: 'Grapevine', latin: 'Vitis vinifera' },
+  { name: 'Tef', latin: 'Eragrostis tef' },
+];
 ---
 
 <Base title="Research" description="Research areas of the Hübner Lab: speciation, adaptation, and domestication genomics.">
-
-  <!-- Hero intro with Gray-Scott reaction-diffusion background -->
-  <!-- Explicit paper bg so the section is never transparent -->
-  <section class="relative" style="background-color: var(--color-paper);">
-    <!-- RD canvas — absolute fill, pointer-events off, softened with opacity -->
-    <div class="absolute inset-0 pointer-events-none" style="opacity: 0.55;" aria-hidden="true">
-      <ReactionDiffusionCanvas id="rd-research" preset="coral" height="100%" />
-      <!-- Gradient mask: fades pattern to paper (hardcoded hex avoids CSS-var resolution issues) -->
-      <div
-        class="absolute inset-0"
-        style="background: linear-gradient(180deg, transparent 0%, transparent 25%, var(--color-paper) 85%);"
-      ></div>
-    </div>
-
-    <!-- Intro text — sits on top, relative so z stacking works -->
-    <div class="container relative py-20">
-      <div class="section-enter max-w-2xl mb-16">
-        <p class="caption mb-4">Research</p>
-        <h1 style="font-size: var(--text-h1);">
-          The genomics of plant evolution
-        </h1>
-        <p class="mt-4 leading-relaxed" style="color: var(--color-soil);">
-          We study how selection, drift, gene flow, and the environment shape
-          genetic variation across plant populations and species. Our work spans
-          wild and domesticated systems, combining population-scale whole-genome
-          sequencing with landscape, ecological, and phenotypic data.
-        </p>
+  <section class="intro">
+    {/* The animation fades into the page below it. It is decoration: the visitor's pointer
+        and a screen reader pass through it, and without a script, which draws it, it takes no
+        room. The canvas is taller than its frame, which shows the upper part: on a low, wide
+        canvas the pattern would be stretched. */}
+    <div class="field" aria-hidden="true" data-js-only>
+      <div class="window">
+        <ReactionDiffusionCanvas id="rd-research" preset="coral" height="max(100%, 32.5rem)" />
       </div>
+    </div>
+    <div class="wrap top">
+      <SectionHeader
+        as="h1"
+        eyebrow="Research"
+        title="The genomics of plant evolution"
+        lead="We study how selection, drift, gene flow, and the environment shape genetic variation across plant populations and species. Our work spans wild and domesticated systems, combining population-scale whole-genome sequencing with landscape, ecological, and phenotypic data."
+        class="head reveal"
+      />
     </div>
   </section>
 
-  <!-- Three research pillars + study systems — outside the RD section -->
-  <div class="container pb-20">
-    <div class="grid gap-8 md:grid-cols-3">
-      <PillarCard
-        title="Speciation"
-        body="How do populations diverge into distinct species? We investigate the genomic architecture of reproductive isolation, admixture barriers, and the role of chromosomal rearrangements in speciation — with a focus on wild barley (Hordeum spontaneum) and sunflower."
-        canvasId="canvas-speciation"
-        img={`${base}botanical/phylogenetic_tree-removebg.png`}
-        imgAlt="Circular phylogenetic tree"
-        imgBg="#F7F6F1"
-        organisms={['Hordeum spontaneum', 'Helianthus annuus']}
-      />
-      <PillarCard
-        title="Adaptation"
-        body="How do plants track environmental heterogeneity? We identify signatures of local adaptation using landscape genomics, environmental association analysis, and GWAS, linking genetic variants to climate, soil, and phenology across large geographic gradients."
-        canvasId="canvas-adaptation"
-        img={`${base}botanical/adaptation_crop.png`}
-        imgAlt="Plant adapting from cracked dry soil to lush green — environmental adaptation"
-        imgBg="#F7F6F1"
-        organisms={['Hordeum spontaneum', 'Triticum aestivum', 'Eragrostis tef']}
-      />
-      <PillarCard
-        title="Domestication"
-        body="What genomic changes accompanied the transition from wild to cultivated? We reconstruct domestication history, identify selective sweeps, and trace the origin and spread of crop lineages — in barley, wheat, grapevine, and tef."
-        canvasId="canvas-domestication"
-        img={`${base}botanical/domestication_crops.png`}
-        imgAlt="Wheat ears illustration — domesticated crops"
-        imgBg="#F7F6F1"
-        organisms={['Hordeum vulgare', 'Triticum aestivum', 'Vitis vinifera', 'Eragrostis tef']}
-      />
-    </div>
-
-    <!-- Organism grid -->
-    <div class="section-enter mt-20">
-      <p class="caption mb-6">Study systems</p>
-      <div class="flex flex-wrap gap-3">
-        {[
-          'Wild barley (Hordeum spontaneum)',
-          'Barley (Hordeum vulgare)',
-          'Wild emmer wheat',
-          'Bread wheat (Triticum aestivum)',
-          'Sunflower (Helianthus annuus)',
-          'Grapevine (Vitis vinifera)',
-          'Tef (Eragrostis tef)',
-        ].map((org) => (
-          <span
-            class="px-4 py-2 rounded-full text-sm border"
-            style="border-color: color-mix(in srgb, var(--color-leaf) 30%, transparent); color: var(--color-leaf);"
+  <div class="wrap">
+    <section class="block" data-pillars>
+      <SectionHeader eyebrow="Themes" title="Three questions" class="reveal" />
+      <ul class="cards">
+        <li class="reveal">
+          <PillarCard
+            title="Speciation"
+            image={speciation}
+            alt="A circular phylogenetic tree, its branches coloured by clade"
+            organisms={['Hordeum spontaneum', 'Helianthus annuus']}
           >
-            <em>{org}</em>
-          </span>
+            How do populations diverge into distinct species? We investigate the genomic
+            architecture of reproductive isolation, admixture barriers, and the role of chromosomal
+            rearrangements in speciation — with a focus on wild barley (<i>Hordeum spontaneum</i>)
+            and sunflower.
+          </PillarCard>
+        </li>
+        <li class="reveal" style="--i: 1">
+          <PillarCard
+            title="Adaptation"
+            image={adaptation}
+            alt="A seedling on ground that is cracked and dry on one side and green on the other"
+            organisms={['Hordeum spontaneum', 'Triticum aestivum', 'Eragrostis tef']}
+          >
+            How do plants track environmental heterogeneity? We identify signatures of local
+            adaptation using landscape genomics, environmental association analysis, and GWAS,
+            linking genetic variants to climate, soil, and phenology across large geographic
+            gradients.
+          </PillarCard>
+        </li>
+        <li class="reveal" style="--i: 2">
+          <PillarCard
+            title="Domestication"
+            image={domestication}
+            alt="Three ears of wheat"
+            organisms={['Hordeum vulgare', 'Triticum aestivum', 'Vitis vinifera', 'Eragrostis tef']}
+          >
+            What genomic changes accompanied the transition from wild to cultivated? We reconstruct
+            domestication history, identify selective sweeps, and trace the origin and spread of
+            crop lineages — in barley, wheat, grapevine, and tef.
+          </PillarCard>
+        </li>
+      </ul>
+    </section>
+
+    <section class="block systems reveal" data-systems>
+      <h2 class="label">Study systems</h2>
+      <ul class="pills">
+        {systems.map(({ name, latin }) => (
+          <li>{name}{latin && <> (<i>{latin}</i>)</>}</li>
         ))}
-      </div>
-    </div>
+      </ul>
+    </section>
   </div>
 </Base>
+
+<style>
+  .intro {
+    /* The column of the head's text: where it begins, which is the left edge of the page
+       column (the `wrap` utility of global.css: its side room and its width), and the widest
+       it may be. Inside a gradient, 100% is the width of the page. */
+    --text-left: max(clamp(1.25rem, 4vw, 3rem), (100% - 69rem) / 2);
+    --text-col: 44rem;
+    position: relative;
+    isolation: isolate;
+    padding-top: var(--spacing-section);
+    padding-bottom: 12px;
+  }
+  /* The animation: behind the head, at a little over half strength, gone where the head ends. */
+  .field {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    opacity: 0.55;
+    pointer-events: none;
+    -webkit-mask-image: linear-gradient(180deg, #000 25%, transparent 96%);
+    mask-image: linear-gradient(180deg, #000 25%, transparent 96%);
+  }
+  /* The gap for the text: nothing of the pattern from 1rem before the text column to 1rem after
+     it, and the pattern whole again 4rem and 6rem further out. */
+  .window {
+    --gap: linear-gradient(
+      90deg,
+      #000 calc(var(--text-left) - 5rem),
+      transparent calc(var(--text-left) - 1rem),
+      transparent calc(var(--text-left) + var(--text-col) + 1rem),
+      #000 calc(var(--text-left) + var(--text-col) + 7rem)
+    );
+    position: absolute;
+    inset: 0;
+    -webkit-mask-image: var(--gap);
+    mask-image: var(--gap);
+  }
+  .head {
+    max-width: var(--text-col);
+  }
+
+  /* Below 1100px the text column leaves the pattern little room beside it: the animation is a
+     band above the head, in the flow of the page, and no text lies over it. The head keeps the
+     top room of every page; the band reaches a little into that room with its lower end, where
+     it has faded out. Without the band (no script) the head stands as on the other pages. */
+  @media (width < 68.75rem) {
+    .intro {
+      padding-top: 0;
+    }
+    .top {
+      padding-top: 28px;
+    }
+    .field {
+      position: relative;
+      inset: auto;
+      height: 6rem;
+      margin-bottom: -24px;
+    }
+    .window {
+      -webkit-mask-image: none;
+      mask-image: none;
+    }
+  }
+
+  .block {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    padding-block: 36px;
+  }
+
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+    list-style: none;
+  }
+
+  /* A section title in the size of a label: the pills need a name, not a headline. */
+  .label {
+    font: 500 0.75rem/1.6 var(--font-body);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+  }
+  .systems {
+    gap: 14px;
+  }
+  .pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    list-style: none;
+  }
+  .pills li {
+    padding: 7px 16px;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: var(--color-leaf);
+    border: 1px solid color-mix(in srgb, var(--color-leaf) 40%, transparent);
+    border-radius: var(--radius-chip);
+  }
+
+  @media (width < 56.25rem) {
+    .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (width < 40rem) {
+    .cards { grid-template-columns: minmax(0, 1fr); }
+  }
+</style>
