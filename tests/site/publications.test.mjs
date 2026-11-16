@@ -10,8 +10,8 @@ import { readdirSync, readFileSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import {
-  citationsLabel, doiFromUrl, foldAuthors, foldText, groupByYear, isPreprint, labMatcher, matchesTerms,
-  nameKey, paperLink, searchFold, searchTerms, splitAuthors, toPaper, totals, yearCounts,
+  authorPieces, authorsText, citationsLabel, doiFromUrl, foldAuthors, foldLine, foldText, groupByYear, isPreprint,
+  labMatcher, matchesTerms, nameKey, paperLink, searchFold, searchTerms, splitAuthors, toPaper, totals, yearCounts,
 } from '../../src/lib/publications.ts';
 import { site } from '../../src/site.config.ts';
 
@@ -98,6 +98,36 @@ test('foldAuthors: hiding one name is not worth a fold', () => {
   assert.equal(line.more, 0);
   assert.deepEqual(line.shown.map((a) => a.name), names);
   assert.deepEqual(line.shown.map((a) => a.lab), [false, false, false, false, true]);
+});
+
+test('foldLine: a list that is marked already folds again with fewer names at its head', () => {
+  const names = ['A One', 'B Two', 'C Three', 'D Four', 'Lab Member', 'F Six'];
+  const whole = foldAuthors(names, labMatcher(['Lab Member']));
+  assert.deepEqual(whole.shown.map((a) => a.name), ['A One', 'B Two', 'C Three', 'Lab Member']);
+  const short = foldLine(whole.all, 2);
+  assert.deepEqual(short.shown.map((a) => [a.name, a.lab, a.gap]), [['A One', false, false], ['B Two', false, false], ['Lab Member', true, true]]);
+  assert.equal(short.more, 3);
+  assert.deepEqual(short.all, whole.all, 'the whole list is the same');
+  assert.deepEqual(foldLine(whole.all), whole, 'with three names at its head it is the fold of the Publications page');
+  // three authors: hiding the third alone is not worth a fold
+  assert.equal(foldLine(whole.all.slice(0, 3), 2).more, 0);
+});
+
+test('authorPieces and authorsText: commas between names, "…" over a gap, the count of the rest', () => {
+  const line = foldLine(
+    [{ name: 'A One', lab: false }, { name: 'B Two', lab: false }, { name: 'C Three', lab: false }, { name: 'Lab Member', lab: true }, { name: 'E Five', lab: false }],
+    2,
+  );
+  assert.deepEqual(authorPieces(line.shown), [
+    { text: 'A One', lab: false }, { text: ', ', lab: false }, { text: 'B Two', lab: false },
+    { text: ', … ', lab: false }, { text: 'Lab Member', lab: true },
+  ]);
+  assert.equal(authorsText(line), 'A One, B Two, … Lab Member +2 more');
+  assert.deepEqual(authorPieces(line.all).map((p) => p.text).join(''), 'A One, B Two, C Three, Lab Member, E Five');
+  const whole = foldLine([{ name: 'A One', lab: false }, { name: 'Lab Member', lab: true }], 2);
+  assert.equal(authorsText(whole), 'A One, Lab Member', 'nothing is left out: no count');
+  assert.deepEqual(authorPieces([]), []);
+  assert.equal(authorsText(foldLine([], 2)), '');
 });
 
 test('doiFromUrl: the shapes publishers use', () => {
