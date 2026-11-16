@@ -1,62 +1,135 @@
 ---
+// The Team page: the people of the lab in two groups, each with its count. "Current members"
+// are portrait cards, the principal investigator first, then the others in the order of
+// buildTeam(). "Alumni" are a list of names with the role, the years and the current position.
+// Every person, card or row, carries `data-person` (tests/team/roster.test.mjs reads the names
+// in page order; tests/portal/bundle.test.mjs counts them).
 import Base from '../layouts/Base.astro';
 import TeamCard from '../components/TeamCard.astro';
+import SectionHeader from '../components/ui/SectionHeader.astro';
 import { getCollection } from 'astro:content';
-import { alumniLine, buildTeam } from '../lib/team';
+import { alumniLine, buildTeam, formerRole } from '../lib/team';
 
 const { pis, current, alumni } = buildTeam(await getCollection('team'));
+const members = [...pis, ...current];
 ---
 
 <Base title="Team" description="Meet the Hübner Lab team at Tel-Hai College and Migal.">
+  <div class="wrap">
+    <SectionHeader
+      as="h1"
+      eyebrow="Team"
+      title="People"
+      lead="A multidisciplinary team of genomicists, bioinformaticians, and ecologists at Tel-Hai College and Migal – Galilee Research Institute."
+      class="head reveal"
+    >
+      <p class="note">Team list reflects 2022 roster — updates coming soon.</p>
+    </SectionHeader>
 
-  <section class="relative" style="background-color: var(--color-paper);">
-    <div class="container py-20">
+    <div class="groups">
+      {members.length > 0 && (
+        <section class="group" data-group="current">
+          <h2 class="group-title reveal">Current members <span class="count">{members.length}</span></h2>
+          <ul class="cards">
+            {members.map((person, i) => (
+              <li class="reveal" style={`--i: ${i % 3}`}><TeamCard {...person} /></li>
+            ))}
+          </ul>
+        </section>
+      )}
 
-      <!-- Header -->
-      <div class="section-enter max-w-2xl mb-12">
-        <p class="caption mb-4">Team</p>
-        <h1 style="font-size: var(--text-h1);">People</h1>
-        <p class="mt-4 leading-relaxed" style="color: var(--color-soil);">
-          A multidisciplinary team of genomicists, bioinformaticians, and ecologists
-          at Tel-Hai College and Migal – Galilee Research Institute.
-        </p>
-        <p class="mt-3 text-sm italic" style="color: color-mix(in srgb, var(--color-soil) 60%, transparent);">
-          Team list reflects 2022 roster — updates coming soon.
-        </p>
-      </div>
-
-      <!-- PI feature card(s) -->
-      {pis.map((p) => (
-        <TeamCard {...p} variant="feature" />
-      ))}
-
-      <!-- Current members grid: each card reveals itself, so the block does not -->
-      <div class="mb-16">
-        <p class="caption mb-6">Lab members</p>
-        <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {current.map((m) => (
-            <TeamCard {...m} />
-          ))}
-        </div>
-      </div>
-
-      <!-- Alumni -->
       {alumni.length > 0 && (
-        <div class="section-enter">
-          <p class="caption mb-4">Alumni</p>
-          <ul class="flex flex-col gap-2">
-            {alumni.map((a) => (
-              <li class="text-sm" style="color: color-mix(in srgb, var(--color-soil) 70%, transparent);">
-                <span class="font-medium" style="color: var(--color-ink);">{a.name}</span>
-                <span class="mx-2" style="color: color-mix(in srgb, var(--color-soil) 40%, transparent);">—</span>
-                {a.role}{alumniLine(a)}
+        <section class="group reveal" data-group="alumni">
+          <h2 class="group-title">Alumni <span class="count">{alumni.length}</span></h2>
+          <ul class="alumni">
+            {alumni.map((person) => (
+              <li data-person>
+                <span class="name">{person.name}</span>
+                <span class="was">{formerRole(person.role)}{alumniLine(person)}</span>
               </li>
             ))}
           </ul>
-        </div>
+        </section>
       )}
-
     </div>
-  </section>
-
+  </div>
 </Base>
+
+<style>
+  .head {
+    padding-top: var(--spacing-section);
+    padding-bottom: 12px;
+  }
+  .note {
+    margin-top: 10px;
+    font-size: var(--text-small);
+    font-style: italic;
+    color: var(--color-muted);
+  }
+
+  .groups {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    padding-top: 36px;
+  }
+  .group {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .group-title {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    font-size: 1.5rem;
+  }
+  .count {
+    font: 500 0.75rem var(--font-mono);
+    letter-spacing: 0.04em;
+    color: var(--color-muted);
+  }
+
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+    list-style: none;
+  }
+
+  .alumni {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0 20px;
+    list-style: none;
+  }
+  .alumni li {
+    padding-block: 12px;
+    font-size: var(--text-small);
+    border-bottom: 1px solid var(--color-line);
+    overflow-wrap: break-word;
+  }
+  .alumni .name {
+    font-weight: 500;
+    color: var(--color-ink);
+  }
+  .alumni .was {
+    color: var(--color-muted);
+  }
+
+  @media (width < 56.25rem) {
+    .cards, .alumni { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (width < 40rem) {
+    .head { padding-top: 28px; }
+    .cards, .alumni { grid-template-columns: minmax(0, 1fr); }
+    /* In one column a card without a photo does not need a square for two letters: the block
+       is a band, and the page is half as long. A photo stays a square. */
+    .cards :global(.avatar:has(> .initials)) {
+      aspect-ratio: 5 / 2;
+    }
+    .cards :global(.avatar > .initials) {
+      font-size: 3.25rem;
+    }
+  }
+</style>

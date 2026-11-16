@@ -1,5 +1,17 @@
 ---
-import { Image } from 'astro:assets';
+// A person of the lab as a portrait card: the photo (or two initials) on top, then the name, the
+// role, the bio in full, the research interests as chips, the links and the years. A slot whose
+// field is empty is left out. The principal investigator has the same card as everybody else.
+//
+// The members portal draws this card as a live preview (`preview`): there every slot is in the
+// markup, hidden while it is empty, and src/members/main.ts fills the `data-f` hooks while the
+// member types. What a slot shows is worked out by src/lib/team.ts for the page and the portal
+// alike. For a former member the card shows the span of years and a "Now: ..." line; the Team
+// page lists former members by name, so only the preview draws that.
+// `data-person` marks a person for the tests (tests/team/roster.test.mjs).
+import Avatar from './ui/Avatar.astro';
+import Card from './ui/Card.astro';
+import { LINKS, linkHref, linkName, yearsLabel } from '../lib/team';
 
 interface Props {
   name: string;
@@ -18,103 +30,125 @@ interface Props {
   yearLeft?: number;
   currentPosition?: string;
   photo?: ImageMetadata;
-  /** `feature` is the large card used for the principal investigator. */
-  variant?: 'card' | 'feature';
   /**
-   * Portal preview: every text slot is rendered (hidden while empty) so a script can fill the
+   * Portal preview: every slot is rendered (hidden while empty) so a script can fill the
    * `data-f` hooks. Pages never set this.
    */
   preview?: boolean;
 }
 
-const { name, role, bio, email, orcid, scholar, photo, variant = 'card', preview = false } = Astro.props;
-const feature = variant === 'feature';
+const {
+  name, role, alumni = false, bio, interests = [], yearJoined, yearLeft, currentPosition, photo, preview = false,
+} = Astro.props;
+
+const links = LINKS.map(([key, label]) => ({ key, label, href: linkHref(key, Astro.props[key]) }));
+const linked = links.some((link) => link.href);
+const now = alumni ? currentPosition?.trim() : undefined;
+const years = yearsLabel({ alumni, yearJoined, yearLeft });
 ---
 
-{feature ? (
-  <div
-    class="section-enter flex gap-6 p-6 rounded-xl border mb-12 max-w-2xl"
-    style="border-color: color-mix(in srgb, var(--color-wheat) 35%, transparent); background-color: var(--color-surface);"
-  >
-    <!-- Avatar -->
-    <div
-      data-f="photo"
-      class:list={['shrink-0 w-20 h-20 rounded-full flex items-center justify-center text-2xl font-semibold', { 'overflow-hidden': !!photo }]}
-      style="background-color: color-mix(in srgb, var(--color-wheat) 25%, var(--color-paper)); color: var(--color-wheat); font-family: var(--font-display);"
-    >
-      {photo
-        ? <Image src={photo} alt={name} width={160} height={160} class="w-full h-full object-cover" />
-        : <span data-f="initial">{name.charAt(0)}</span>
-      }
-    </div>
+<Card as="article" class="person" data-person>
+  <Avatar name={name} photo={photo} data-f="photo" />
 
-    <!-- Info -->
-    <div class="flex-1 min-w-0">
-      <h2 data-f="name" class="text-2xl font-semibold mb-0.5" style="font-family: var(--font-display); color: var(--color-ink);">
-        {name}
-      </h2>
-      <p data-f="role" class="caption mb-3">{role}</p>
-      {(bio || preview) && (
-        <p data-f="bio" hidden={!bio} class="text-sm leading-relaxed mb-3" style="color: var(--color-soil);">{bio}</p>
-      )}
-      <div class="flex flex-wrap gap-4 text-sm">
-        {(email || preview) && (
-          <a data-f="email" hidden={!email} href={email ? `mailto:${email}` : undefined} style="color: var(--color-data);">Email</a>
-        )}
-        {(scholar || preview) && (
+  <div class="body">
+    <h3 class="name" data-f="name">{name}</h3>
+    <p class="role" data-f="role">{role}</p>
+    {(bio || preview) && <p class="bio" data-f="bio" hidden={!bio}>{bio}</p>}
+    {(interests.length > 0 || preview) && (
+      <ul class="chips" data-f="interests" aria-label="Research interests" hidden={interests.length === 0}>
+        {interests.map((interest) => <li>{interest}</li>)}
+      </ul>
+    )}
+    {(now || preview) && <p class="now" data-f="now" hidden={!now}>{now && `Now: ${now}`}</p>}
+    {(linked || preview) && (
+      <p class="links" data-f="links" hidden={!linked}>
+        {links.map(({ key, label, href }) => (href || preview) && (
           <a
-            data-f="scholar"
-            hidden={!scholar}
-            href={scholar ? `https://scholar.google.com/citations?user=${scholar}` : undefined}
-            target="_blank"
-            rel="noopener noreferrer"
-            style="color: var(--color-data);"
-          >
-            Google Scholar
-          </a>
-        )}
-      </div>
-    </div>
+            data-f={key}
+            href={href}
+            hidden={!href}
+            aria-label={linkName(key, label, name)}
+            target={key === 'email' ? undefined : '_blank'}
+            rel={key === 'email' ? undefined : 'noopener noreferrer'}
+          >{label}</a>
+        ))}
+      </p>
+    )}
+    {(years || preview) && <p class="years" data-f="years" hidden={!years}>{years}</p>}
   </div>
-) : (
-  <article
-    class="section-enter flex gap-4 p-5 rounded-xl border transition-colors"
-    style="border-color: color-mix(in srgb, var(--color-soil) 15%, transparent); background-color: var(--color-surface);"
-    onmouseover="this.style.borderColor='color-mix(in srgb, var(--color-soil) 35%, transparent)'"
-    onmouseout="this.style.borderColor='color-mix(in srgb, var(--color-soil) 15%, transparent)'"
-  >
-    <!-- Avatar -->
-    <div
-      data-f="photo"
-      class="shrink-0 w-16 h-16 rounded-full overflow-hidden"
-      style="background-color: color-mix(in srgb, var(--color-wheat) 20%, var(--color-paper));"
-    >
-      {photo
-        ? <Image src={photo} alt={name} width={128} height={128} class="w-full h-full object-cover" />
-        : <div class="w-full h-full flex items-center justify-center text-xl font-semibold" style="color: var(--color-wheat); font-family: var(--font-display);">
-            <span data-f="initial">{name.charAt(0)}</span>
-          </div>
-      }
-    </div>
+</Card>
 
-    <!-- Info -->
-    <div class="flex-1 min-w-0">
-      <h3 data-f="name" class="text-base font-semibold leading-tight mb-0.5" style="font-family: var(--font-display); color: var(--color-ink);">
-        {name}
-      </h3>
-      <p data-f="role" class="caption mb-2">{role}</p>
-      {(bio || preview) && <p data-f="bio" hidden={!bio} class="text-sm leading-relaxed mb-2" style="color: var(--color-soil);">{bio}</p>}
-      <div class="flex flex-wrap gap-3 text-xs">
-        {(email || preview) && (
-          <a data-f="email" hidden={!email} href={email ? `mailto:${email}` : undefined} style="color: var(--color-data);">Email</a>
-        )}
-        {(orcid || preview) && (
-          <a data-f="orcid" hidden={!orcid} href={orcid ? `https://orcid.org/${orcid}` : undefined} target="_blank" rel="noopener noreferrer" style="color: var(--color-data);">ORCID</a>
-        )}
-        {(scholar || preview) && (
-          <a data-f="scholar" hidden={!scholar} href={scholar ? `https://scholar.google.com/citations?user=${scholar}` : undefined} target="_blank" rel="noopener noreferrer" style="color: var(--color-data);">Scholar</a>
-        )}
-      </div>
-    </div>
-  </article>
-)}
+<style>
+  .person {
+    display: flex;
+    flex-direction: column;
+    height: 100%;   /* the cards of a row are equally tall */
+    overflow: hidden;
+  }
+  .body {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    min-width: 0;
+    padding: 16px 18px 18px;
+    overflow-wrap: break-word;
+  }
+
+  .name {
+    font-size: var(--text-h3);
+  }
+  .role {
+    font-size: 0.875rem;
+    color: var(--color-muted);
+  }
+  .bio {
+    font-size: 0.875rem;
+    line-height: 1.6;
+    color: var(--color-muted);
+  }
+
+  /* The interests: the chips of ui/Tag.astro, written here for a list item, because the portal's
+     preview makes its items with a script and those carry no scope of this file. */
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    list-style: none;
+  }
+  .chips > :global(li) {
+    padding: 3px 11px;
+    font-size: 0.75rem;
+    line-height: 1.5;
+    border-radius: var(--radius-chip);
+    background: var(--color-leaf-tint);
+    color: var(--color-on-leaf-tint);
+  }
+
+  .now {
+    font-size: var(--text-meta);
+    font-style: italic;
+    color: var(--color-muted);
+  }
+
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 12px;
+    font-size: var(--text-meta);
+  }
+  .links a {
+    padding-block: 2px;   /* a little more to press */
+    color: var(--color-link);
+    text-decoration: none;
+    border-bottom: 1px solid color-mix(in srgb, var(--color-link) 40%, transparent);
+  }
+  .links a:hover {
+    border-bottom-color: currentColor;
+  }
+
+  .years {
+    font: 500 0.75rem var(--font-mono);
+    letter-spacing: 0.04em;
+    color: var(--color-muted);
+  }
+</style>
