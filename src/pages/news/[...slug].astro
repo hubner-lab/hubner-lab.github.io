@@ -1,6 +1,13 @@
 ---
+// A news post: one reading column with the way back to the list, the title, the day, the tags,
+// and the text of the post, set by Prose.
 import Base from '../../layouts/Base.astro';
+import SectionHeader from '../../components/ui/SectionHeader.astro';
+import Prose from '../../components/ui/Prose.astro';
+import Tag from '../../components/ui/Tag.astro';
+import Icon from '../../components/ui/Icon.astro';
 import { getCollection, render } from 'astro:content';
+import { formatDay } from '../../lib/feed';
 
 export async function getStaticPaths() {
   const posts = await getCollection('news');
@@ -12,46 +19,66 @@ export async function getStaticPaths() {
 
 const { post } = Astro.props;
 const { Content } = await render(post);
-
-const dateStr = post.data.date.toLocaleDateString('en-US', {
-  year: 'numeric', month: 'long', day: 'numeric'
-});
-
-const base = import.meta.env.BASE_URL;
+const day = post.data.date.toISOString().slice(0, 10);
+const tags = post.data.tags ?? [];
 ---
 
 <Base title={post.data.title} description={post.data.summary}>
-  <div class="container py-20 relative">
+  <article class="wrap">
+    <div class="column">
+      <a class="back reveal" href="/news/"><Icon name="arrow-left" size={14} />All news</a>
 
-    <div class="max-w-2xl mx-auto">
-      <a
-        href={`${base}news`}
-        class="caption no-underline hover:underline inline-block mb-8"
-        style="color: var(--color-data);"
-      >
-        ← All news
-      </a>
+      <SectionHeader as="h1" eyebrow="News" title={post.data.title} class="reveal">
+        <p class="facts">
+          <time datetime={day}>{formatDay(day, 'long')}</time>
+          {tags.map((tag) => <Tag tone="accent">{tag}</Tag>)}
+        </p>
+      </SectionHeader>
 
-      <time class="caption block mb-4" datetime={post.data.date.toISOString()}>{dateStr}</time>
-
-      <h1 class="mb-6" style="font-size: var(--text-h1);">{post.data.title}</h1>
-
-      {post.data.tags && (
-        <div class="flex flex-wrap gap-2 mb-8">
-          {post.data.tags.map((tag: string) => (
-            <span
-              class="px-2.5 py-1 rounded-full text-xs"
-              style="background-color: color-mix(in srgb, var(--color-wheat) 15%, transparent); color: var(--color-soil);"
-            >
-              {tag}
-            </span>
-          ))}
-        </div>
-      )}
-
-      <div class="prose" style="color: var(--color-soil); max-width: none;">
-        <Content />
-      </div>
+      <Prose class="reveal" style="--i: 1" data-post-body><Content /></Prose>
     </div>
-  </div>
+  </article>
 </Base>
+
+<style>
+  .column {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    max-width: 43.75rem;
+    margin-inline: auto;
+    padding-top: var(--spacing-section);
+  }
+
+  .back {
+    align-self: flex-start;   /* as wide as its words, not as the column */
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: var(--text-small);
+    color: var(--color-link);
+    text-decoration: none;
+  }
+  .back:hover {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+  }
+
+  .facts {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 12px;
+    margin-top: 16px;
+  }
+  .facts time {
+    font: 500 0.75rem var(--font-mono);
+    letter-spacing: 0.04em;
+    color: var(--color-muted);
+  }
+
+  @media (width < 40rem) {
+    .column { padding-top: 28px; }
+  }
+</style>
