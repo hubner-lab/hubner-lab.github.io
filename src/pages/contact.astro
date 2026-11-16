@@ -1,115 +1,302 @@
 ---
+// The Contact page: who to write to and where the lab is. Left, the principal investigator, the
+// email and the postal address, each with a button that copies it, and the links. Right, a map.
+// Every fact comes from src/site.config.ts.
+//
+// The map is a picture (src/assets/contact/, drawn by scripts/contact-map.mjs), so opening this
+// page asks no other site for anything. There are two pictures of the same ground: one for a
+// plain screen, one twice as large for a dense screen. The point of `site.map` is the centre of
+// both, and the frame always shows the picture centred, so the pin, which stands on the centre
+// of the frame, marks the place at every width. "Open in OpenStreetMap" opens the place there,
+// and the whole map answers to the same link (its `::after` lies over the frame). The credit
+// that the map's licence asks for stands beside it.
+import { getImage } from 'astro:assets';
 import Base from '../layouts/Base.astro';
-const base = import.meta.env.BASE_URL;
+import JoinUs from '../components/JoinUs.astro';
+import Card from '../components/ui/Card.astro';
+import Icon from '../components/ui/Icon.astro';
+import SectionHeader from '../components/ui/SectionHeader.astro';
+import mapPlain from '../assets/contact/map-1x.png';
+import mapDense from '../assets/contact/map-2x.png';
+import about from '../assets/contact/map.json';
+import { site } from '../site.config';
+
+const plain = await getImage({ src: mapPlain, format: 'webp', quality: 75 });
+const dense = await getImage({ src: mapDense, format: 'webp', quality: 75 });
+
+const links = [
+  { label: 'Google Scholar', href: `https://scholar.google.com/citations?user=${site.pi.scholar}` },
+  ...site.affiliations.flatMap(({ name, url }) => (url ? [{ label: name, href: url }] : [])),
+];
 ---
 
 <Base title="Contact" description="Contact the Hübner Lab at Tel-Hai College and Migal, Israel.">
-  <div class="container py-20">
-    <div class="section-enter max-w-2xl mb-16">
-      <p class="caption mb-4">Contact</p>
-      <h1 style="font-size: var(--text-h1);">Get in touch</h1>
-    </div>
+  <div class="wrap">
+    <SectionHeader as="h1" eyebrow="Contact" title="Get in touch" class="head reveal" />
 
-    <div class="grid gap-12 md:grid-cols-2 max-w-3xl">
-      <!-- Contact details -->
-      <div class="section-enter">
-        <div class="mb-8">
-          <p class="caption mb-3">Principal Investigator</p>
-          <p class="text-xl font-semibold mb-1" style="font-family: var(--font-display);">Sariel Hübner</p>
-          <p style="color: var(--color-soil);">Associate Professor</p>
-        </div>
-
-        <div class="mb-6">
-          <p class="caption mb-2">Email</p>
-          <a href="mailto:sariel.hubner@migal.org.il" style="color: var(--color-data);">
-            sariel.hubner@migal.org.il
-          </a>
-        </div>
-
-        <div class="mb-6">
-          <p class="caption mb-2">Address</p>
-          <address style="font-style: normal; color: var(--color-soil); line-height: 1.8;">
-            Migal – Galilee Research Institute<br />
-            2 Hamaarag St.<br />
-            Kiryat Shmona 1101600<br />
-            Israel
-          </address>
+    <div class="grid">
+      <dl class="details reveal" style="--i: 1" data-contact>
+        <div>
+          <dt>Principal investigator</dt>
+          <dd>
+            <span class="name">{site.pi.name}</span>
+            <span class="role">{site.pi.title}</span>
+          </dd>
         </div>
 
         <div>
-          <p class="caption mb-3">Links</p>
-          <div class="flex flex-col gap-2">
-            <a
-              href="https://scholar.google.com/citations?user=yqB4jesAAAAJ"
-              target="_blank"
-              rel="noopener noreferrer"
-              style="color: var(--color-data);"
-            >
-              Google Scholar
-            </a>
-            <a
-              href="https://www.migal.org.il"
-              target="_blank"
-              rel="noopener noreferrer"
-              style="color: var(--color-data);"
-            >
-              Migal Institute
-            </a>
-            <a
-              href="https://www.tel-hai.ac.il"
-              target="_blank"
-              rel="noopener noreferrer"
-              style="color: var(--color-data);"
-            >
-              Tel-Hai College
-            </a>
-          </div>
+          <dt>Email</dt>
+          <dd class="line">
+            <a class="email" href={`mailto:${site.pi.email}`}>{site.pi.email}</a>
+            <button
+              type="button"
+              class="copy"
+              data-copy={site.pi.email}
+              data-copied="Email address copied"
+              aria-label="Copy the email address"
+              data-js-only
+            ><span data-copy-label>Copy</span></button>
+          </dd>
         </div>
-      </div>
 
-      <!-- Map -->
-      <div class="section-enter">
-        <p class="caption mb-3">Location</p>
-        <div
-          id="map-box"
-          class="rounded-xl overflow-hidden border"
-          style="border-color: color-mix(in srgb, var(--color-soil) 15%, transparent);"
-        >
-          <!-- Default: static raster image — works on all browsers, no WebGL required.
-               The inline script below upgrades to an interactive OSM iframe when WebGL is available. -->
+        <div>
+          <dt>Address</dt>
+          <dd class="line line--top">
+            <address>
+              {site.address.map((line, i) => <>{i > 0 && <br />}{line}</>)}
+            </address>
+            <button
+              type="button"
+              class="copy"
+              data-copy={site.address.join('\n')}
+              data-copied="Postal address copied"
+              aria-label="Copy the postal address"
+              data-js-only
+            ><span data-copy-label>Copy</span></button>
+          </dd>
+        </div>
+
+        <div>
+          <dt>Links</dt>
+          <dd class="links">
+            {links.map(({ label, href }) => (
+              <a href={href} target="_blank" rel="noopener noreferrer">{label}<span class="sr-only"> (opens in a new tab)</span></a>
+            ))}
+          </dd>
+        </div>
+      </dl>
+
+      <figure class="map reveal" style="--i: 2" data-map>
+        <Card class="frame">
           <img
-            src={`${base}botanical/map_migal.png`}
-            alt="Map showing Migal – Galilee Research Institute, Kiryat Shmona, Northern Israel"
-            style="display:block;width:100%;height:280px;object-fit:cover;"
+            class="picture"
+            src={plain.src}
+            srcset={`${plain.src} 1x, ${dense.src} 2x`}
+            width={about.shown.width}
+            height={about.shown.height}
+            alt={`Map: ${site.map.label}`}
             loading="lazy"
+            decoding="async"
           />
-        </div>
-        <p class="text-xs mt-2" style="color: color-mix(in srgb, var(--color-soil) 50%, transparent);">
-          Kiryat Shmona, Northern Israel
-        </p>
-      </div>
+          <span class="pin" aria-hidden="true"></span>
+        </Card>
+        <figcaption>
+          <a class="open" href={site.map.osmUrl} target="_blank" rel="noopener noreferrer" data-map-open>
+            Open in OpenStreetMap<Icon name="external" size={13} /><span class="sr-only"> (opens in a new tab)</span>
+          </a>
+          <a class="credit" href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">{about.credit}<span class="sr-only"> (opens in a new tab)</span></a>
+        </figcaption>
+      </figure>
     </div>
-  </div>
 
-  <script is:inline>
-    (function () {
-      function webglOK() {
-        try {
-          var c = document.createElement('canvas');
-          return !!(window.WebGLRenderingContext &&
-            (c.getContext('webgl') || c.getContext('experimental-webgl')));
-        } catch (e) { return false; }
-      }
-      if (!webglOK()) return; // keep static image — no error box shown
-      var box = document.getElementById('map-box');
-      if (!box) return;
-      var f = document.createElement('iframe');
-      f.src = 'https://www.openstreetmap.org/export/embed.html?bbox=35.557,33.198,35.577,33.218&layer=mapnik&marker=33.208,35.567';
-      f.title = 'Migal – Galilee Research Institute location';
-      f.loading = 'lazy';
-      f.style.cssText = 'border:none;display:block;width:100%;height:280px;';
-      box.innerHTML = '';
-      box.appendChild(f);
-    })();
-  </script>
+    <p class="sr-only" role="status" data-copy-status></p>
+
+    <JoinUs mail class="join" />
+  </div>
 </Base>
+
+<script>
+  import '../scripts/copy';
+</script>
+
+<style>
+  .head {
+    padding-top: var(--spacing-section);
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 44px;
+    padding-top: 34px;
+  }
+
+  /* ---- the details ---- */
+  .details {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  dt {
+    margin-bottom: 6px;
+    font: 500 0.75rem/1.6 var(--font-body);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+  }
+  .name {
+    display: block;
+    font-family: var(--font-display);
+    font-weight: var(--display-weight);
+    font-size: 1.5rem;
+    line-height: 1.2;
+    letter-spacing: -0.012em;
+  }
+  .role {
+    display: block;
+    color: var(--color-muted);
+  }
+
+  /* A value and, at the end of its line, the button that copies it. */
+  .line {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 12px;
+  }
+  .line--top {
+    align-items: flex-start;
+  }
+  .email {
+    color: var(--color-link);
+    text-decoration: none;
+    overflow-wrap: anywhere;
+  }
+  .email:hover {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+  }
+  address {
+    font-style: normal;
+    line-height: 1.8;
+    color: var(--color-muted);
+  }
+  .copy {
+    margin-left: auto;
+    padding: 5px 11px;
+    font: 500 0.75rem/1.4 var(--font-mono);
+    color: var(--color-muted);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-chip);
+    cursor: pointer;
+    transition: color 150ms ease-out, border-color 150ms ease-out;
+  }
+  .copy:hover {
+    color: var(--color-ink);
+    border-color: var(--color-muted);
+  }
+  .copy:global(.is-copied) {
+    color: var(--color-leaf);
+    border-color: var(--color-leaf);
+  }
+
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 12px;
+    font-size: var(--text-small);
+  }
+  .links a {
+    color: var(--color-link);
+    text-decoration: none;
+    border-bottom: 1px solid color-mix(in srgb, var(--color-link) 40%, transparent);
+  }
+  .links a:hover {
+    border-bottom-color: currentColor;
+  }
+
+  /* ---- the map ---- */
+  .map {
+    --map-height: 300px;
+    --pin: 20px;
+    position: relative;
+  }
+  .frame {
+    position: relative;
+    height: var(--map-height);
+    overflow: hidden;
+    background: var(--color-plate);   /* the colour of open ground on the map, until the picture is there */
+  }
+  .picture {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;   /* the point is the centre of the picture and stays the centre of the frame */
+  }
+  /* A drop whose tip is on the centre of the frame. It is a square turned by 45 degrees with
+     one sharp corner, so the tip lies 0.707 of its side below its middle. */
+  .pin {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: var(--pin);
+    height: var(--pin);
+    margin: calc(var(--pin) * -1.207) 0 0 calc(var(--pin) * -0.5);
+    border-radius: 50% 50% 50% 0;
+    transform: rotate(-45deg);
+    background: var(--color-accent);
+    border: 2px solid var(--color-paper);
+    box-shadow: 0 1px 4px rgb(0 0 0 / 0.4);
+  }
+
+  figcaption {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 4px 16px;
+    margin-top: 10px;
+    font-size: var(--text-meta);
+    color: var(--color-muted);
+  }
+  .open {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    color: var(--color-link);
+    text-decoration: none;
+  }
+  .open:hover {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+  }
+  /* The whole map opens the place: the link reaches over the frame. */
+  .open::after {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto;
+    height: var(--map-height);
+    border-radius: var(--radius-card);
+  }
+  .credit {
+    color: inherit;
+    text-decoration: none;
+  }
+  .credit:hover {
+    color: var(--color-ink);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+  }
+
+  .join {
+    margin-top: var(--spacing-section);
+  }
+
+  @media (width < 40rem) {
+    .head { padding-top: 28px; }
+    .grid { grid-template-columns: minmax(0, 1fr); gap: 32px; }
+  }
+</style>

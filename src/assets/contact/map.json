@@ -1,0 +1,28 @@
+{
+  "lat": 33.1957972,
+  "lon": 35.5757431,
+  "zoom": 15,
+  "shown": {
+    "width": 600,
+    "height": 300
+  },
+  "pictures": [
+    {
+      "file": "map-1x.png",
+      "scale": 1,
+      "width": 600,
+      "height": 300,
+      "tiles": "zoom 15, x 19621 to 19623, y 13177 to 13178"
+    },
+    {
+      "file": "map-2x.png",
+      "scale": 2,
+      "width": 1200,
+      "height": 600,
+      "tiles": "zoom 16, x 39242 to 39246, y 26354 to 26356"
+    }
+  ],
+  "source": "https://tile.openstreetmap.org",
+  "fetched": "2026-11-16",
+  "credit": "© OpenStreetMap contributors"
+}
