@@ -1,7 +1,8 @@
 // node --test tests/site/contrast.test.mjs
 // Reads the colour tokens of both themes from src/styles/global.css and holds every text colour
 // to 4.5:1 (WCAG AA for body text) on the two backgrounds a page can have, paper and surface.
-// Also: the text on an accent fill, the chip text on its tint, and the text over the hero video.
+// Also: the text on an accent fill, the chip text on its tint, the text over the hero video, and
+// the head of the Research page, which shares its place with an animation.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
@@ -233,3 +234,117 @@ test('hero: no line of the text leaves the column that the scrim covers whole, a
     assert.ok(!/\bopacity\s*:/.test(heroRule(selector)), `${selector} is dimmed with opacity: its contrast is no longer what the test above holds`);
   }
 });
+
+// ---------------------------------------------------------------- the head of the Research page
+// Behind that head runs an animation (src/components/reactionDiffusion.ts) whose filaments are
+// light and dark in turn: no text colour reads on all of them. So no text may stand on it.
+// On a wide window the animation has a gap where the text column is; below a breakpoint it is a
+// band of its own above the head (src/pages/research.astro). Held here:
+//   - the gap is empty from before the text column to after it, at every height;
+//   - the text column of the gap is the column the text is really laid out in;
+//   - below the breakpoint the animation is in the flow of the page, so nothing lies over it;
+//   - at the breakpoint the animation still has room beside the text.
+
+const RESEARCH = readFileSync(fileURLToPath(new URL('../../src/pages/research.astro', import.meta.url)), 'utf8');
+const RESEARCH_CSS = (/<style>([\s\S]*?)<\/style>/.exec(RESEARCH)?.[1] ?? '').replace(/\/\*[\s\S]*?\*\//g, '');
+
+/** The declarations of `selector` in research.astro: outside any @media, or inside the one named. */
+function researchRule(selector, media) {
+  let css = RESEARCH_CSS;
+  if (media) {
+    const at = css.indexOf(`@media ${media} {`);
+    assert.ok(at >= 0, `research.astro has no block "@media ${media}"`);
+    let depth = 0, end = -1;
+    for (let i = css.indexOf('{', at); i < css.length; i++) {
+      if (css[i] === '{') depth++;
+      else if (css[i] === '}' && --depth === 0) { end = i; break; }
+    }
+    css = css.slice(css.indexOf('{', at) + 1, end);
+  } else {
+    // drop every @media block, so that a rule inside one is not taken for the plain rule
+    let out = '', i = 0;
+    while (i < css.length) {
+      const at = css.indexOf('@media', i);
+      if (at < 0) { out += css.slice(i); break; }
+      out += css.slice(i, at);
+      let depth = 0, j = css.indexOf('{', at);
+      for (; j < css.length; j++) {
+        if (css[j] === '{') depth++;
+        else if (css[j] === '}' && --depth === 0) break;
+      }
+      i = j + 1;
+    }
+    css = out;
+  }
+  const m = new RegExp(`(?:^|\\})\\s*${selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*\\{([^}]*)\\}`).exec(css);
+  assert.ok(m, `research.astro has no rule "${selector}"${media ? ` under @media ${media}` : ''}`);
+  return m[1];
+}
+const declared = (body, name) => new RegExp(`(?:^|;)\\s*${name}\\s*:\\s*([^;]+);`).exec(body)?.[1].replace(/\s+/g, ' ').trim();
+const rem = (value) => {
+  const m = /^([\d.]+)rem$/.exec(value ?? '');
+  assert.ok(m, `"${value}" is not a length in rem`);
+  return Number(m[1]);
+};
+
+test('research: the animation has a gap as wide as the text column, from top to bottom', () => {
+  const gap = declared(researchRule('.window'), '--gap');
+  assert.ok(gap, 'the frame of the animation (.window) no longer declares --gap');
+  const m = /^linear-gradient\(\s*90deg,([\s\S]*)\)$/.exec(gap);
+  assert.ok(m, 'the gap must be a left-to-right gradient: one that is the same at every height');
+  assert.deepEqual(splitTop(m[1]), [
+    '#000 calc(var(--text-left) - 5rem)',
+    'transparent calc(var(--text-left) - 1rem)',
+    'transparent calc(var(--text-left) + var(--text-col) + 1rem)',
+    '#000 calc(var(--text-left) + var(--text-col) + 7rem)',
+  ], 'nothing of the animation from 1rem before the text column to 1rem after it');
+  for (const name of ['-webkit-mask-image', 'mask-image']) {
+    assert.equal(declared(researchRule('.window'), name), 'var(--gap)', `.window: ${name} must be the gap`);
+  }
+  assert.equal(declared(researchRule('.window'), 'inset'), '0', 'the gap is measured from the left edge of the page');
+});
+
+test('research: the gap is where the text is laid out', () => {
+  // the left edge of the text: the left edge of the page column, as the `wrap` utility lays it out
+  const wrap = /@utility\s+wrap\s*\{([^}]*)\}/.exec(CSS)?.[1];
+  assert.ok(wrap, 'global.css has no `@utility wrap`');
+  const pad = declared(wrap, '--wrap-pad');
+  const width = /^calc\(([\d.]+rem) \+ 2 \* var\(--wrap-pad\)\)$/.exec(declared(wrap, 'max-width') ?? '')?.[1];
+  assert.ok(pad && width, 'the `wrap` utility no longer reads "--wrap-pad" and "max-width: calc(<width> + 2 * var(--wrap-pad))"');
+  assert.equal(declared(researchRule('.intro'), '--text-left'), `max(${pad}, (100% - ${width}) / 2)`,
+    'the gap must begin where the page column begins: the side room and the width of the `wrap` utility');
+  // its width: no line of the head is wider than the gap
+  assert.equal(declared(researchRule('.head'), 'max-width'), 'var(--text-col)', 'the head block is held to the width of the gap');
+  assert.ok(rem(declared(researchRule('.intro'), '--text-col')) > 0);
+  assert.match(RESEARCH, /<div class="wrap top">\s*<SectionHeader\b[^>]*class="head reveal"/, 'the head stands in the page column, where the gap is cut');
+  // and no text of the head is dimmed or moved off its column
+  for (const selector of ['.intro', '.head']) {
+    for (const property of ['opacity', 'transform', 'translate', 'margin-left', 'left']) {
+      assert.equal(declared(researchRule(selector), property), undefined, `${selector} sets ${property}: the text is dimmed, or moved off the gap`);
+    }
+  }
+});
+
+test('research: below the breakpoint the animation is a band of its own, and at the breakpoint it still has room', () => {
+  const media = /@media \((width < ([\d.]+)rem)\) \{\s*\.intro\s*\{/.exec(RESEARCH_CSS);
+  assert.ok(media, 'research.astro has no "@media (width < ...rem)" block that begins with .intro');
+  const narrow = `(${media[1]})`;
+  const breakpoint = Number(media[2]);
+  // wide: behind the head
+  assert.equal(declared(researchRule('.field'), 'position'), 'absolute');
+  assert.equal(declared(researchRule('.field'), 'z-index'), '-1', 'the animation lies under the head');
+  // narrow: in the flow, above the head, with nothing cut out of it
+  assert.equal(declared(researchRule('.field', narrow), 'position'), 'relative', 'below the breakpoint the animation must be in the flow of the page');
+  assert.ok(rem(declared(researchRule('.field', narrow), 'height')) > 0, 'the band has a height');
+  assert.equal(declared(researchRule('.window', narrow), 'mask-image'), 'none');
+  // the band may reach into the top room of the head, never into its text
+  const reach = /^-(\d+)px$/.exec(declared(researchRule('.field', narrow), 'margin-bottom') ?? '')?.[1];
+  const room = /^(\d+)px$/.exec(declared(researchRule('.top', narrow), 'padding-top') ?? '')?.[1];
+  assert.ok(reach && room && Number(reach) <= Number(room), `the band reaches ${reach}px below itself and the head has ${room}px of room above its text`);
+  // at the breakpoint: the text column plus the soft edge of the gap leaves 10rem of animation or more
+  const side = Math.min(Math.max(1.25, 0.04 * breakpoint), 3);   // clamp(1.25rem, 4vw, 3rem) in rem at that width
+  const left = Math.max(side, (breakpoint - 69) / 2);
+  const wholeFrom = left + rem(declared(researchRule('.intro'), '--text-col')) + 7;
+  assert.ok(breakpoint - wholeFrom >= 10, `at ${breakpoint}rem the animation is whole only on ${(breakpoint - wholeFrom).toFixed(1)}rem beside the text: raise the breakpoint`);
+});
+

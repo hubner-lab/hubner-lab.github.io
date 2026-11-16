@@ -28,8 +28,7 @@ const LIMIT = { css: 10 * KB, js: 6 * KB, image: 80 * KB, video: 1.5 * KB * KB }
 // deleted as soon as its file is within the limit or no page names it any more: the test fails on
 // a stale entry, so this list can only get shorter.
 const PENDING = new Map([
-  ['botanical/adaptation_crop.png', 'pillar image, compressed with the new Research page'],
-  ['botanical/map_migal.png', 'contact map, replaced with the new Contact page'],
+  // empty since the Research and Contact pages were rebuilt
 ]);
 
 // Files a page names that are made later in the redesign. An entry must be deleted as soon as
