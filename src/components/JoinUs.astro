@@ -1,0 +1,60 @@
+---
+// The "Join us" band of the home and contact pages: a short invitation and one button.
+// It is drawn only while src/site.config.ts says `joinUs.enabled`; otherwise this component puts
+// nothing on the page. The title and the text are in the config as well.
+// The button leads to the Contact page. On the Contact page itself (`mail`) it opens a message
+// to the principal investigator instead.
+import Card from './ui/Card.astro';
+import Button from './ui/Button.astro';
+import { site } from '../site.config';
+
+interface Props {
+  /** On the Contact page: the button writes an email, it does not lead to the page it is on. */
+  mail?: boolean;
+  class?: string;
+  /** Astro adds the scope attribute of the parent's <style> here, so the parent can place the band. */
+  [key: `data-${string}`]: unknown;
+}
+
+const { mail = false, class: className, ...rest } = Astro.props;
+const { enabled, title, text } = site.joinUs;
+---
+
+{enabled && (
+  <Card as="section" {...rest} class:list={['join', className]} aria-labelledby="join-us-title" data-join-us>
+    <div class="words">
+      <h2 id="join-us-title">{title}</h2>
+      <p>{text}</p>
+    </div>
+    {mail
+      ? <Button href={`mailto:${site.pi.email}`}>Write to us</Button>
+      : <Button href="/contact/">Get in touch</Button>}
+  </Card>
+)}
+
+<style>
+  .join {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+    padding: 32px;
+  }
+  h2 {
+    font-size: var(--text-h3);
+    line-height: 1.25;
+  }
+  p {
+    max-width: 52ch;
+    margin-top: 6px;
+    color: var(--color-muted);
+  }
+
+  @media (width < 40rem) {
+    .join {
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 24px;
+    }
+  }
+</style>

@@ -42,14 +42,22 @@ export interface SiteConfig {
   affiliations: Organisation[];
   /** Shown beside the affiliations once the list has entries. */
   funders: Organisation[];
-  /** The "Join us" band on the home and contact pages. */
-  joinUs: { enabled: boolean };
+  /**
+   * The "Join us" band on the home and contact pages (src/components/JoinUs.astro): shown when
+   * `enabled` is true, with this title and this text.
+   */
+  joinUs: { enabled: boolean; title: string; text: string };
   /**
    * Lab members who are not on the Team page, by full name. The Publications page shows these
    * names in bold, like the people on the Team page.
    */
   labAuthors: string[];
-  /** The point the contact map is centred on. */
+  /**
+   * The contact map: the point in its centre, its zoom as OpenStreetMap counts it, the name of
+   * the place and the page that opens it on openstreetmap.org. The map is a picture in
+   * src/assets/contact/: after a change of the point or the zoom, draw it again with
+   * `node scripts/contact-map.mjs` (a test fails until the picture matches).
+   */
   map: { lat: number; lon: number; zoom: number; label: string; osmUrl: string };
   /**
    * The colour a browser paints its own bars with: the page background of each theme.
@@ -93,15 +101,22 @@ export const site: SiteConfig = {
 
   funders: [],
 
-  joinUs: { enabled: false },
+  // The wording is the draft of the design mock-up: the PI's own text goes here before
+  // `enabled` is set to true.
+  joinUs: {
+    enabled: false,
+    title: 'Join the lab',
+    text: 'We welcome enquiries from students and postdocs interested in plant genomics. Write to the PI to start a conversation.',
+  },
 
   labAuthors: [],
 
   // OpenStreetMap node 4408244054, "Migal Galilee Technological Center", read on 2026-11-15.
+  // Zoom 15 shows the southern industrial zone of the town between road 90 and the fields.
   map: {
     lat: 33.1957972,
     lon: 35.5757431,
-    zoom: 16,
+    zoom: 15,
     label: 'Migal – Galilee Research Institute, Kiryat Shmona',
     osmUrl: 'https://www.openstreetmap.org/node/4408244054',
   },

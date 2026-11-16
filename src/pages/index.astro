@@ -1,8 +1,10 @@
 ---
 // The home page: the hero, then one reading column with the mission and the "Latest" list, the
-// newest of the news posts and the papers in one stream (src/lib/feed.ts).
+// newest of the news posts and the papers in one stream (src/lib/feed.ts). Below the column, the
+// "Join us" band, which shows only while site.config.ts switches it on.
 import Base from '../layouts/Base.astro';
 import Hero from '../components/Hero.astro';
+import JoinUs from '../components/JoinUs.astro';
 import LatestRow from '../components/LatestRow.astro';
 import SectionHeader from '../components/ui/SectionHeader.astro';
 import Button from '../components/ui/Button.astro';
@@ -41,6 +43,8 @@ const rows = await loadLatest(6);
         </section>
       )}
     </div>
+
+    <JoinUs class="join" />
   </div>
 </Base>
 
@@ -77,5 +81,9 @@ const rows = await loadLatest(6);
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
+  }
+
+  .join {
+    margin-top: var(--spacing-section);
   }
 </style>
