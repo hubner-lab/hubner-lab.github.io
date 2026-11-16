@@ -86,8 +86,9 @@ test_handwritten_list: {
     slugs.add(h.slug);
   }
   // Every person on the Team page is either hand-written or synced, never both and never neither.
-  const team = html('team/index.html').match(/<section\b[\s\S]*?<\/section>/)?.[0] ?? '';
-  const people = (team.match(/data-f="name"/g) ?? []).length + (team.match(/<li\b[^>]*>\s*<span\b/g) ?? []).length;
+  // A person there, a card or a line of the Alumni list, is an element with `data-person`.
+  const people = (html('team/index.html').match(/<[a-z0-9]+\b[^>]*\sdata-person(?=[\s=>])/g) ?? []).length;
+  assert.ok(people > 0, 'the Team page marks no person with data-person');
   assert.equal(list.length + Object.keys(synced).length, people, 'handwritten.json and synced.json do not add up to the Team page');
 }
 
