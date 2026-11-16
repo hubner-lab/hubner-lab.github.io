@@ -1,58 +1,81 @@
 ---
+// The home page: the hero, then one reading column with the mission and the "Latest" list, the
+// newest of the news posts and the papers in one stream (src/lib/feed.ts).
 import Base from '../layouts/Base.astro';
 import Hero from '../components/Hero.astro';
-import NewsCard from '../components/NewsCard.astro';
-import { getCollection } from 'astro:content';
+import LatestRow from '../components/LatestRow.astro';
+import SectionHeader from '../components/ui/SectionHeader.astro';
+import Button from '../components/ui/Button.astro';
+import Icon from '../components/ui/Icon.astro';
+import { loadLatest } from '../lib/sources';
 
-const base = import.meta.env.BASE_URL;
-
-// Latest 3 news posts
-const allNews = await getCollection('news');
-const latestNews = allNews
-  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
-  .slice(0, 3);
+const rows = await loadLatest(6);
 ---
 
 <Base>
   <Hero />
 
-  <!-- Mission -->
-  <section class="container section-enter mt-24">
-    <div class="max-w-2xl">
-      <p class="caption mb-4">Mission</p>
-      <h2 class="mb-6" style="font-size: clamp(1.5rem, 3vw, 2.25rem);">
-        Understanding how plants adapt and diversify across landscapes
-      </h2>
-      <p class="leading-relaxed" style="color: var(--color-soil);">
-        Our research integrates population genomics, landscape ecology, and quantitative genetics
-        to understand the forces shaping genetic diversity in wild and domesticated plant species.
-        We work across a range of crops and their wild relatives — including wild barley,
-        sunflower, wheat, grapevine, and tef — using genome-wide data to illuminate the
-        evolutionary histories and adaptive potential of these plants.
-      </p>
+  <div class="wrap">
+    <div class="column">
+      <section class="mission reveal">
+        <h2>Understanding how plants adapt and diversify across landscapes</h2>
+        <p>
+          Our research integrates population genomics, landscape ecology, and quantitative genetics
+          to understand the forces shaping genetic diversity in wild and domesticated plant species.
+          We work across a range of crops and their wild relatives — including wild barley,
+          sunflower, wheat, grapevine, and tef — using genome-wide data to illuminate the
+          evolutionary histories and adaptive potential of these plants.
+        </p>
+      </section>
+
+      {rows.length > 0 && (
+        <section class="latest reveal" style="--i: 1" data-latest>
+          <SectionHeader eyebrow="Latest" title="Papers and news" />
+          <ul class="rows">
+            {rows.map((item) => <LatestRow item={item} />)}
+          </ul>
+          <p class="all">
+            <Button href="/news/" variant="ghost" size="sm">All news<Icon name="arrow-right" size={14} /></Button>
+            <Button href="/publications/" variant="ghost" size="sm">All publications<Icon name="arrow-right" size={14} /></Button>
+          </p>
+        </section>
+      )}
     </div>
-  </section>
-
-  <!-- Latest news teaser -->
-  {latestNews.length > 0 && (
-    <section class="container mt-24">
-      <div class="flex items-baseline justify-between mb-8">
-        <p class="caption">Latest News</p>
-        <a href={`${base}news`} style="color: var(--color-data); font-size: 0.875rem;">All news →</a>
-      </div>
-      <div class="grid gap-4 md:grid-cols-3">
-        {latestNews.map((post) => (
-          <NewsCard
-            title={post.data.title}
-            date={post.data.date}
-            slug={post.id}
-            summary={post.data.summary}
-            tags={post.data.tags}
-          />
-        ))}
-      </div>
-    </section>
-  )}
-
-  <div class="h-24" aria-hidden="true"></div>
+  </div>
 </Base>
+
+<style>
+  /* One column for reading, in the middle of the page. */
+  .column {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    max-width: 43.75rem;
+    margin-inline: auto;
+    padding-top: var(--spacing-section);
+  }
+
+  .mission {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .mission p {
+    max-width: 66ch;
+    color: var(--color-muted);
+  }
+
+  .latest {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+  }
+  .rows {
+    list-style: none;
+  }
+  .all {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+</style>

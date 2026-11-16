@@ -3,22 +3,17 @@
 // that file), by year, the newest first. All papers are in the markup; the search box and the
 // filter need a script and are not shown without one (src/scripts/publications.ts). The year
 // strip is made of plain links and works either way.
-import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import PublicationItem from '../components/PublicationItem.astro';
 import SectionHeader from '../components/ui/SectionHeader.astro';
 import Card from '../components/ui/Card.astro';
 import Tag from '../components/ui/Tag.astro';
 import Icon from '../components/ui/Icon.astro';
-import records from '../data/publications.json';
 import { site } from '../site.config';
-import { groupByYear, labMatcher, toPaper, totals, yearCounts } from '../lib/publications';
+import { groupByYear, totals, yearCounts } from '../lib/publications';
+import { loadPapers } from '../lib/sources';
 
-// A lab member is anyone on the Team page, current or former, plus the names the config adds.
-const team = await getCollection('team');
-const isLab = labMatcher([...team.map((member) => member.data.name), ...site.labAuthors, ...site.pi.spellings]);
-
-const papers = records.map((record) => toPaper(record, isLab));
+const papers = await loadPapers();
 const groups = groupByYear(papers);
 const sum = totals(papers);
 const counts = yearCounts(papers);

@@ -1,0 +1,140 @@
+---
+// One row of the news: when, what kind, the title, and a line about it.
+//   a news post   the title leads to the post; the line is its summary
+//   a paper       the title leads to the paper, in a new tab; the line is the first two authors
+//                 and every lab member (in bold), then the venue
+// The home page lists the top of the news with a year beside each row; the News page lists all
+// of it with the day (`when="day"`), and there a paper is a "New paper".
+// Names and titles are written as text, never as markup. `data-kind` and `data-day` say what the
+// row is to the tests (tests/site/feed.test.mjs).
+import Icon from './ui/Icon.astro';
+import { formatDay, type FeedItem } from '../lib/feed';
+import { authorPieces, foldLine } from '../lib/publications';
+
+interface Props {
+  item: FeedItem;
+  /** What stands beside the row: the year (the default) or the day. */
+  when?: 'year' | 'day';
+}
+
+const { item, when = 'year' } = Astro.props;
+const label = item.kind === 'news' ? 'News' : when === 'day' ? 'New paper' : 'Paper';
+
+const paper = item.kind === 'paper' ? item.paper : null;
+const authors = paper ? foldLine(paper.authors.all, 2) : null;
+const names = authors ? authorPieces(authors.shown) : [];
+const more = authors?.more ?? 0;
+const venue = paper?.venue ?? '';
+---
+
+<li class:list={['row', when === 'day' && 'row--day']} data-feed-item data-kind={item.kind} data-day={item.day}>
+  <span class="when">
+    {when === 'day' && item.day ? <time datetime={item.day}>{formatDay(item.day)}</time> : item.year}
+  </span>
+
+  <div class="what">
+    <span class="kind">{label}</span>
+    <p class="title">
+      {item.kind === 'news' ? (
+        <a class="to" href={item.href}>{item.title}</a>
+      ) : paper?.link ? (
+        <a class="to" href={paper.link.href} target="_blank" rel="noopener noreferrer">{item.title}<Icon name="external" size={12} class="out" /><span class="sr-only"> (opens in a new tab)</span></a>
+      ) : (
+        item.title
+      )}
+    </p>
+    {item.kind === 'news' && item.summary && <p class="about">{item.summary}</p>}
+    {paper && (names.length > 0 || venue) && (
+      <p class="about">{names.map((piece) => (piece.lab ? <b>{piece.text}</b> : piece.text))}{more > 0 && <span class="more"> +{more} more</span>}{names.length > 0 && venue && ' · '}{venue && <cite>{venue}</cite>}</p>
+    )}
+  </div>
+</li>
+
+<style>
+  .row {
+    display: grid;
+    grid-template-columns: 48px minmax(0, 1fr);
+    gap: 16px;
+    align-items: baseline;
+    padding-block: 14px;
+    border-bottom: 1px solid var(--color-line);
+  }
+  .row:first-child {
+    border-top: 1px solid var(--color-line);
+  }
+  .row--day {
+    grid-template-columns: 110px minmax(0, 1fr);
+  }
+
+  .when {
+    font: 500 0.75rem var(--font-mono);
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+    color: var(--color-muted);
+  }
+  .kind {
+    display: block;
+    font: 500 0.6875rem/1.5 var(--font-mono);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-leaf);
+  }
+
+  .what {
+    overflow-wrap: break-word;   /* a long word of a title breaks, it does not widen the page */
+  }
+  .title {
+    font-weight: 500;
+    line-height: 1.4;
+    color: var(--color-ink);
+  }
+  .to {
+    color: inherit;
+    text-decoration: none;
+  }
+  .to:hover {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+  }
+  .out {
+    display: inline;
+    margin-left: 6px;
+    color: var(--color-muted);
+  }
+
+  .about {
+    margin-top: 3px;
+    font-size: var(--text-meta);
+    line-height: 1.5;
+    color: var(--color-muted);
+  }
+  .about b {
+    font-weight: 600;
+    color: var(--color-ink);
+  }
+  .about cite {
+    font-style: italic;
+  }
+  .more {
+    white-space: nowrap;
+  }
+
+  /* On a phone the day stands above the row, on one line with the kind, not beside it: the
+     title and the line under it keep the whole width. */
+  @media (width < 40rem) {
+    .row--day {
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: 2px 12px;
+    }
+    .row--day .what {
+      display: contents;
+    }
+    .row--day :is(.title, .about) {
+      grid-column: 1 / -1;
+    }
+    .row--day .about {
+      margin-top: 1px;
+    }
+  }
+</style>

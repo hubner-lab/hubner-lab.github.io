@@ -6,7 +6,7 @@
 // `data-year` and `data-type` are what the filter reads; `data-search` marks the text the search
 // reads (src/scripts/publications.ts).
 import Icon from './ui/Icon.astro';
-import { citationsLabel, type Author, type Paper, type ShownAuthor } from '../lib/publications';
+import { authorPieces as pieces, citationsLabel, type Paper } from '../lib/publications';
 
 interface Props {
   paper: Paper;
@@ -15,15 +15,7 @@ interface Props {
 const { paper } = Astro.props;
 const { authors } = paper;
 const cites = citationsLabel(paper.citations);
-
-// A line of names as pieces of text: a comma between two names, and "…" where the short line
-// leaves names out between them. A lab member's piece is set in bold.
-type Piece = { text: string; lab: boolean };
-const pieces = (list: (Author | ShownAuthor)[]): Piece[] =>
-  list.flatMap((author, i) => [
-    ...(i > 0 ? [{ text: 'gap' in author && author.gap ? ', … ' : ', ', lab: false }] : []),
-    { text: author.name, lab: author.lab },
-  ]);
+// `pieces` gives a line of names as pieces of text; a lab member's piece is set in bold.
 ---
 
 <li class="pub" data-pub data-year={paper.year} data-type={paper.type}>

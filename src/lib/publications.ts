@@ -81,7 +81,14 @@ export interface AuthorLine {
  * more: "+1 more" takes as much room as the name it would hide.
  */
 export function foldAuthors(names: string[], isLab: (name: string) => boolean, head = 3): AuthorLine {
-  const all = names.map((name) => ({ name, lab: isLab(name) }));
+  return foldLine(names.map((name) => ({ name, lab: isLab(name) })), head);
+}
+
+/**
+ * The same fold for a list whose lab members are marked already. A row that has less room than
+ * the Publications page folds a paper's list again with a smaller `head`.
+ */
+export function foldLine(all: Author[], head = 3): AuthorLine {
   const kept = all.map((author, i) => i < head || author.lab);
   const more = kept.filter((k) => !k).length;
   if (more < 2) return { all, shown: all.map((author) => ({ ...author, gap: false })), more: 0 };
@@ -94,6 +101,30 @@ export function foldAuthors(names: string[], isLab: (name: string) => boolean, h
     last = i;
   });
   return { all, shown, more };
+}
+
+/** A piece of an author line as it is written: a name, or what stands between two names. */
+export interface AuthorPiece {
+  text: string;
+  /** The name of a lab member: a page sets it in bold. */
+  lab: boolean;
+}
+
+/**
+ * A line of names as pieces of text: a comma between two names, and "…" where the short line
+ * leaves names out between them. A page writes each piece as text, never as markup.
+ */
+export function authorPieces(list: (Author | ShownAuthor)[]): AuthorPiece[] {
+  return list.flatMap((author, i) => [
+    ...(i > 0 ? [{ text: 'gap' in author && author.gap ? ', … ' : ', ', lab: false }] : []),
+    { text: author.name, lab: author.lab },
+  ]);
+}
+
+/** The short line as plain text, with the count of the names it leaves out: "A One, B Two +3 more". */
+export function authorsText(line: AuthorLine): string {
+  const names = authorPieces(line.shown).map((piece) => piece.text).join('');
+  return line.more > 0 ? `${names} +${line.more} more` : names;
 }
 
 // ---------------------------------------------------------------------------------- the link

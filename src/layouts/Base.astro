@@ -43,6 +43,7 @@ const socialImage = new URL(site.socialImage.path, site.url).href;
     <meta name="description" content={description} />
     {noindex && <meta name="robots" content="noindex" />}
     {canonical && <link rel="canonical" href={canonical} />}
+    <link rel="alternate" type="application/rss+xml" title={`${site.name} news`} href="/rss.xml" />
     <link rel="icon" href="/favicon.ico" sizes="32x32" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="theme-color" content={site.themeColor.dark} data-dark={site.themeColor.dark} data-light={site.themeColor.light} />
