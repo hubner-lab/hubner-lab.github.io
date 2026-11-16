@@ -9,7 +9,8 @@ import {
 } from './cards';
 import { isConfigured } from './config';
 import { initBackend } from './firebase';
-import { groupOptions, MAX, validate, type CardValues } from './limits';
+import { alumniLine, formerRole, initials, LINKS, linkHref, linkName, yearsLabel } from '../lib/team';
+import { cardYear, groupOptions, MAX, normalizeInterests, validate, type CardValues } from './limits';
 import { createCropper, type Cropper, type PhotoResult } from './photo';
 import { mountAdmin } from './admin';
 import { isAdminSession } from './adminCards';
@@ -117,43 +118,85 @@ function showErrors(errors: Record<string, string | undefined>) {
 }
 
 // ---------------------------------------------------------------- preview (fills the data-f hooks of the real TeamCard)
+// The card in #m-preview is the one the Team page draws (src/components/TeamCard.astro, with
+// every slot in the markup). What a slot shows comes from src/lib/team.ts, the functions the
+// page itself uses, so the preview and the page cannot drift apart.
 
 let previewPhotoHolder: { el: HTMLElement; html: string } | null = null;
 
 function updatePreview() {
   const root = $('m-preview');
   const f = (k: string) => root.querySelector<HTMLElement>(`[data-f="${k}"]`);
+  /** Write a slot; an empty slot is hidden. A card that lacks the slot is left alone. */
+  const fill = (k: string, value: string) => {
+    const el = f(k);
+    if (!el) return;
+    el.textContent = value;
+    el.toggleAttribute('hidden', value === '');
+  };
+
   const v = readForm();
   const name = v.name.trim() || 'Your name';
+  const role = v.role.trim() || 'Your role';
   f('name')!.textContent = name;
-  f('role')!.textContent = v.role.trim() || 'Your role';
+  f('role')!.textContent = role;
   const bio = f('bio')!;
   bio.textContent = v.bio;
   bio.toggleAttribute('hidden', v.bio === '');
-  const link = (k: string, value: string, href: string) => {
-    const a = f(k) as HTMLAnchorElement | null;
-    if (!a) return;
-    a.toggleAttribute('hidden', value === '');
-    if (value) a.href = href;
+
+  const chips = f('interests');
+  if (chips) {
+    const items = normalizeInterests(v.interests).split(', ').filter(Boolean);
+    chips.replaceChildren(...items.map((item) => {
+      const li = document.createElement('li');
+      li.textContent = item;
+      return li;
+    }));
+    chips.toggleAttribute('hidden', items.length === 0);
+  }
+
+  let linked = false;
+  for (const [key, label] of LINKS) {
+    const a = f(key) as HTMLAnchorElement | null;
+    if (!a) continue;
+    const href = linkHref(key, v[key]);
+    a.toggleAttribute('hidden', !href);
+    if (href) a.href = href;
     else a.removeAttribute('href');
-  };
-  link('email', v.email, `mailto:${v.email}`);
-  link('orcid', v.orcid, `https://orcid.org/${v.orcid}`);
-  link('scholar', v.scholar, `https://scholar.google.com/citations?user=${v.scholar}`);
+    a.setAttribute('aria-label', linkName(key, label, name));
+    linked ||= !!href;
+  }
+  f('links')?.toggleAttribute('hidden', !linked);
+
+  // A year the form would refuse (half typed, or wrong) is shown as no year.
+  const years = { alumni: v.alumni, yearJoined: cardYear(v.yearJoined), yearLeft: cardYear(v.yearLeft) };
+  const position = v.currentPosition.trim();
+  fill('years', yearsLabel(years));
+  fill('now', v.alumni && position ? `Now: ${position}` : '');
+
+  // The Team page lists a former member as a line of its Alumni list, not as a card: show the line.
+  const line = $('m-preview-alumni');
+  if (line) {
+    line.toggleAttribute('hidden', !v.alumni);
+    const set = (k: string, value: string) => {
+      const el = line.querySelector<HTMLElement>(`[data-alumni="${k}"]`);
+      if (el) el.textContent = value;
+    };
+    set('name', name);
+    set('line', `${formerRole(role)}${alumniLine({ ...years, currentPosition: position })}`);
+  }
 
   const holder = f('photo')!;
   previewPhotoHolder ??= { el: holder, html: holder.innerHTML };
   if (photo.url) {
-    holder.innerHTML = '';
     const img = document.createElement('img');
     img.src = photo.url;
-    img.alt = name;
-    img.className = 'w-full h-full object-cover';
-    holder.append(img);
+    img.alt = '';   // the name stands under it
+    holder.replaceChildren(img);
   } else {
     holder.innerHTML = previewPhotoHolder.html;
     const initial = f('initial');
-    if (initial) initial.textContent = name.charAt(0);
+    if (initial) initial.textContent = initials(name);
   }
 }
 

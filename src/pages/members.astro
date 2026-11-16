@@ -190,6 +190,10 @@ const currentYear = new Date().getFullYear();
             <p class="caption mb-3">Preview</p>
             <div id="m-preview">
               <TeamCard name="Your name" role="Your role" preview />
+              <p id="m-preview-alumni" class="m-small" hidden>
+                The Team page lists former members by name under Alumni, not as cards. Your line:
+                <strong data-alumni="name"></strong> <span data-alumni="line"></span>
+              </p>
             </div>
           </aside>
         </div>
@@ -266,5 +270,8 @@ const currentYear = new Date().getFullYear();
   .m-file { font-size: .9rem; }
   #m-canvas, .m-canvas { width: 100%; max-width: 20rem; aspect-ratio: 1; border-radius: .5rem; cursor: grab; touch-action: none;
     background: color-mix(in srgb, var(--color-muted) 20%, var(--color-paper)); }
-  #m-preview { position: sticky; top: 6rem; }
+  /* As wide as a card of the Team page, also where the preview stands under the form. */
+  #m-preview { position: sticky; top: 6rem; max-width: 22rem; }
+  #m-preview-alumni { margin-top: .85rem; }
+  #m-preview-alumni strong { font-weight: 500; color: var(--color-ink); }
 </style>
