@@ -77,11 +77,22 @@ export function parseYear(text: string): number | null {
   return t === '' ? null : /^-?\d+$/.test(t) ? Number(t) : Number.NaN;
 }
 
+/** The first year a card may name. */
+export const MIN_YEAR = 1950;
+/** The last one: next year, for somebody who joins soon. */
+export const maxYear = (thisYear = new Date().getFullYear()) => thisYear + 1;
+
+/** The year typed into a field, when it is one a card may name; undefined for anything else. */
+export function cardYear(text: string, thisYear?: number): number | undefined {
+  const y = parseYear(text);
+  return y !== null && Number.isInteger(y) && y >= MIN_YEAR && y <= maxYear(thisYear) ? y : undefined;
+}
+
 export type Errors = Partial<Record<keyof CardValues, string>>;
 
 export function validate(v: CardValues, opts: { piAllowed: boolean; year?: number }): Errors {
   const e: Errors = {};
-  const maxYear = (opts.year ?? new Date().getFullYear()) + 1;
+  const lastYear = maxYear(opts.year);
 
   const req = (k: 'name' | 'role', label: string) => {
     const s = v[k].trim();
@@ -117,9 +128,8 @@ export function validate(v: CardValues, opts: { piAllowed: boolean; year?: numbe
   pattern('website', 'Must start with https://.');
 
   for (const k of ['yearJoined', 'yearLeft'] as const) {
-    const y = parseYear(v[k]);
-    if (y !== null && (!Number.isInteger(y) || y < 1950 || y > maxYear)) {
-      e[k] = `A year from 1950 to ${maxYear}, or empty.`;
+    if (parseYear(v[k]) !== null && cardYear(v[k], opts.year) === undefined) {
+      e[k] = `A year from ${MIN_YEAR} to ${lastYear}, or empty.`;
     }
   }
   return e;

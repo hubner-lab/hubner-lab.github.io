@@ -1,50 +1,289 @@
 ---
+// The Publications page: every paper of src/data/publications.json (the Scholar bot rewrites
+// that file), by year, the newest first. All papers are in the markup; the search box and the
+// filter need a script and are not shown without one (src/scripts/publications.ts). The year
+// strip is made of plain links and works either way.
 import Base from '../layouts/Base.astro';
 import PublicationItem from '../components/PublicationItem.astro';
-import publications from '../data/publications.json';
+import SectionHeader from '../components/ui/SectionHeader.astro';
+import Card from '../components/ui/Card.astro';
+import Tag from '../components/ui/Tag.astro';
+import Icon from '../components/ui/Icon.astro';
+import { site } from '../site.config';
+import { groupByYear, totals, yearCounts } from '../lib/publications';
+import { loadPapers } from '../lib/sources';
 
-// Group by year, descending
-const byYear = publications.reduce<Record<number, typeof publications>>((acc, pub) => {
-  (acc[pub.year] ??= []).push(pub);
-  return acc;
-}, {});
+const papers = await loadPapers();
+const groups = groupByYear(papers);
+const sum = totals(papers);
+const counts = yearCounts(papers);
+const most = Math.max(1, ...counts.map((y) => y.count));
+const number = (n: number) => n.toLocaleString('en-US');
+const papersOf = (n: number) => `${n} ${n === 1 ? 'paper' : 'papers'}`;
 
-const years = Object.keys(byYear)
-  .map(Number)
-  .sort((a, b) => b - a);
+// The bars of the year strip: 36px for the fullest year, 3px for a year with nothing.
+const bars = counts.map(({ year, count }) => ({
+  year,
+  count,
+  height: Math.max(3, Math.round((count / most) * 36)),
+}));
+
+const filters = [
+  { value: 'all', label: 'All', count: sum.count },
+  { value: 'article', label: 'Articles', count: sum.articles },
+  { value: 'preprint', label: 'Preprints', count: sum.preprints },
+];
+const scholar = `https://scholar.google.com/citations?user=${site.pi.scholar}`;
 ---
 
-<Base title="Publications" description="Scientific publications from the Hübner Lab.">
-  <div class="container py-20 relative">
+<Base title="Publications" description="Articles and preprints from the Hübner Lab, with links to the papers.">
+  <div class="wrap">
+    <SectionHeader as="h1" eyebrow="Publications" title="Publications" class="head reveal">
+      <Fragment slot="lead">
+        {sum.count > 0 && (
+          <>{papersOf(sum.count)}, {number(sum.citations)} citations, {sum.firstYear} to {sum.lastYear}. </>
+        )}
+        Refreshed from <a href={scholar} target="_blank" rel="noopener noreferrer">Google Scholar</a>.
+      </Fragment>
+    </SectionHeader>
 
-    <div class="section-enter max-w-2xl mb-16">
-      <p class="caption mb-4">Publications</p>
-      <h1 style="font-size: var(--text-h1);">Research output</h1>
-      <p class="mt-4 leading-relaxed" style="color: var(--color-soil);">
-        Peer-reviewed articles, preprints, and book chapters.
-      </p>
-    </div>
+    <div class="body reveal" style="--i: 1" data-pubs>
+      <div class="tools">
+        <div class="find" role="search" data-js-only>
+          <Card as="label" flat pill class="search">
+            <Icon name="search" size={16} />
+            <span class="sr-only">Search publications</span>
+            <input type="search" placeholder="Search title, author or venue" autocomplete="off" spellcheck="false" data-pub-search />
+          </Card>
+          <div class="filters" role="radiogroup" aria-label="Kind of paper">
+            {filters.map(({ value, label, count }) => (
+              <label class="filter">
+                <input class="sr-only" type="radio" name="pub-type" value={value} checked={value === 'all'} data-pub-filter />
+                <Tag class="chip">{`${label} ${count}`}</Tag>
+              </label>
+            ))}
+          </div>
+        </div>
 
-    {years.map((year, i) => (
-      <div class="section-enter mb-12 relative">
+        {bars.length > 1 && (
+          <nav class="years" aria-label="Jump to a year">
+            <ol class="bars">
+              {bars.map(({ year, count, height }) => (
+                <li>
+                  {count > 0 ? (
+                    <a class="year-link" href={`#y${year}`} title={`${year}: ${papersOf(count)}`} aria-label={`${year}: ${papersOf(count)}`} data-year-link={year}>
+                      <span class="bar" style={`height: ${height}px`}></span>
+                    </a>
+                  ) : (
+                    <span class="bar" style={`height: ${height}px`} title={`${year}: no papers`}></span>
+                  )}
+                </li>
+              ))}
+            </ol>
+            <p class="scale" aria-hidden="true">
+              <span>{sum.firstYear}</span><span>Jump to a year</span><span>{sum.lastYear}</span>
+            </p>
+          </nav>
+        )}
+      </div>
 
-        <h2
-          class="text-2xl mb-4 pb-2 border-b"
-          style="font-family: var(--font-display); color: var(--color-wheat); border-color: color-mix(in srgb, var(--color-wheat) 25%, transparent);"
-        >
-          {year}
-        </h2>
-        {byYear[year].map((pub) => (
-          <PublicationItem
-            title={pub.title}
-            authors={pub.authors}
-            venue={pub.venue}
-            year={pub.year}
-            url={pub.url || undefined}
-            citations={pub.citations || undefined}
-          />
+      <p class="sr-only" role="status" data-pub-status></p>
+
+      <div class="list">
+        {groups.map(({ year, items }) => (
+          <section class="year" id={`y${year}`} data-year-group={year}>
+            <h2 class="year-label">{year}</h2>
+            <ul class="rows">
+              {items.map((paper) => <PublicationItem paper={paper} />)}
+            </ul>
+          </section>
         ))}
       </div>
-    ))}
+
+      <p class="empty" data-pub-empty hidden>
+        No papers match.
+        <button type="button" class="reset" data-pub-reset>Show all papers</button>
+      </p>
+    </div>
   </div>
 </Base>
+
+<script>
+  import '../scripts/publications';
+</script>
+
+<style>
+  .head {
+    padding-top: var(--spacing-section);
+    padding-bottom: 12px;
+  }
+  .body {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    padding-top: 36px;
+  }
+
+  /* The tools: search and filter in one row, the year strip under it */
+  .tools {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .find {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+  }
+  .search {
+    flex: 1 1 280px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    max-width: 460px;
+    padding: 10px 16px;
+    color: var(--color-muted);
+    cursor: text;
+  }
+  .search:focus-within {
+    outline: 2px solid var(--color-link);
+    outline-offset: 2px;
+  }
+  .search input {
+    flex: 1;
+    min-width: 0;
+    /* 16px: a smaller field makes a phone zoom in when it is focused */
+    font: 1rem/1.25 var(--font-body);
+    color: var(--color-ink);
+    background: transparent;
+    border: 0;
+    outline: none;
+  }
+  .search input::placeholder {
+    color: var(--color-muted);
+    opacity: 1;
+  }
+
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .filter {
+    position: relative;
+    cursor: pointer;
+  }
+  .filter .chip {
+    user-select: none;
+  }
+  .filter input:checked + .chip {
+    background: var(--color-ink);
+    color: var(--color-paper);
+  }
+  .filter input:focus-visible + .chip {
+    outline: 2px solid var(--color-link);
+    outline-offset: 2px;
+  }
+
+  /* The year strip: one bar per year, as tall as the year has papers; a bar is a link */
+  .years {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .bars {
+    --bar-gap: 4px;
+    display: flex;
+    align-items: stretch;
+    height: 38px;
+    margin-inline: calc(var(--bar-gap) / -2);
+    list-style: none;
+  }
+  /* The room between two bars is inside the columns, half on each side, so the columns touch:
+     a press anywhere in the strip lands on a year. */
+  .bars li {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: flex-end;
+  }
+  .bars li > .bar {   /* a year with no paper: a stub, not a link */
+    margin-inline: calc(var(--bar-gap) / 2);
+  }
+  .year-link {
+    flex: 1;
+    min-width: 0;
+    align-self: stretch;   /* the whole column is the link, not only the bar */
+    display: flex;
+    align-items: flex-end;
+    padding-inline: calc(var(--bar-gap) / 2);
+  }
+  .bar {
+    flex: 1;
+    min-width: 0;
+    display: block;
+    border-radius: 2px;
+    background: color-mix(in srgb, var(--color-leaf) 70%, transparent);
+  }
+  .year-link:hover .bar {
+    background: var(--color-leaf);
+  }
+  /* Quiet: a year the search or the filter has emptied, and a year that has no paper at all */
+  .year-link[aria-disabled="true"],
+  .bars li > .bar {
+    opacity: 0.3;
+  }
+  .year-link[aria-disabled="true"] {
+    pointer-events: none;
+  }
+  .scale {
+    display: flex;
+    justify-content: space-between;
+    font: 500 0.6875rem var(--font-mono);
+    color: var(--color-muted);
+  }
+
+  /* The list: the year in a column of its own, the papers of the year beside it */
+  .year {
+    display: grid;
+    grid-template-columns: 96px minmax(0, 1fr);
+    gap: 20px;
+    align-items: start;
+  }
+  .year-label {
+    position: sticky;
+    top: 5rem;   /* under the bar that stays at the top of the window */
+    padding-top: 12px;
+    font-size: 1.875rem;
+    color: var(--color-accent);
+  }
+  .rows {
+    list-style: none;
+    border-top: 1px solid var(--color-line);
+  }
+
+  .empty {
+    color: var(--color-muted);
+  }
+  .reset {
+    margin-left: 0.35em;
+    font: inherit;
+    color: var(--color-link);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+    background: none;
+    border: 0;
+    cursor: pointer;
+  }
+
+  @media (width < 40rem) {
+    .head { padding-top: 28px; }
+    .search { max-width: none; }
+    .bars { --bar-gap: 3px; }
+    .year { grid-template-columns: minmax(0, 1fr); gap: 0; }
+    .year-label { position: static; padding-top: 14px; padding-bottom: 8px; font-size: 1.5rem; }
+  }
+</style>

@@ -1,53 +1,87 @@
 ---
-import TopoCanvas from './TopoCanvas.astro';
-import PhyloCanvas from './PhyloCanvas.astro';
+// One research area as a card: its picture on a plate, then the title, the text and the species
+// it is studied in as chips. The plate has one colour in both themes (`--color-plate`): the three
+// pictures come from three sources and were made for a light ground, and on the same plate they
+// read as a set.
+// The text is the slot, so it can hold markup: a Latin name in <i>, like the chips.
+import { Image } from 'astro:assets';
+import Card from './ui/Card.astro';
+import Tag from './ui/Tag.astro';
 
 interface Props {
   title: string;
-  body: string;
-  canvasId: string;
-  viz?: 'topo' | 'phylo';
-  img?: string;
-  imgAlt?: string;
-  imgFit?: 'contain' | 'cover';
-  imgBg?: string;
-  freq?: number;
-  speed?: number;
-  seed?: number;
+  image: ImageMetadata;
+  /** What the picture shows, for a visitor who does not see it. */
+  alt: string;
+  /** The Latin names of the species: the chips, in italics. */
   organisms?: string[];
 }
 
-const { title, body, canvasId, viz = 'topo', img, imgAlt = '', imgFit = 'contain', imgBg = 'transparent', freq = 0.12, speed = 0.004, seed = 0, organisms } = Astro.props;
+const { title, image, alt, organisms = [] } = Astro.props;
+
+// The picture is as tall as the plate lets it, on every screen: PICTURE px. The files are made
+// for one, one and a half and two device px per px. A denser screen takes the last one: a third
+// step would triple the file (over the 80 KB limit for one of the three) for a gain the eye
+// hardly sees at this size. Astro leaves out a width that the original does not have and offers
+// the original instead.
+const PICTURE = 142;
+const widths = [1, 1.5, 2].map((density) => Math.round(PICTURE * density));
 ---
 
-<article
-  class="section-enter rounded-2xl overflow-hidden border"
-  style="border-color: color-mix(in srgb, var(--color-soil) 15%, transparent); background-color: var(--color-surface);"
->
-  {img
-    ? <div style={`height:160px; overflow:hidden; background:${imgBg}; display:flex; align-items:center; justify-content:center;`}>
-        <img src={img} alt={imgAlt} style={`width:100%; height:100%; object-fit:${imgFit};`} loading="lazy" />
-      </div>
-    : viz === 'phylo'
-      ? <PhyloCanvas id={canvasId} seed={seed} height="160px" />
-      : <TopoCanvas id={canvasId} freq={freq} speed={speed} seed={seed} height="160px" />
-  }
-  <div class="p-6">
-    <h3 class="text-xl font-semibold mb-3" style="font-family: var(--font-display); font-variation-settings: 'opsz' 36; color: var(--color-ink);">
-      {title}
-    </h3>
-    <p class="text-sm leading-relaxed mb-4" style="color: var(--color-soil);">{body}</p>
-    {organisms && organisms.length > 0 && (
-      <div class="flex flex-wrap gap-2">
-        {organisms.map((org) => (
-          <span
-            class="px-2.5 py-1 rounded-full text-xs"
-            style="background-color: color-mix(in srgb, var(--color-leaf) 12%, transparent); color: var(--color-leaf);"
-          >
-            {org}
-          </span>
-        ))}
-      </div>
+<Card as="article" class="pillar" data-pillar>
+  <div class="plate">
+    <Image class="picture" src={image} alt={alt} format="webp" width={PICTURE * 2} widths={widths} sizes={`${PICTURE}px`} />
+  </div>
+  <div class="body">
+    <h3>{title}</h3>
+    <p class="text"><slot /></p>
+    {organisms.length > 0 && (
+      <ul class="chips" aria-label="Studied in">
+        {organisms.map((name) => <li><Tag><i>{name}</i></Tag></li>)}
+      </ul>
     )}
   </div>
-</article>
+</Card>
+
+<style>
+  .pillar {
+    display: flex;
+    flex-direction: column;
+    height: 100%;   /* the cards of a row are equally tall */
+    overflow: hidden;
+  }
+
+  .plate {
+    display: grid;
+    place-items: center;
+    height: 170px;
+    padding: 14px;
+    background: var(--color-plate);
+  }
+  .picture {
+    width: auto;
+    max-width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .body {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 22px 24px 24px;
+  }
+  .text {
+    font-size: var(--text-small);
+    color: var(--color-muted);
+  }
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    list-style: none;
+  }
+  .chips li {
+    display: flex;
+  }
+</style>

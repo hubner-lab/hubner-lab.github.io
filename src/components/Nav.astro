@@ -1,64 +1,173 @@
 ---
+// The site header: a bar that stays at the top of the window. From 768px up it shows the five
+// links in a row; below that a "Menu" button opens them as a sheet. The button is a <details>,
+// so the sheet opens without JavaScript; the script at the end only adds ways to close it.
+// The current page is marked with aria-current in both lists; on the home page the wordmark is.
 import ThemeToggle from './ThemeToggle.astro';
-const base = import.meta.env.BASE_URL;
+import Icon from './ui/Icon.astro';
+import { site } from '../site.config';
 
-const links = [
-  { href: `${base}research`, label: 'Research' },
-  { href: `${base}team`,     label: 'Team' },
-  { href: `${base}publications`, label: 'Publications' },
-  { href: `${base}news`,    label: 'News' },
-  { href: `${base}contact`, label: 'Contact' },
-];
-
-const current = Astro.url.pathname;
+// A path without the slashes at its ends: '' is the home page, 'news/a-post' a page under News.
+const strip = (p: string) => p.replace(/^\/+|\/+$/g, '');
+const here = strip(Astro.url.pathname);
+const current = (href: string) => {
+  const target = strip(href);
+  return here === target || here.startsWith(`${target}/`) ? 'page' : undefined;
+};
 ---
 
-<nav
-  aria-label="Main navigation"
-  class="fixed top-4 left-4 right-4 z-50 flex flex-nowrap items-center gap-x-2 md:gap-x-4
-         rounded-3xl md:rounded-full px-5 py-2.5
-         backdrop-blur-md border"
-  style="background-color: color-mix(in srgb, var(--color-paper) 85%, transparent); border-color: color-mix(in srgb, var(--color-ink) 12%, transparent);"
->
-  <!-- Logo / home link — pinned, never compressed -->
-  <a
-    href={base || '/'}
-    class="flex-shrink-0 font-display font-semibold text-base no-underline whitespace-nowrap"
-    style="color: var(--color-ink); font-family: var(--font-display); font-variation-settings: 'opsz' 36;"
-    aria-label="Hübner Lab home"
-  >
-    Hübner Lab
-  </a>
+<header class="site-header">
+  <nav class="bar wrap" aria-label="Main">
+    <a class="wordmark" href="/" aria-current={here === '' ? 'page' : undefined}>{site.name}</a>
 
-  <!-- Scrollable link strip — takes remaining width, scrolls horizontally on mobile -->
-  <div class="flex-1 min-w-0 overflow-x-auto no-scrollbar md:flex md:justify-end">
-    <ul class="flex flex-nowrap items-center gap-1 list-none m-0 p-0 w-max md:w-auto" role="list">
-      {links.map(({ href, label }) => {
-        const isActive = current.startsWith(href.replace(base, '') || '/') && href !== (base || '/');
-        return (
-          <li>
-            <a
-              href={href}
-              class="flex-shrink-0 whitespace-nowrap px-3 py-1.5 rounded-full text-sm no-underline transition-colors duration-200"
-              style={isActive
-                ? 'background-color: var(--color-ink); color: var(--color-paper);'
-                : 'color: var(--color-soil);'}
-              aria-current={isActive ? 'page' : undefined}
-            >
-              {label}
-            </a>
-          </li>
-        );
-      })}
+    <ul class="links" data-nav="bar">
+      {site.nav.map(({ href, label }) => (
+        <li><a href={href} aria-current={current(href)}>{label}</a></li>
+      ))}
     </ul>
-  </div>
 
-  <!-- Theme toggle — pinned at right edge, never scrolls -->
-  <div class="flex-shrink-0">
+    <details class="menu" data-menu>
+      <summary class="menu-button"><Icon name="menu" size={16} />Menu</summary>
+      <ul class="sheet" data-nav="sheet">
+        {site.nav.map(({ href, label }) => (
+          <li><a href={href} aria-current={current(href)}>{label}</a></li>
+        ))}
+      </ul>
+    </details>
+
     <ThemeToggle />
-  </div>
-</nav>
+  </nav>
+</header>
 
-<!-- Spacer so content isn't hidden under the fixed nav.
-     Single-line nav ≈ 44px tall + 16px top inset → 80px total on mobile. -->
-<div class="h-20 md:h-16" aria-hidden="true"></div>
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: var(--color-paper);
+    border-bottom: 1px solid var(--color-line);
+  }
+  .bar {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    padding-block: 14px;
+  }
+  .wordmark {
+    font-family: var(--font-display);
+    font-weight: var(--display-weight);
+    font-size: 1.3125rem;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+    white-space: nowrap;
+    color: var(--color-ink);
+    text-decoration: none;
+  }
+
+  /* The row of links */
+  .links {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-left: auto;
+    list-style: none;
+  }
+  .links a {
+    display: inline-block;
+    padding: 8px 12px;
+    font-size: 0.875rem;
+    white-space: nowrap;
+    color: var(--color-muted);
+    text-decoration: none;
+  }
+  .links a:hover {
+    color: var(--color-ink);
+  }
+  .links a[aria-current] {
+    color: var(--color-ink);
+    box-shadow: inset 0 -2px 0 var(--color-accent);
+  }
+
+  /* The menu button and its sheet */
+  .menu {
+    display: none;
+    margin-left: auto;
+  }
+  .menu-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    font: 500 0.8125rem/1.2 var(--font-body);
+    color: var(--color-ink);
+    border: 1px solid var(--color-muted);
+    border-radius: var(--radius-control);
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+  }
+  .menu-button::-webkit-details-marker {
+    display: none;
+  }
+  .sheet {
+    position: absolute;   /* against the header, so it spans the window under the bar */
+    top: 100%;
+    left: 0;
+    right: 0;
+    max-height: calc(100dvh - 100%);
+    overflow-y: auto;
+    padding: 6px var(--wrap-pad) 24px;
+    list-style: none;
+    background: var(--color-surface);
+    border-block: 1px solid var(--color-line);
+    box-shadow: 0 16px 24px rgba(0, 0, 0, 0.2);
+  }
+  .sheet a {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 4px;
+    font: var(--display-weight) 1.5rem/1.2 var(--font-display);
+    color: var(--color-ink);
+    text-decoration: none;
+    border-bottom: 1px solid var(--color-line);
+  }
+  .sheet a[aria-current] {
+    color: var(--color-accent);
+  }
+  .sheet a[aria-current]::after {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--color-accent);
+  }
+
+  @media (width < 48rem) {
+    .bar { gap: 12px; padding-block: 12px; }
+    .links { display: none; }
+    .menu { display: block; }
+  }
+</style>
+
+<script>
+  // The sheet opens and closes by itself (<details>). Added here: Escape closes it and puts the
+  // focus back on the button; so does moving the focus, or a click, outside it.
+  const menu = document.querySelector<HTMLDetailsElement>('[data-menu]');
+  if (menu) {
+    const button = menu.querySelector('summary');
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && menu.open) {
+        menu.open = false;
+        button?.focus();
+      }
+    });
+    menu.addEventListener('focusout', (e) => {
+      const to = e.relatedTarget;
+      if (to instanceof Node && !menu.contains(to)) menu.open = false;
+    });
+    document.addEventListener('click', (e) => {
+      if (menu.open && e.target instanceof Node && !menu.contains(e.target)) menu.open = false;
+    });
+  }
+</script>

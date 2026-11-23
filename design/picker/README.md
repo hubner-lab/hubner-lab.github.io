@@ -50,7 +50,15 @@ site as `--color-paper`, `--color-surface`, `--color-ink`, `--color-muted`, `--c
 
 ## Rebuild and republish
 
+The picker has done its work: the design chosen with it was applied to the site in November 2026.
+`build.py` reads the site as it was before that: the markup of the home, Research and Contact
+pages and of the footer, and five pictures in `public/botanical/` that have since moved or gone.
+On the current tree it stops with an error. To build the picker again, check out the commit that
+added it, for example in a worktree of its own, and run the two commands there:
+
 ```
+git worktree add ../picker-build 73746cb
+cd ../picker-build
 python3 design/picker/build.py          # needs python3 and ImageMagick (magick)
 node design/picker/check.mjs
 ```

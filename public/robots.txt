@@ -1,0 +1,6 @@
+# Every page may be read. The members area keeps itself out of search results with a
+# "noindex" tag in its page, which a crawler can only see if it is allowed to read the page.
+User-agent: *
+Allow: /
+
+Sitemap: https://hubner-lab.github.io/sitemap-index.xml

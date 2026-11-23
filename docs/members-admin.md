@@ -43,7 +43,13 @@ Publish a record only with the person's consent. A published record is public an
 - **Unpublish** takes the person off the Team page at the next update. The record stays, not published.
 - **Delete record** removes the record and its photo. If it was published, the person leaves the Team page at the next update. A hand-written entry that the record replaced does not come back by itself; the file is in the repository's history.
 
-For someone who has left, the Alumni list reads `Name — Role, 2019–2022 · now: Postdoc, Example University`. With only the leaving year it reads `until 2022`, with only the joining year `from 2019`. The years and the current position appear only when they are filled in.
+## What the Team page shows
+
+The Team page has two parts, each with its count.
+
+- **Current members** are cards. The principal investigator comes first, then postdocs, PhD and graduate students, MSc students, staff, undergraduates and visitors. Inside a group, pinned people come first in the order of their numbers, then the others by the year they joined, then by name.
+- A card shows the photo, the name, the role, the bio in full, the research interests, the links that are filled in (Email, ORCID, Scholar, GitHub, Website, LinkedIn) and, from the year joined, "Since 2023". A field that is empty is left out. A person without a photo gets a block with two initials, the first letter of the first and of the last word of the name. The member's page shows the same card as a preview while they type.
+- **Alumni** are a list, not cards: one line per person, sorted by the year they left, the latest first. A line is the name and then `Role, 2019–2022 · now: Postdoc, Example University`. With only the leaving year it reads `until 2022`, with only the joining year `from 2019`. The years and the current position appear only when they are filled in. "(Alumni)" in a role is not printed: the heading says it already.
 
 ## When a person with a record signs in
 

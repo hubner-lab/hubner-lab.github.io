@@ -1,0 +1,53 @@
+---
+// A person's picture, always a square as wide as its place: the photo, or, for a person without
+// one, a block in the leaf tint with two initials. The name stands beside it on every card, so
+// neither the photo nor the initials are read out a second time.
+// The initials carry `data-f="initial"`: the members portal writes them into its preview card
+// while a member types the name (src/members/main.ts), and puts the photo into this element.
+// Any other attribute goes to the element.
+import { Image } from 'astro:assets';
+import type { HTMLAttributes } from 'astro/types';
+import { initials } from '../../lib/team';
+
+type Props = {
+  name: string;
+  photo?: ImageMetadata;
+  /** How wide the picture is shown, for the browser to choose a file: the `sizes` of the image. */
+  sizes?: string;
+  class?: string;
+} & Omit<HTMLAttributes<'div'>, 'class'>;
+
+const { name, photo, sizes = '(min-width: 40rem) 360px, 100vw', class: className, ...rest } = Astro.props;
+---
+
+<div {...rest} class:list={['avatar', className]}>
+  {photo
+    ? <Image src={photo} alt="" widths={[320, 480, 640]} sizes={sizes} />
+    : <span class="initials" data-f="initial" aria-hidden="true">{initials(name)}</span>}
+</div>
+
+<style>
+  .avatar {
+    container-type: inline-size;   /* the initials take their size from the width of the block */
+    display: grid;
+    place-items: center;
+    aspect-ratio: 1;
+    overflow: hidden;
+    background: var(--color-leaf-tint);
+    color: var(--color-on-leaf-tint);
+  }
+  /* The photo: put in by Astro on the Team page, by a script in the portal's preview. */
+  .avatar :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .initials {
+    font-family: var(--font-display);
+    font-weight: var(--display-weight);
+    font-size: clamp(2rem, 24cqw, 5.5rem);
+    line-height: 1;
+    letter-spacing: 0.02em;
+    user-select: none;
+  }
+</style>
