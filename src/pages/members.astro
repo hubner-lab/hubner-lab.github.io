@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import TeamCard from '../components/TeamCard.astro';
+import SectionHeader from '../components/ui/SectionHeader.astro';
 import { GROUPS, MAX } from '../members/limits';
 
 // Same test the script makes: a missing src/data/firebase-config.json must not break the build.
@@ -28,180 +29,177 @@ const currentYear = new Date().getFullYear();
 ---
 
 <Base title="Members" description="Members area of the Hübner Lab website." noindex>
-  <section class="relative" style="background-color: var(--color-paper);">
-    <div class="container py-20">
+  <div class="wrap m-page">
 
-      <div class="max-w-2xl mb-10">
-        <p class="caption mb-4">Members</p>
-        <h1 style="font-size: var(--text-h1);">Your card</h1>
-        <p class="mt-4 leading-relaxed" style="color: var(--color-muted);">
-          Write the card that appears on the Team page. It stays invisible until an admin approves it,
-          and each later change is approved again while the live card stays as it is.
-        </p>
+    <SectionHeader
+      as="h1"
+      eyebrow="Members"
+      title="Your card"
+      lead="Write the card that appears on the Team page. It stays invisible until an admin approves it, and each later change is approved again while the live card stays as it is."
+      class="m-head"
+    />
+
+    <!-- Not configured: rendered into the page, so it is there before any script runs. -->
+    {!configured && (
+      <div id="m-notconfigured" class="m-note" role="status">
+        <strong>The members portal is not configured yet.</strong>
+        <span>Nothing here works until the site owner connects it. The public site is not affected.</span>
       </div>
+    )}
 
-      <!-- Not configured: rendered into the page, so it is there before any script runs. -->
-      {!configured && (
-        <div id="m-notconfigured" class="m-note" role="status">
-          <strong>The members portal is not configured yet.</strong>
-          <span>Nothing here works until the site owner connects it. The public site is not affected.</span>
+    {configured && (
+      <div id="m-loading" class="m-note" role="status">Loading…</div>
+    )}
+
+    <div id="m-error" class="m-note m-error" role="alert" hidden></div>
+
+    <!-- Sign in -->
+    <div id="m-signin" class="max-w-md" hidden>
+      <button type="button" id="m-google" class="m-btn m-btn-primary w-full">Sign in with Google</button>
+      <p class="caption my-5 text-center">or with an email and password</p>
+      <form id="m-emailform" class="flex flex-col gap-3" autocomplete="on">
+        <label class="m-label">Email
+          <input class="m-input" type="email" name="email" autocomplete="username" required />
+        </label>
+        <label class="m-label">Password
+          <input class="m-input" type="password" name="password" autocomplete="current-password" required />
+        </label>
+        <button type="submit" class="m-btn w-full">Sign in</button>
+      </form>
+      <p class="m-small mt-4">
+        Accounts are created by the lab; there is no sign-up here.
+      </p>
+      {emulator && (
+        <div class="mt-6 flex gap-3 flex-wrap" data-testid="emulator-signin">
+          <button type="button" class="m-btn" data-test-signin="member">Test member (emulator)</button>
+          <button type="button" class="m-btn" data-test-signin="admin">Test admin (emulator)</button>
         </div>
       )}
-
-      {configured && (
-        <div id="m-loading" class="m-note" role="status">Loading…</div>
-      )}
-
-      <div id="m-error" class="m-note m-error" role="alert" hidden></div>
-
-      <!-- Sign in -->
-      <div id="m-signin" class="max-w-md" hidden>
-        <button type="button" id="m-google" class="m-btn m-btn-primary w-full">Sign in with Google</button>
-        <p class="caption my-5 text-center">or with an email and password</p>
-        <form id="m-emailform" class="flex flex-col gap-3" autocomplete="on">
-          <label class="m-label">Email
-            <input class="m-input" type="email" name="email" autocomplete="username" required />
-          </label>
-          <label class="m-label">Password
-            <input class="m-input" type="password" name="password" autocomplete="current-password" required />
-          </label>
-          <button type="submit" class="m-btn w-full">Sign in</button>
-        </form>
-        <p class="mt-4 text-sm" style="color: var(--color-muted);">
-          Accounts are created by the lab; there is no sign-up here.
-        </p>
-        {emulator && (
-          <div class="mt-6 flex gap-3 flex-wrap" data-testid="emulator-signin">
-            <button type="button" class="m-btn" data-test-signin="member">Test member (emulator)</button>
-            <button type="button" class="m-btn" data-test-signin="admin">Test admin (emulator)</button>
-          </div>
-        )}
-      </div>
-
-      <!-- Editor -->
-      <div id="m-app" hidden>
-        <div class="flex flex-wrap items-center gap-3 mb-6 text-sm" style="color: var(--color-muted);">
-          <span>Signed in as <strong id="m-who" style="color: var(--color-ink);"></strong></span>
-          <button type="button" id="m-signout" class="m-link">Sign out</button>
-        </div>
-
-        <div id="m-tabs" class="flex gap-2 mb-6" role="tablist" hidden>
-          <button type="button" role="tab" id="m-tab-card" class="m-tab" aria-selected="true">My card</button>
-          <button type="button" role="tab" id="m-tab-admin" class="m-tab" aria-selected="false">Admin queue</button>
-        </div>
-
-        <div id="m-admin" hidden></div>
-
-        <div id="m-member">
-        <div id="m-status" class="m-note" role="status"></div>
-        <p id="m-notice" class="m-small mb-8" hidden>
-          Cards appear on the Team page only after an admin approves them. Until then nobody else can see yours.
-        </p>
-
-        <div class="grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,22rem)]">
-          <form id="m-form" class="flex flex-col gap-5 min-w-0" novalidate>
-
-            {fields.map((f) => (
-              <label class="m-label">
-                <span>{f.label} <span class="m-req">required</span></span>
-                <input class="m-input" type="text" name={f.key} maxlength={f.max} autocomplete="off" />
-                {f.hint && <span class="m-hint">{f.hint}</span>}
-                <span class="m-count" data-count-for={f.key}></span>
-                <span class="m-err" data-err={f.key} hidden></span>
-              </label>
-            ))}
-
-            <label class="m-label">
-              <span>Group <span class="m-req">required</span></span>
-              <select class="m-input" name="group" id="m-group">
-                <option value="">Choose…</option>
-                {GROUPS.map(([v, l]) => <option value={v}>{l}</option>)}
-              </select>
-              <span class="m-err" data-err="group" hidden></span>
-            </label>
-
-            <label class="m-check">
-              <input type="checkbox" name="alumni" />
-              <span>I have left the lab (list me under Alumni)</span>
-            </label>
-
-            {more.map((f) => (
-              <label class="m-label">
-                <span>{f.label}</span>
-                {f.area
-                  ? <textarea class="m-input" name={f.key} maxlength={f.max} rows="4"></textarea>
-                  : <input class="m-input" type="text" name={f.key} maxlength={f.max} placeholder={f.ph} autocomplete="off" />}
-                {f.hint && <span class="m-hint">{f.hint}</span>}
-                <span class="m-count" data-count-for={f.key}></span>
-                <span class="m-err" data-err={f.key} hidden></span>
-              </label>
-            ))}
-
-            <div class="grid grid-cols-2 gap-4">
-              <label class="m-label">Year joined
-                <input class="m-input" type="text" inputmode="numeric" name="yearJoined" maxlength="4" placeholder={String(currentYear)} />
-                <span class="m-err" data-err="yearJoined" hidden></span>
-              </label>
-              <label class="m-label">Year left
-                <input class="m-input" type="text" inputmode="numeric" name="yearLeft" maxlength="4" />
-                <span class="m-err" data-err="yearLeft" hidden></span>
-              </label>
-            </div>
-
-            <label class="m-label">
-              <span>Current position</span>
-              <input class="m-input" type="text" name="currentPosition" maxlength={MAX.currentPosition} autocomplete="off" />
-              <span class="m-hint">For alumni: where you are now.</span>
-              <span class="m-count" data-count-for="currentPosition"></span>
-              <span class="m-err" data-err="currentPosition" hidden></span>
-            </label>
-
-            <fieldset class="m-photo">
-              <legend class="m-label">Photo</legend>
-              <input type="file" id="m-file" accept="image/*" />
-              <div id="m-crop" hidden>
-                <canvas id="m-canvas" width="320" height="320" aria-label="Drag to position the photo"></canvas>
-                <label class="m-label mt-3">Zoom
-                  <input type="range" id="m-zoom" min="1" max="4" step="0.01" value="1" />
-                </label>
-                <div class="flex gap-3 mt-3">
-                  <button type="button" id="m-usecrop" class="m-btn">Use this crop</button>
-                  <button type="button" id="m-cancelcrop" class="m-link">Cancel</button>
-                </div>
-              </div>
-              <p class="m-hint mt-2">Square, 640 px. Drag to move, use the slider to zoom. Location data is removed.</p>
-              <button type="button" id="m-removephoto" class="m-link" hidden>Remove photo</button>
-              <span class="m-err" data-err="photo" hidden></span>
-            </fieldset>
-
-            <p class="m-small">
-              An approved card is public and stays in the site's public history, even if you take it down later.
-            </p>
-
-            <div class="flex flex-wrap gap-3">
-              <button type="button" id="m-savedraft" class="m-btn">Save draft</button>
-              <button type="button" id="m-submit" class="m-btn m-btn-primary">Submit for approval</button>
-              <button type="button" id="m-takedown" class="m-link" hidden>Take my live card down</button>
-            </div>
-            <p id="m-result" class="m-small" role="status" hidden></p>
-          </form>
-
-          <aside>
-            <p class="caption mb-3">Preview</p>
-            <div id="m-preview">
-              <TeamCard name="Your name" role="Your role" preview />
-              <p id="m-preview-alumni" class="m-small" hidden>
-                The Team page lists former members by name under Alumni, not as cards. Your line:
-                <strong data-alumni="name"></strong> <span data-alumni="line"></span>
-              </p>
-            </div>
-          </aside>
-        </div>
-        </div>
-      </div>
-
     </div>
-  </section>
+
+    <!-- Editor -->
+    <div id="m-app" hidden>
+      <div class="m-small flex flex-wrap items-center gap-3 mb-6">
+        <span>Signed in as <strong id="m-who" class="text-ink"></strong></span>
+        <button type="button" id="m-signout" class="m-link">Sign out</button>
+      </div>
+
+      <div id="m-tabs" class="flex gap-2 mb-6" role="tablist" hidden>
+        <button type="button" role="tab" id="m-tab-card" class="m-tab" aria-selected="true">My card</button>
+        <button type="button" role="tab" id="m-tab-admin" class="m-tab" aria-selected="false">Admin queue</button>
+      </div>
+
+      <div id="m-admin" hidden></div>
+
+      <div id="m-member">
+      <div id="m-status" class="m-note" role="status"></div>
+      <p id="m-notice" class="m-small mb-8" hidden>
+        Cards appear on the Team page only after an admin approves them. Until then nobody else can see yours.
+      </p>
+
+      <div class="grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,22rem)]">
+        <form id="m-form" class="flex flex-col gap-5 min-w-0" novalidate>
+
+          {fields.map((f) => (
+            <label class="m-label">
+              <span>{f.label} <span class="m-req">required</span></span>
+              <input class="m-input" type="text" name={f.key} maxlength={f.max} autocomplete="off" />
+              {f.hint && <span class="m-hint">{f.hint}</span>}
+              <span class="m-count" data-count-for={f.key}></span>
+              <span class="m-err" data-err={f.key} hidden></span>
+            </label>
+          ))}
+
+          <label class="m-label">
+            <span>Group <span class="m-req">required</span></span>
+            <select class="m-input" name="group" id="m-group">
+              <option value="">Choose…</option>
+              {GROUPS.map(([v, l]) => <option value={v}>{l}</option>)}
+            </select>
+            <span class="m-err" data-err="group" hidden></span>
+          </label>
+
+          <label class="m-check">
+            <input type="checkbox" name="alumni" />
+            <span>I have left the lab (list me under Alumni)</span>
+          </label>
+
+          {more.map((f) => (
+            <label class="m-label">
+              <span>{f.label}</span>
+              {f.area
+                ? <textarea class="m-input" name={f.key} maxlength={f.max} rows="4"></textarea>
+                : <input class="m-input" type="text" name={f.key} maxlength={f.max} placeholder={f.ph} autocomplete="off" />}
+              {f.hint && <span class="m-hint">{f.hint}</span>}
+              <span class="m-count" data-count-for={f.key}></span>
+              <span class="m-err" data-err={f.key} hidden></span>
+            </label>
+          ))}
+
+          <div class="grid grid-cols-2 gap-4">
+            <label class="m-label">Year joined
+              <input class="m-input" type="text" inputmode="numeric" name="yearJoined" maxlength="4" placeholder={String(currentYear)} />
+              <span class="m-err" data-err="yearJoined" hidden></span>
+            </label>
+            <label class="m-label">Year left
+              <input class="m-input" type="text" inputmode="numeric" name="yearLeft" maxlength="4" />
+              <span class="m-err" data-err="yearLeft" hidden></span>
+            </label>
+          </div>
+
+          <label class="m-label">
+            <span>Current position</span>
+            <input class="m-input" type="text" name="currentPosition" maxlength={MAX.currentPosition} autocomplete="off" />
+            <span class="m-hint">For alumni: where you are now.</span>
+            <span class="m-count" data-count-for="currentPosition"></span>
+            <span class="m-err" data-err="currentPosition" hidden></span>
+          </label>
+
+          <fieldset class="m-photo">
+            <legend class="m-label">Photo</legend>
+            <input type="file" id="m-file" accept="image/*" />
+            <div id="m-crop" hidden>
+              <canvas id="m-canvas" width="320" height="320" aria-label="Drag to position the photo"></canvas>
+              <label class="m-label mt-3">Zoom
+                <input type="range" id="m-zoom" min="1" max="4" step="0.01" value="1" />
+              </label>
+              <div class="flex gap-3 mt-3">
+                <button type="button" id="m-usecrop" class="m-btn">Use this crop</button>
+                <button type="button" id="m-cancelcrop" class="m-link">Cancel</button>
+              </div>
+            </div>
+            <p class="m-hint mt-2">Square, 640 px. Drag to move, use the slider to zoom. Location data is removed.</p>
+            <button type="button" id="m-removephoto" class="m-link" hidden>Remove photo</button>
+            <span class="m-err" data-err="photo" hidden></span>
+          </fieldset>
+
+          <p class="m-small">
+            An approved card is public and stays in the site's public history, even if you take it down later.
+          </p>
+
+          <div class="flex flex-wrap gap-3">
+            <button type="button" id="m-savedraft" class="m-btn">Save draft</button>
+            <button type="button" id="m-submit" class="m-btn m-btn-primary">Submit for approval</button>
+            <button type="button" id="m-takedown" class="m-link" hidden>Take my live card down</button>
+          </div>
+          <p id="m-result" class="m-small" role="status" hidden></p>
+        </form>
+
+        <aside>
+          <p class="caption mb-3">Preview</p>
+          <div id="m-preview">
+            <TeamCard name="Your name" role="Your role" preview />
+            <p id="m-preview-alumni" class="m-small" hidden>
+              The Team page lists former members by name under Alumni, not as cards. Your line:
+              <strong data-alumni="name"></strong> <span data-alumni="line"></span>
+            </p>
+          </div>
+        </aside>
+      </div>
+      </div>
+    </div>
+
+  </div>
 </Base>
 
 <script>
@@ -209,31 +207,36 @@ const currentYear = new Date().getFullYear();
 </script>
 
 <style is:global>
+  /* Type sizes are the steps of the site's scale (global.css): small 15px for labels, notes and
+     buttons, meta 13px for hints and counts. A field is 16px: below that an iPhone zooms the
+     page in when the field is tapped. */
+  .m-page { padding-block: var(--spacing-section); }
+  .m-head { margin-bottom: 2.5rem; }
   .m-note { display: flex; flex-direction: column; gap: .25rem; max-width: 42rem; padding: 1rem 1.25rem; margin-bottom: 1.5rem;
     border: 1px solid color-mix(in srgb, var(--color-accent) 35%, transparent); border-radius: .75rem;
-    background: var(--color-surface); color: var(--color-muted); font-size: .95rem; }
+    background: var(--color-surface); color: var(--color-muted); font-size: var(--text-small); }
   .m-note strong { color: var(--color-ink); }
   .m-error { border-color: color-mix(in srgb, #c0392b 60%, transparent); color: var(--color-ink); }
-  .m-small { font-size: .85rem; color: var(--color-muted); max-width: 36rem; }
-  .m-label { display: flex; flex-direction: column; gap: .35rem; font-size: .9rem; font-weight: 500; color: var(--color-ink); }
-  .m-req { font-weight: 400; font-size: .75rem; color: var(--color-muted); }
-  .m-hint, .m-count { font-size: .78rem; font-weight: 400; color: var(--color-muted); }
+  .m-small { font-size: var(--text-small); color: var(--color-muted); max-width: 36rem; }
+  .m-label { display: flex; flex-direction: column; gap: .35rem; font-size: var(--text-small); font-weight: 500; color: var(--color-ink); }
+  .m-req { font-weight: 400; font-size: var(--text-meta); color: var(--color-muted); }
+  .m-hint, .m-count { font-size: var(--text-meta); font-weight: 400; color: var(--color-muted); }
   .m-count { align-self: flex-end; margin-top: -.2rem; }
-  .m-err { font-size: .82rem; font-weight: 500; color: #ff8a7a; }
+  .m-err { font-size: var(--text-meta); font-weight: 500; color: #ff8a7a; }
   :root[data-theme="light"] .m-err { color: #c0392b; }
-  .m-input { width: 100%; padding: .55rem .7rem; border-radius: .5rem; font: inherit; font-weight: 400; color: var(--color-ink);
+  .m-input { width: 100%; padding: .55rem .7rem; border-radius: .5rem; font: inherit; font-size: 1rem; font-weight: 400; color: var(--color-ink);
     background: var(--color-surface); border: 1px solid color-mix(in srgb, var(--color-muted) 35%, transparent); }
   .m-input:focus-visible { outline: 2px solid var(--color-link); outline-offset: 1px; }
   .m-input[aria-invalid="true"] { border-color: #c0392b; }
-  .m-check { display: flex; gap: .6rem; align-items: center; font-size: .9rem; color: var(--color-ink); }
-  .m-btn { padding: .6rem 1.1rem; border-radius: .5rem; font: inherit; font-size: .95rem; font-weight: 500; cursor: pointer;
+  .m-check { display: flex; gap: .6rem; align-items: center; font-size: var(--text-small); color: var(--color-ink); }
+  .m-btn { padding: .6rem 1.1rem; border-radius: .5rem; font: inherit; font-size: var(--text-small); font-weight: 500; cursor: pointer;
     color: var(--color-ink); background: var(--color-surface); border: 1px solid color-mix(in srgb, var(--color-muted) 40%, transparent); }
   .m-btn:hover { border-color: var(--color-muted); }
   .m-btn:disabled { opacity: .55; cursor: wait; }
   .m-btn-primary { background: var(--color-accent); border-color: var(--color-accent); color: var(--color-accent-ink); }
-  .m-link { background: none; border: 0; padding: 0; font: inherit; font-size: .9rem; color: var(--color-link); text-decoration: underline; cursor: pointer; }
+  .m-link { background: none; border: 0; padding: 0; font: inherit; font-size: var(--text-small); color: var(--color-link); text-decoration: underline; cursor: pointer; }
   .m-photo { min-width: 0; border: 1px dashed color-mix(in srgb, var(--color-muted) 40%, transparent); border-radius: .75rem; padding: 1rem; }
-  .m-tab { padding: .45rem .9rem; border-radius: .5rem; font: inherit; font-size: .9rem; cursor: pointer; color: var(--color-muted);
+  .m-tab { padding: .45rem .9rem; border-radius: .5rem; font: inherit; font-size: var(--text-small); cursor: pointer; color: var(--color-muted);
     background: none; border: 1px solid transparent; }
   .m-tab[aria-selected="true"] { color: var(--color-ink); border-color: color-mix(in srgb, var(--color-muted) 40%, transparent); background: var(--color-surface); }
   .m-row { border: 1px solid color-mix(in srgb, var(--color-muted) 25%, transparent); border-radius: .75rem; margin-bottom: .75rem;
@@ -243,11 +246,11 @@ const currentYear = new Date().getFullYear();
   .m-rowname { font-weight: 600; }
   @media (max-width: 640px) { .m-rowname .m-req { display: block; } }
   .m-rowbody { padding: 0 1rem 1rem; }
-  .m-badge { font-size: .72rem; padding: .15rem .5rem; border-radius: 999px; border: 1px solid color-mix(in srgb, var(--color-muted) 40%, transparent); white-space: nowrap; }
+  .m-badge { font-size: .75rem; padding: .15rem .5rem; border-radius: 999px; border: 1px solid color-mix(in srgb, var(--color-muted) 40%, transparent); white-space: nowrap; }
   .m-pending { background: color-mix(in srgb, var(--color-accent) 30%, transparent); }
   .m-changes_requested { border-color: #c0392b; }
   .m-approved { background: color-mix(in srgb, var(--color-leaf) 30%, transparent); }
-  .m-diff { list-style: none; padding: 0; margin: 0; font-size: .88rem; color: var(--color-muted); display: flex; flex-direction: column; gap: .25rem; overflow-wrap: anywhere; }
+  .m-diff { list-style: none; padding: 0; margin: 0; font-size: var(--text-small); color: var(--color-muted); display: flex; flex-direction: column; gap: .25rem; overflow-wrap: anywhere; }
   .m-diff strong { color: var(--color-ink); font-weight: 600; }
   .m-old { text-decoration: line-through; }
   .m-new { color: var(--color-ink); }
@@ -255,19 +258,19 @@ const currentYear = new Date().getFullYear();
   .m-edit { border-top: 1px solid color-mix(in srgb, var(--color-muted) 25%, transparent); padding-top: 1rem; }
   /* Admin tab: the two groups, and the form of a record kept for a person without an account */
   .m-group { margin-bottom: 2.75rem; }
-  .m-grouphead { font-size: 1.3rem; margin-bottom: .6rem; }
+  .m-grouphead { font-size: var(--text-h3); margin-bottom: .6rem; }
   .m-group > .m-small, .m-hw > .m-small { margin-bottom: 1rem; }
-  .m-subhead { font-size: 1.05rem; font-weight: 600; margin: 1.75rem 0 .5rem; }
+  .m-subhead { font-size: var(--text-lead); font-weight: 600; margin: 1.75rem 0 .5rem; }
   .m-add { margin-top: 1rem; }
   .m-add > .m-row { margin-top: .75rem; }
   .m-formtitle { margin-top: 1rem; }
   .m-hwhead { cursor: default; }
-  .m-flash { margin: 0 1rem .85rem; padding: .45rem .75rem; border-radius: .5rem; font-size: .85rem; color: var(--color-ink);
+  .m-flash { margin: 0 1rem .85rem; padding: .45rem .75rem; border-radius: .5rem; font-size: var(--text-small); color: var(--color-ink);
     background: color-mix(in srgb, var(--color-leaf) 22%, transparent); }
   .m-more { border-top: 1px solid color-mix(in srgb, var(--color-muted) 25%, transparent); padding-top: .85rem; }
-  .m-more > summary { cursor: pointer; font-size: .9rem; font-weight: 500; color: var(--color-ink); }
+  .m-more > summary { cursor: pointer; font-size: var(--text-small); font-weight: 500; color: var(--color-ink); }
   #m-file, .m-file { max-width: 100%; }
-  .m-file { font-size: .9rem; }
+  .m-file { font-size: var(--text-small); }
   #m-canvas, .m-canvas { width: 100%; max-width: 20rem; aspect-ratio: 1; border-radius: .5rem; cursor: grab; touch-action: none;
     background: color-mix(in srgb, var(--color-muted) 20%, var(--color-paper)); }
   /* As wide as a card of the Team page, also where the preview stands under the form. */
