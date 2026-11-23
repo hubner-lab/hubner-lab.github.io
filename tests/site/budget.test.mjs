@@ -10,32 +10,22 @@
 // unused in public/ do not fail the test. Fonts have no limit. /members is not a public page.
 //
 // The page head and the navigation:
-//   every page has a title, a description and a social image; every page but the 404 page names
-//   its own address (canonical); only /members is kept out of search engines;
+//   every page has a title, a description and a social image, which is in the build at the
+//   size the config states; every page but the 404 page names its own address (canonical);
+//   only /members is kept out of search engines;
 //   the page a visitor is on is marked once in each list of the navigation.
+// What a search engine is given (sitemap, robots.txt) is in sitemap.test.mjs.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readdirSync, readFileSync, statSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { gzipSync } from 'node:zlib';
 import path from 'node:path';
+import sharp from 'sharp';
 import { site } from '../../src/site.config.ts';
 
 const KB = 1024;
 const LIMIT = { css: 10 * KB, js: 6 * KB, image: 80 * KB, video: 1.5 * KB * KB };
-
-// Files that are over their limit today and are replaced later in the redesign. An entry must be
-// deleted as soon as its file is within the limit or no page names it any more: the test fails on
-// a stale entry, so this list can only get shorter.
-const PENDING = new Map([
-  // empty since the Research and Contact pages were rebuilt
-]);
-
-// Files a page names that are made later in the redesign. An entry must be deleted as soon as
-// the file is in the build: the test fails on a stale entry.
-const NOT_YET = new Set([
-  'og.jpg', // the social image, made when the new hero exists
-]);
 
 const IMAGE = /\.(png|jpe?g|webp|avif|gif|svg|ico)$/i;
 const VIDEO = /\.(mp4|webm|mov|m4v|ogv)$/i;
@@ -147,28 +137,23 @@ test('script: at most 6 KB gzipped on every public page', (t) => {
 
 test('images at most 80 KB and videos at most 1.5 MB, on every page that names them', (t) => {
   const over = new Map(); // file -> the pages that name it
-  const namedAnywhere = new Set();
-  let topImage = 0, topVideo = 0;
+  let topImage = 0, topVideo = 0, count = 0;
   for (const p of pages) {
     for (const f of reached.get(p).named) {
-      namedAnywhere.add(rel(f));
+      count += 1;
       const size = statSync(f).size;
       const video = VIDEO.test(f);
-      if (!PENDING.has(rel(f))) {
-        if (video) topVideo = Math.max(topVideo, size); else topImage = Math.max(topImage, size);
-      }
+      if (video) topVideo = Math.max(topVideo, size); else topImage = Math.max(topImage, size);
       if (size > (video ? LIMIT.video : LIMIT.image)) over.set(rel(f), [...(over.get(rel(f)) ?? []), p]);
     }
   }
-  for (const [f, where] of over) {
-    assert.ok(PENDING.has(f), `${f} is ${kb(statSync(path.join(dist, f)).size)}, over the limit, on ${where.join(', ')}`);
-  }
-  for (const [f, why] of PENDING) {
-    assert.ok(namedAnywhere.has(f) && over.has(f),
-      `${f} is no longer over its limit or no page names it: delete its PENDING entry (${why})`);
-  }
-  t.diagnostic(`largest image within the limit: ${kb(topImage)}; largest video within the limit: ${kb(topVideo)}; ` +
-    `still over and waiting for a later step: ${PENDING.size ? [...PENDING.keys()].map((f) => `${f} ${kb(statSync(path.join(dist, f)).size)}`).join(', ') : 'none'}`);
+  assert.ok(count > 0, 'no page names an image or a video: the search for them is broken');
+  assert.deepEqual(
+    [...over].map(([f, where]) => `${f} is ${kb(statSync(path.join(dist, f)).size)}, on ${where.join(', ')}`),
+    [],
+    'files over their limit',
+  );
+  t.diagnostic(`largest image: ${kb(topImage)}; largest video: ${kb(topVideo)}`);
 });
 
 test('fonts: every face the stylesheet names is in the build (no size limit, sizes reported)', (t) => {
@@ -215,15 +200,22 @@ test('every page has a title, a description and a social image', () => {
   assert.equal(/<title>([^<]*)<\/title>/.exec(read(path.join(dist, 'index.html')))[1], site.title, 'the home page title');
 });
 
-test('the social image is in the build and within the image limit', () => {
+test('the social image is in the build, at the size the config states and within the image limit', async (t) => {
   const file = site.socialImage.path.replace(/^\//, '');
   const full = path.join(dist, file);
-  if (existsSync(full)) {
-    assert.ok(!NOT_YET.has(file), `${file} is in the build now: delete its NOT_YET entry`);
-    assert.ok(statSync(full).size <= LIMIT.image, `${file} is ${kb(statSync(full).size)}, the limit is ${kb(LIMIT.image)}`);
-  } else {
-    assert.ok(NOT_YET.has(file), `the pages name ${file} as their social image, and it is not in the build`);
+  assert.ok(existsSync(full), `the pages name ${file} as their social image, and it is not in the build`);
+  assert.ok(statSync(full).size <= LIMIT.image, `${file} is ${kb(statSync(full).size)}, the limit is ${kb(LIMIT.image)}`);
+  const { format, width, height } = await sharp(full).metadata();
+  assert.equal(format, 'jpeg', `${file} is a ${format} file under a JPEG name`);
+  assert.deepEqual({ width, height }, { width: site.socialImage.width, height: site.socialImage.height },
+    `${file}: the pages state another size (og:image:width and og:image:height)`);
+  for (const page of pages) {
+    const html = read(path.join(dist, page));
+    const stated = ['width', 'height'].map((k) => Number(attr(metaTag(html, 'property', `og:image:${k}`) ?? '', 'content')));
+    assert.deepEqual(stated, [width, height], `${page}: og:image:width and og:image:height`);
+    assert.ok(attr(metaTag(html, 'property', 'og:image:alt') ?? '', 'content')?.trim(), `${page}: og:image:alt is empty`);
   }
+  t.diagnostic(`social image: ${file}, ${width} x ${height} px, ${kb(statSync(full).size)}`);
 });
 
 test('every page but the 404 page names its own address, and only /members is hidden from search engines', () => {
