@@ -1,0 +1,113 @@
+<!doctype html>
+<!--
+  The source of public/og.jpg: the picture a link to the site shows when it is shared
+  (src/site.config.ts, socialImage). A page of exactly 1200 x 630 px with the site's own
+  typefaces, colours and hero photograph. Nothing in the site build reads this file.
+
+  The text is centred and stays inside the middle 630 px, so an application that crops the
+  picture to a square still shows all of it. A dark veil lies between the photograph and the
+  text; with `?bare` in the address the text is left out, which is how the contrast of the text
+  against the photograph was measured (README.md, "The social image").
+
+  To make the picture again after a change here, see README.md, "The social image".
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Social image of the Hübner Lab website</title>
+    <style>
+      /* The two upright Latin faces the site uses (src/styles/fonts.css), from the same packages. */
+      @font-face {
+        font-family: 'Source Serif 4 Variable';
+        font-weight: 200 900;
+        src: url('../../node_modules/@fontsource-variable/source-serif-4/files/source-serif-4-latin-opsz-normal.woff2') format('woff2-variations');
+      }
+      @font-face {
+        font-family: 'Source Sans 3 Variable';
+        font-weight: 200 900;
+        src: url('../../node_modules/@fontsource-variable/source-sans-3/files/source-sans-3-latin-wght-normal.woff2') format('woff2-variations');
+      }
+
+      :root {
+        /* The same values as in src/styles/global.css and src/components/Hero.astro. */
+        --on-media: #F6F1E6;
+        --accent: #D4B05E;
+        --scrim: 12 9 5;
+      }
+      * { box-sizing: border-box; margin: 0; }
+      html, body { background: #1b120a; }
+
+      .card {
+        position: relative;
+        width: 1200px;
+        height: 630px;
+        overflow: hidden;
+        display: grid;
+        place-items: center;
+        color: var(--on-media);
+        text-align: center;
+        -webkit-font-smoothing: antialiased;
+      }
+      .photo,
+      .veil {
+        position: absolute;
+        inset: 0;
+      }
+      /* The field and the horizon; most of the sky is cut. */
+      .photo {
+        background: url('../../src/assets/hero/poster.jpg') center 78% / cover no-repeat;
+      }
+      /* Darkest behind the text, lighter towards the corners, so the field still shows. */
+      .veil {
+        background:
+          radial-gradient(ellipse 58% 78% at 50% 52%, rgb(var(--scrim) / 0.72) 0%, rgb(var(--scrim) / 0.66) 56%, rgb(var(--scrim) / 0.2) 100%);
+      }
+
+      .text {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        max-width: 630px;
+      }
+      .name {
+        font: 600 128px/1 'Source Serif 4 Variable', Georgia, serif;
+        letter-spacing: -0.02em;
+        white-space: nowrap;
+      }
+      .rule {
+        width: 96px;
+        height: 4px;
+        margin-top: 34px;
+        border-radius: 2px;
+        background: var(--accent);
+      }
+      .field {
+        margin-top: 30px;
+        font: 400 46px/1.18 'Source Serif 4 Variable', Georgia, serif;
+        letter-spacing: -0.005em;
+      }
+      .where {
+        margin-top: 34px;
+        font: 600 19px/1.5 'Source Sans 3 Variable', system-ui, sans-serif;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <div class="photo"></div>
+      <div class="veil"></div>
+      <div class="text" id="text">
+        <p class="name">Hübner Lab</p>
+        <div class="rule"></div>
+        <p class="field">Evolutionary and<br />landscape genomics</p>
+        <p class="where">Tel-Hai College · Migal</p>
+      </div>
+    </div>
+    <script>
+      if (location.search.includes('bare')) document.getElementById('text').style.visibility = 'hidden';
+    </script>
+  </body>
+</html>
