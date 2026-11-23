@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
 Fetch publications for Sariel Hübner from Google Scholar and write
-src/data/publications.json. Called by .github/workflows/scholar.yml daily.
+src/data/publications.json. Called by .github/workflows/scholar.yml every
+four hours.
 
 On failure (reCAPTCHA / network), exits 0 and leaves existing JSON intact
 so a transient block doesn't break the deploy pipeline.
