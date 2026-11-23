@@ -2,6 +2,10 @@
 // The home page hero: the wheat field video behind a scrim, the lab's name as a strip of dots,
 // then the affiliations, the title, the tagline and two buttons.
 //
+// Two arrangements. Under 640px the name stands at the top left and the text block at the bottom
+// left. From 640px up everything is one block on the centre axis, in the middle of the picture,
+// and the field stays clear above and below it.
+//
 // What loads. The poster image, always. The video only when the visitor allows motion and has
 // not asked to save data: the script below adds its sources and plays it then. The markup holds
 // no source and no autoplay, so without a script the poster is all there is.
@@ -11,7 +15,8 @@
 // opacity under the text is `--scrim-under-text`; with that the text reads 4.5:1 or better on
 // any frame of the video, pure white included (tests/site/contrast.test.mjs). No line of the
 // text is wider than `--text-col`, and beside that column the scrim thins out, so that a wide
-// window still shows the field.
+// window still shows the field. Under 640px the scrim runs down to the bottom edge of the hero;
+// from 640px up it is a band that ends below the buttons.
 import { Image } from 'astro:assets';
 import TixyCanvas from './TixyCanvas.astro';
 import Button from './ui/Button.astro';
@@ -241,6 +246,60 @@ const affiliations = site.affiliations.map((a) => a.name).join(' · ');
   /* The focus ring of the light theme is a dark blue: over the video it is drawn light. */
   .actions :global(.btn:focus-visible) {
     outline-color: var(--color-on-media);
+  }
+
+  /* From 640px up: one block on the centre axis, in the middle of the picture: the name in dots,
+     the affiliations, the title in two lines, the tagline, the buttons. The field stays clear
+     above and below the block, so the hero is a little taller. */
+  @media (width >= 40rem) {
+    .hero {
+      min-height: 690px;
+    }
+    .inner {
+      justify-content: center;   /* the name and the text together, in the middle */
+      gap: 30px;
+    }
+    .dots {
+      display: flex;
+      justify-content: center;
+    }
+    .foot {
+      --text-col: 46rem;         /* the widest line: the title in two lines */
+      margin-top: 0;
+      align-items: center;
+      text-align: center;
+    }
+    .foot > .title {
+      max-width: 9em;            /* two lines */
+    }
+    .foot > .tag {
+      max-width: 30rem;
+      text-wrap: balance;
+    }
+    .actions {
+      justify-content: center;
+    }
+    /* The scrim is a band behind the block: it fades in above the first line and out below the
+       buttons. Its box reaches a window's width past both ends of the block, so 50% is the
+       centre axis: the mask keeps the scrim whole across the centred column and thins it to
+       `--beside` on either side. */
+    .foot::before {
+      --mask: linear-gradient(
+        90deg,
+        rgb(0 0 0 / var(--beside)) calc(50% - var(--text-col) / 2 - 24rem),
+        #000 calc(50% - var(--text-col) / 2 - 1rem),
+        #000 calc(50% + var(--text-col) / 2 + 1rem),
+        rgb(0 0 0 / var(--beside)) calc(50% + var(--text-col) / 2 + 24rem)
+      );
+      bottom: calc(-1 * var(--fade));
+      background: linear-gradient(
+        180deg,
+        rgb(var(--scrim) / 0) 0,
+        rgb(var(--scrim) / var(--scrim-under-text)) var(--fade),
+        rgb(var(--scrim) / var(--scrim-under-text)) calc(100% - var(--fade)),
+        rgb(var(--scrim) / 0) 100%
+      );
+    }
   }
 
   @media (width < 40rem) {
