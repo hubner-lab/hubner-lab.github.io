@@ -26,9 +26,9 @@ const socialImage = new URL(site.socialImage.path, site.url).href;
 //   2. applies a stored light theme (key `hl-theme`; ThemeToggle writes it, and only on a press),
 //      and gives the browser's own bars the light colour too (the theme-color tag holds both);
 //   3. when the visitor allows motion, adds the class `js-reveal` and gives every `.reveal`
-//      element (and the older `.section-enter`) the class `is-in` once it enters the viewport,
-//      then `is-done` when its animation has ended, so that an element which is hidden and
-//      shown again later (a filter, a tab) does not play it a second time.
+//      element the class `is-in` once it enters the viewport, then `is-done` when its
+//      animation has ended, so that an element which is hidden and shown again later (a
+//      filter, a tab) does not play it a second time.
 //      global.css hides and animates only under `.js-reveal`; if the observer cannot be set up,
 //      the class is taken off again, so nothing stays hidden.
 // The script carries no comments: it is sent with every page.
@@ -44,6 +44,7 @@ const socialImage = new URL(site.socialImage.path, site.url).href;
     {noindex && <meta name="robots" content="noindex" />}
     {canonical && <link rel="canonical" href={canonical} />}
     <link rel="alternate" type="application/rss+xml" title={`${site.name} news`} href="/rss.xml" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
     <link rel="icon" href="/favicon.ico" sizes="32x32" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="theme-color" content={site.themeColor.dark} data-dark={site.themeColor.dark} data-light={site.themeColor.light} />
@@ -86,7 +87,7 @@ const socialImage = new URL(site.socialImage.path, site.url).href;
             if (e.animationName === 'reveal-rise') e.target.classList.add('is-done');
           });
           var start = function () {
-            document.querySelectorAll('.reveal, .section-enter').forEach(function (el) { io.observe(el); });
+            document.querySelectorAll('.reveal').forEach(function (el) { io.observe(el); });
           };
           if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
           else start();
