@@ -235,6 +235,79 @@ test('hero: no line of the text leaves the column that the scrim covers whole, a
   }
 });
 
+// From 640px up the hero is one block on the centre axis, in the middle of the picture: the
+// `@media (width >= 40rem)` block of Hero.astro. The scrim is then a band behind the block. The
+// two cases above hold the rules under 640px, which that block leaves in place; this one holds
+// what it changes: the band is not lighter anywhere between the first line and the last, it is
+// centred where the text is, and no line can be wider than the column it covers whole.
+const HERO_WIDE = (() => {
+  const head = '@media (width >= 40rem) {';
+  const at = HERO_CSS.indexOf(head);
+  assert.ok(at >= 0, `Hero.astro has no block "${head.slice(0, -2)}"`);
+  let depth = 0;
+  for (let i = at + head.length - 1; i < HERO_CSS.length; i++) {
+    if (HERO_CSS[i] === '{') depth++;
+    else if (HERO_CSS[i] === '}' && --depth === 0) return HERO_CSS.slice(at + head.length, i);
+  }
+  assert.fail('unbalanced braces in the block of Hero.astro for 640px and up');
+})();
+const wideRule = (selector) => {
+  const at = HERO_WIDE.indexOf(`${selector} {`);
+  assert.ok(at >= 0, `the block of Hero.astro for 640px and up has no rule "${selector}"`);
+  const open = HERO_WIDE.indexOf('{', at);
+  let depth = 0;
+  for (let i = open; i < HERO_WIDE.length; i++) {
+    if (HERO_WIDE[i] === '{') depth++;
+    else if (HERO_WIDE[i] === '}' && --depth === 0) return HERO_WIDE.slice(open + 1, i);
+  }
+  assert.fail(`unbalanced braces after "${selector}" in the block for 640px and up`);
+};
+
+test('hero, from 640px: the centred block stands on a band of the scrim that is whole under every line', (t) => {
+  // the band keeps the least opacity from the first line to the last
+  const scrim = wideRule('.foot::before');
+  const stops = /background:\s*linear-gradient\(\s*180deg,([\s\S]*?)\);/.exec(scrim)?.[1];
+  assert.ok(stops, 'the scrim of the centred block is no longer a top-to-bottom gradient');
+  const parts = splitTop(stops);
+  assert.equal(parts.length, 4, 'the band has four stops: nothing, the first line, the last line, nothing');
+  assert.match(parts[1], /^rgb\(var\(--scrim\) \/ var\(--scrim-under-text\)\) var\(--fade\)$/, 'the stop at the first line');
+  assert.match(parts[2], /^rgb\(var\(--scrim\) \/ var\(--scrim-under-text\)\) calc\(100% - var\(--fade\)\)$/, 'the stop at the last line');
+  assert.match(scrim, /bottom:\s*calc\(-1 \* var\(--fade\)\)/, 'the band must end --fade below the block, where the gradient leaves the opacity');
+  assert.ok(!/\btop\s*:/.test(scrim), 'the band starts where the rule under 640px puts it, --fade above the block: this block must not move it');
+
+  // the band is whole across the text column, and centred where the text is
+  const mask = /--mask:\s*linear-gradient\(([\s\S]*?)\);/.exec(scrim)?.[1];
+  assert.ok(mask, 'the scrim of the centred block has no --mask');
+  const whole = splitTop(mask).filter((p) => p.startsWith('#000 '));
+  assert.deepEqual(whole, ['#000 calc(50% - var(--text-col) / 2 - 1rem)', '#000 calc(50% + var(--text-col) / 2 + 1rem)'],
+    'the mask must be whole across the text column, counted from the centre');
+  const sides = heroRule('.foot::before');
+  assert.match(sides, /left:\s*-100vw/, 'the scrim reaches 100vw past the left end of the block');
+  assert.match(sides, /right:\s*-100vw/, 'the scrim reaches as far past the right end, so its centre is the centre of the block');
+  assert.ok(!/\b(left|right)\s*:/.test(scrim), 'this block must not move the sides of the scrim: 50% of it would no longer be the centre');
+  const foot = wideRule('.foot');
+  assert.match(foot, /align-items:\s*center/, 'the lines of the block must be centred in it');
+  assert.match(foot, /text-align:\s*center/, 'the text of each line must be centred');
+
+  // no line is wider than the column: the title by its own limit, the tagline by its own, the
+  // rest by the rule for every child of the block (held in the case above)
+  const col = Number(/--text-col:\s*([\d.]+)rem/.exec(foot)?.[1]);
+  assert.ok(col > 0, 'the block must set --text-col in rem');
+  const heroSizes = [...CSS.matchAll(/--text-hero:\s*([\d.]+)rem/g)].map((m) => Number(m[1]));
+  assert.ok(heroSizes.length > 0, 'global.css sets no --text-hero in rem');
+  const titleEm = Number(/max-width:\s*([\d.]+)em\b/.exec(wideRule('.foot > .title'))?.[1]);
+  assert.ok(titleEm > 0, 'the title of the centred block must have a max-width in em');
+  const widest = titleEm * Math.max(...heroSizes);
+  assert.ok(widest <= col, `the title can be ${widest}rem wide, more than the ${col}rem that the scrim covers whole`);
+  const tag = Number(/max-width:\s*([\d.]+)rem/.exec(wideRule('.foot > .tag'))?.[1]);
+  assert.ok(tag > 0 && tag <= col, `the tagline must have a max-width in rem of at most ${col}rem`);
+
+  for (const selector of ['.foot', '.foot > .title', '.foot > .tag', '.actions']) {
+    assert.ok(!/\bopacity\s*:/.test(wideRule(selector)), `${selector} is dimmed with opacity from 640px up`);
+  }
+  t.diagnostic(`hero from 640px: the title is at most ${widest}rem wide in a column of ${col}rem`);
+});
+
 // ---------------------------------------------------------------- the head of the Research page
 // Behind that head runs an animation (src/components/reactionDiffusion.ts) whose filaments are
 // light and dark in turn: no text colour reads on all of them. So no text may stand on it.
