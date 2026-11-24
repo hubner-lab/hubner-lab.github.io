@@ -1,16 +1,21 @@
 // Run after `pnpm build`: node tests/team/roster.test.mjs
-// The people on the built /team page, in page order, against tests/team/roster.expected.json:
-// nobody is lost, added or moved by a change of the page or of the team model.
+// The people on the built /team page are exactly the people of src/content/team/: every file is
+// on the page once, and nobody is on the page without a file. The names are compared as two
+// sorted lists, so a change of the page, of the team model or of the sync that loses or doubles
+// a person fails here.
+// No list of names is kept in the repository: the members portal changes who is on the page
+// (scripts/members_sync.py writes the files), and a fixed list would be out of date at the next
+// approved card. The order on the page is held by tests/site/team.test.mjs (the entries written
+// by hand) and tests/team/model.test.mjs (the sort itself).
 // A person is an element with `data-person`, a card or a line of the Alumni list; the name is
-// the text of its first element of class "name". What a card shows about a person is checked
-// by tests/site/team.test.mjs.
-// `node tests/team/roster.test.mjs --record <html>` rewrites the expectation from a built page.
-import { readFileSync, writeFileSync } from 'node:fs';
+// the text of its first element of class "name".
+import { readFileSync, readdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
+import path from 'node:path';
 import assert from 'node:assert/strict';
 
 const here = (p) => fileURLToPath(new URL(p, import.meta.url));
-const EXPECTED = here('./roster.expected.json');
+const TEAM = here('../../src/content/team/');
 
 export function extract(html) {
   const text = (h) =>
@@ -28,12 +33,26 @@ export function extract(html) {
   return { names };
 }
 
-if (process.argv[2] === '--record') {
-  writeFileSync(EXPECTED, JSON.stringify(extract(readFileSync(process.argv[3], 'utf8')), null, 2) + '\n');
-  console.log('recorded', EXPECTED);
-} else {
-  const got = extract(readFileSync(here('../../dist/team/index.html'), 'utf8'));
-  const want = JSON.parse(readFileSync(EXPECTED, 'utf8'));
-  assert.deepEqual(got.names, want.names, 'people differ in name or order');
-  console.log(`roster ok: ${got.names.length} people`);
+/**
+ * The `name` of a team file. An entry written by hand has a bare YAML scalar, the sync writes a
+ * JSON string (scripts/members_sync.py, js()), and a single-quoted scalar doubles its quotes.
+ */
+export function nameOf(file, source) {
+  const front = /^---\r?\n([\s\S]*?)\r?\n---/.exec(source);
+  assert.ok(front, `${file}: no front matter`);
+  const line = /^name:[ \t]*(\S.*?)[ \t]*$/m.exec(front[1]);
+  assert.ok(line, `${file}: no name`);
+  const raw = line[1];
+  const name = raw.startsWith('"') ? JSON.parse(raw) : raw.startsWith("'") ? raw.slice(1, -1).replace(/''/g, "'") : raw;
+  // the page prints a name with its white space folded, as extract() reads it
+  return name.replace(/\s+/g, ' ').trim();
 }
+
+const sorted = (names) => [...names].sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
+
+const files = readdirSync(TEAM).filter((f) => f.endsWith('.md')).sort();
+assert.ok(files.length > 0, 'src/content/team/ holds no entry');
+const want = files.map((f) => nameOf(f, readFileSync(path.join(TEAM, f), 'utf8')));
+const got = extract(readFileSync(here('../../dist/team/index.html'), 'utf8')).names;
+assert.deepEqual(sorted(got), sorted(want), 'the people on the Team page are not the people of src/content/team/');
+console.log(`roster ok: ${got.length} people on the page, ${files.length} files`);
