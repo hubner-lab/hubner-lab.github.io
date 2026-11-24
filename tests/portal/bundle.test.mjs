@@ -1,8 +1,10 @@
 // Run after `pnpm build`: node tests/portal/bundle.test.mjs
 // 1. The Firebase SDK is only reachable from the /members page, never from another page.
-// 2. /members is noindex and says the portal is not configured (src/data/firebase-config.json is absent).
+// 2. /members is noindex and is connected: it does not say "not configured".
 // 3. The emulator branch is dead code in a normal build.
 // 4. /members/handwritten.json lists the entries still written by hand, for the admin tab to adopt.
+// 5. src/data/firebase-config.json holds the four public values of the web app and nothing else,
+//    and only /members loads them.
 import { readdirSync, readFileSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
@@ -56,7 +58,8 @@ test_sdk_only_in_members: {
 test_members_page: {
   const m = html('members/index.html');
   assert.match(m, /<meta name="robots" content="noindex"\s*\/?>/, '/members is missing the noindex tag');
-  assert.ok(m.includes('The members portal is not configured yet'), '/members does not say it is not configured');
+  assert.ok(!m.includes('The members portal is not configured yet'), '/members says it is not configured: src/data/firebase-config.json was not read');
+  assert.ok(/\sid="m-loading"/.test(m), '/members has no loading note, which a connected page shows until its script has run');
   assert.ok(!m.includes('data-test-signin'), 'emulator test buttons are in a normal build');
   for (const p of pages.filter((p) => p !== 'members/index.html')) {
     assert.ok(!/name="robots" content="noindex"/.test(html(p)), `${p} is noindex`);
@@ -90,6 +93,29 @@ test_handwritten_list: {
   const people = (html('team/index.html').match(/<[a-z0-9]+\b[^>]*\sdata-person(?=[\s=>])/g) ?? []).length;
   assert.ok(people > 0, 'the Team page marks no person with data-person');
   assert.equal(list.length + Object.keys(synced).length, people, 'handwritten.json and synced.json do not add up to the Team page');
+}
+
+test_config: {
+  // The web app's config is public by design. A service account file, or anything else, is not:
+  // the file may hold these four values and nothing more.
+  const config = JSON.parse(readFileSync(new URL('../../src/data/firebase-config.json', import.meta.url), 'utf8'));
+  assert.deepEqual(Object.keys(config).sort(), ['apiKey', 'appId', 'authDomain', 'projectId'], 'firebase-config.json: other keys than the four public ones');
+  for (const [key, value] of Object.entries(config)) {
+    assert.ok(typeof value === 'string' && value !== '' && value === value.trim(), `firebase-config.json: ${key} is not a plain, non-empty string`);
+  }
+  assert.match(config.projectId, /^[a-z][a-z0-9-]{4,28}[a-z0-9]$/, 'firebase-config.json: projectId is not a project id');
+  assert.equal(config.authDomain, `${config.projectId}.firebaseapp.com`, 'firebase-config.json: authDomain is not the domain of that project');
+  // It travels with the portal's script only.
+  const holders = jsFiles.filter((f) => text.get(f).includes(config.apiKey));
+  assert.ok(holders.length > 0, 'the config is in no script of the build: /members cannot connect');
+  const members = reachable('members/index.html');
+  for (const f of holders) {
+    assert.ok(members.has(f), `${path.relative(dist, f)} holds the config but /members does not load it`);
+  }
+  for (const page of pages.filter((p) => p !== 'members/index.html')) {
+    const leaked = [...reachable(page)].filter((f) => holders.includes(f));
+    assert.deepEqual(leaked.map((f) => path.relative(dist, f)), [], `${page} loads the portal's config`);
+  }
 }
 
 console.log(`portal bundle ok: SDK in ${sdkFiles.length} file(s), all reachable only from /members`);

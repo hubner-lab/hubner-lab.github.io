@@ -174,9 +174,12 @@ text reads 6.95:1 at its worst point.
 
 ## The members portal on your machine
 
-Without `src/data/firebase-config.json` the page `/members` builds and says "not configured";
-the public site does not need it. To try the portal, run it against the Firebase emulators
-(Firebase CLI and Java 21):
+`src/data/firebase-config.json` holds the four public values of the lab's Firebase project, so
+`/members` on the live site is the real portal. (Without that file the page still builds and
+says "not configured"; the public site does not need it.) `pnpm dev` reads the same file, but
+a sign-in from `localhost` works only while `localhost` is among the project's authorized domains,
+and normally it is not. To try the portal, run it against the Firebase emulators (Firebase CLI
+and Java 21), which touch no real card:
 
 ```sh
 firebase emulators:start --only auth,firestore --project demo-members

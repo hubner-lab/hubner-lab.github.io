@@ -22,7 +22,7 @@ Locally (from the repo root):
 
 - `python3 scripts/members_sync.py --dry-run` reports only.
 - `--fixture DIR` reads saved REST responses instead of the network (`tests/sync/fixtures/`).
-- `--base-url http://127.0.0.1:8180` aims it at the Firestore emulator (the port is in `firebase.json`). The project id still comes from `src/data/firebase-config.json`: for the emulator write a temporary `{ "projectId": "demo-members" }` there and delete it afterwards.
+- `--base-url http://127.0.0.1:8180` aims it at the Firestore emulator (the port is in `firebase.json`). The project id still comes from `src/data/firebase-config.json`: for the emulator put `{ "projectId": "demo-members" }` there for the run and bring the real file back with `git restore src/data/firebase-config.json`. Never commit the temporary one.
 - `--allow-shrink` accepts more than two removals, and an empty `published` collection. `--repo DIR` targets another tree (the tests use a temporary one).
 
 Tests: `python3 -m unittest discover -s tests/sync -v`.
@@ -31,7 +31,7 @@ Tests: `python3 -m unittest discover -s tests/sync -v`.
 
 Every path ends in an annotation in the run log and the job summary.
 
-- `notice: members portal not configured`: `src/data/firebase-config.json` does not exist. Nothing was done; exit 0. Expected until go-live.
+- `notice: members portal not configured`: `src/data/firebase-config.json` does not exist. Nothing was done; exit 0. The file is in the repository since go-live (2026-11-24), so this notice now means it was removed.
 - `notice: Fetched N published card(s): ...` or `..., no changes`: a normal run. With `Dry run` in front, nothing was written.
 - `warning: Skipped card <uid>: <reason>`: that card failed validation (or shares a slug, or its photo failed). Its previous file stays; the other cards are processed. The run ends with a red `flag-skipped` job so it gets looked at.
 - `error: Members sync failed: ...`: Firestore or the network failed after three tries; exit 1.
